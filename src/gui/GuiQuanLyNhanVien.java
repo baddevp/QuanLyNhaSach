@@ -375,8 +375,6 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener {
 		pnlBangKH.setLayout(null);
 		tblKH.setFont(font2);
 		tblKH.setRowHeight(35);
-		// String row[] = {"KH001","Nguyễn Văn B","0123456789","0","Thường"," "};
-		// modelKH.addRow(row);
 		pnlBangKH.add(jScrollPane);
 		
 		txtTrangThai = new JTextField("Không có hoạt động nào gần nhất");
