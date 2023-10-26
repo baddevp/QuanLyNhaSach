@@ -77,26 +77,29 @@ public class GuiTrangChu extends JFrame {
 		mnbChucNang.setBackground(new Color(255, 255, 255));
 		mnbChucNang.setBounds(0, 0, 1550, 100);
 
-		JMenu mnHeThong = new JMenu("Hệ thống");
-		mnHeThong.setBorder(new EmptyBorder(20, 20, 20, 20));
-		mnHeThong.setIcon(new ImageIcon(GuiTrangChu.class.getResource("/image/TrangChu.png")));
-		mnHeThong.setFont(new Font("Dialog", Font.BOLD, 18));
-		mnbChucNang.add(mnHeThong);
+		JMenu mnTrangChu = new JMenu("Trang Chủ");
+		mnTrangChu.setBorder(new EmptyBorder(20, 20, 20, 20));
+		mnTrangChu.setIcon(new ImageIcon(GuiTrangChu.class.getResource("/image/TrangChu.png")));
+		mnTrangChu.setFont(new Font("Dialog", Font.BOLD, 18));
+		mnbChucNang.add(mnTrangChu);
 		
 		JMenuItem mniThongTinCaNhan = new JMenuItem("Thông tin cá nhân");
 		mniThongTinCaNhan.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-		mnHeThong.add(mniThongTinCaNhan);
+		mnTrangChu.add(mniThongTinCaNhan);
 		
 		JSeparator separator_6 = new JSeparator();
-		mnHeThong.add(separator_6);
+		mnTrangChu.add(separator_6);
 		
 		JMenuItem mniDoiMK = new JMenuItem("Đổi mật khẩu");
 		mniDoiMK.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-		mnHeThong.add(mniDoiMK);
+		mnTrangChu.add(mniDoiMK);
+		
+		JSeparator separator_9 = new JSeparator();
+		mnTrangChu.add(separator_9);
 		
 		JMenuItem mniThoat = new JMenuItem("Thoát");
 		mniThoat.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-		mnHeThong.add(mniThoat);
+		mnTrangChu.add(mniThoat);
 		
 		JMenu mnQuanLy = new JMenu("Quản lý");
 		mnQuanLy.setBorder(new EmptyBorder(20, 20, 20, 20));
@@ -134,6 +137,9 @@ public class GuiTrangChu extends JFrame {
 		JMenuItem mntmNewMenuItem_1 = new JMenuItem("Loại sách");
 		mntmNewMenuItem_1.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		mniLoaiSP.add(mntmNewMenuItem_1);
+		
+		JSeparator separator_17 = new JSeparator();
+		mniLoaiSP.add(separator_17);
 		
 		JMenuItem mniLoaiVPP = new JMenuItem("Loại Văn Phòng Phẩm");
 		mniLoaiVPP.setFont(new Font("Segoe UI", Font.PLAIN, 16));
@@ -200,6 +206,9 @@ public class GuiTrangChu extends JFrame {
 		mniTimKiemSach.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		mnTimKiem.add(mniTimKiemSach);
 		
+		JSeparator separator_10 = new JSeparator();
+		mnTimKiem.add(separator_10);
+		
 		JMenuItem mniTimKiemVPP = new JMenuItem("Văn phòng phẩm");
 		mniTimKiemVPP.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		mnTimKiem.add(mniTimKiemVPP);
@@ -211,20 +220,29 @@ public class GuiTrangChu extends JFrame {
 		mniTimKiemTK.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		mnTimKiem.add(mniTimKiemTK);
 		
+		JSeparator separator_5 = new JSeparator();
+		mnTimKiem.add(separator_5);
+		
 		JMenuItem mniTimKiemNV = new JMenuItem("Nhân viên");
 		mniTimKiemNV.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		mnTimKiem.add(mniTimKiemNV);
 		
-		JSeparator separator_5 = new JSeparator();
-		mnTimKiem.add(separator_5);
+		JSeparator separator_11 = new JSeparator();
+		mnTimKiem.add(separator_11);
 		
 		JMenuItem mniTimKiemKH = new JMenuItem("Khách hàng");
 		mniTimKiemKH.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		mnTimKiem.add(mniTimKiemKH);
 		
+		JSeparator separator_12 = new JSeparator();
+		mnTimKiem.add(separator_12);
+		
 		JMenuItem mniTimKiemHD = new JMenuItem("Hóa đơn\r\n");
 		mniTimKiemHD.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		mnTimKiem.add(mniTimKiemHD);
+		
+		JSeparator separator_13 = new JSeparator();
+		mnTimKiem.add(separator_13);
 		
 		mniTimKiemHDTH = new JMenuItem("Hóa đơn\r\n trả hàng");
 		mniTimKiemHDTH.setFont(new Font("Segoe UI", Font.PLAIN, 18));
@@ -240,13 +258,22 @@ public class GuiTrangChu extends JFrame {
 		mniThongKeNV.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		mnThongKe.add(mniThongKeNV);
 		
+		JSeparator separator_14 = new JSeparator();
+		mnThongKe.add(separator_14);
+		
 		JMenuItem mniThongKeDT = new JMenuItem("Doanh thu");
 		mniThongKeDT.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		mnThongKe.add(mniThongKeDT);
 		
+		JSeparator separator_15 = new JSeparator();
+		mnThongKe.add(separator_15);
+		
 		JMenuItem mniThongKeSP = new JMenuItem("Sản phẩm bán chạy");
 		mniThongKeSP.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		mnThongKe.add(mniThongKeSP);
+		
+		JSeparator separator_16 = new JSeparator();
+		mnThongKe.add(separator_16);
 		
 		JMenuItem mniBaoCaoThuChi = new JMenuItem("Báo cáo thu chi trong ngày");
 		mniBaoCaoThuChi.setFont(new Font("Segoe UI", Font.PLAIN, 18));
@@ -291,7 +318,7 @@ public class GuiTrangChu extends JFrame {
 		
 		JLabel lblTieuDe = new JLabel("Trang Chủ");
 		lblTieuDe.setFont(new Font("Tahoma", Font.PLAIN, 28));
-		lblTieuDe.setBounds(489, 101, 210, 69);
+		lblTieuDe.setBounds(700, 89, 210, 69);
 		pnlTrangChu.add(lblTieuDe);
 	}
 }
