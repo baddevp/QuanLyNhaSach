@@ -73,7 +73,7 @@ public class GuiTimKiemKhachhang extends JFrame implements ActionListener {
 	
 		//Tiêu đề
 		JPanel pnlTieuDe = new JPanel();
-		pnlTieuDe.setBounds(20, 10, 1884, 60);
+		pnlTieuDe.setBounds(15, 15, 1889, 60);
 		pnlTieuDe.setBackground(new Color(255, 255, 255));
 		contentPane.add(pnlTieuDe);
 		
@@ -84,7 +84,7 @@ public class GuiTimKiemKhachhang extends JFrame implements ActionListener {
 		lblTieuDe.setForeground(new Color(0, 204, 204));;
 		
 		JPanel pnlChucNang = new JPanel();
-		pnlChucNang.setBounds(20, 110, 1884, 88);
+		pnlChucNang.setBounds(15, 90, 1889, 90);
 		contentPane.add(pnlChucNang);
 		pnlChucNang.setBackground(Color.white);
 		pnlChucNang.setBorder(BorderFactory.createTitledBorder("Tìm kiếm: "));
@@ -130,7 +130,7 @@ public class GuiTimKiemKhachhang extends JFrame implements ActionListener {
 		
 		//Thể hiện danh sách tìm kiếm được
 		JPanel pnlBangKH = new JPanel();
-		pnlBangKH.setBounds(20, 209, 1884, 771);
+		pnlBangKH.setBounds(15, 195, 1889, 800);
 		contentPane.add(pnlBangKH);
 		pnlBangKH.setBorder(BorderFactory.createTitledBorder("Bảng thông tin khách hàng"));
 		pnlBangKH.setLayout(null);

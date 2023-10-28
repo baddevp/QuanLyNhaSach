@@ -47,8 +47,6 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener {
 	private JTextField txtTrangThai;
 	private JDateChooser dtmNgaySinh;
 	private JDateChooser dtmNgayVaoLam;
-	private JTextField textField;
-	private JFileChooser fchAnhNhanVien;
 	private JButton btnChonAnh;
 	private JRadioButton radMaNV;
 
