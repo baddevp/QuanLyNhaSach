@@ -26,7 +26,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JComboBox;
 
-public class GuiTimKiemKhachHang extends JFrame implements ActionListener {
+public class GuiTimKiemHoaDon extends JFrame implements ActionListener {
 
 	private JPanel contentPane;
 	private JTextField txtNhap;
@@ -39,7 +39,7 @@ public class GuiTimKiemKhachHang extends JFrame implements ActionListener {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					GuiTimKiemKhachHang frame = new GuiTimKiemKhachHang();
+					GuiTimKiemHoaDon frame = new GuiTimKiemHoaDon();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -51,7 +51,7 @@ public class GuiTimKiemKhachHang extends JFrame implements ActionListener {
 	/**
 	 * Create the frame.
 	 */
-	public GuiTimKiemKhachHang() {
+	public GuiTimKiemHoaDon() {
 		this.setTitle("Quản lý khách hàng");
 		this.setSize(1930, 1030);
 		this.setExtendedState(JFrame.MAXIMIZED_BOTH); // Toàn màn hình
@@ -77,7 +77,7 @@ public class GuiTimKiemKhachHang extends JFrame implements ActionListener {
 		pnlTieuDe.setBackground(new Color(255, 255, 255));
 		contentPane.add(pnlTieuDe);
 		
-		JLabel lblTieuDe = new JLabel("TÌM KIẾM KHÁCH HÀNG");
+		JLabel lblTieuDe = new JLabel("TÌM KIẾM HÓA ĐƠN");
 		lblTieuDe.setBackground(new Color(51, 204, 255));
 		pnlTieuDe.add(lblTieuDe);
 		lblTieuDe.setFont(font1);
@@ -114,7 +114,7 @@ public class GuiTimKiemKhachHang extends JFrame implements ActionListener {
             }
         });
 						
-		JLabel lblNhap = new JLabel("Thông tin khách hàng:");
+		JLabel lblNhap = new JLabel("Thông tin hóa đơn :");
 		lblNhap.setBounds(80, 27, 258, 36);
 		lblNhap.setFont(font2);
 		pnlChucNang.add(lblNhap);
@@ -129,11 +129,11 @@ public class GuiTimKiemKhachHang extends JFrame implements ActionListener {
 		pnlChucNang.add(lblLoc);
 		
 		//Thể hiện danh sách tìm kiếm được
-		JPanel pnlBangKH = new JPanel();
-		pnlBangKH.setBounds(15, 195, 1889, 800);
-		contentPane.add(pnlBangKH);
-		pnlBangKH.setBorder(BorderFactory.createTitledBorder("Danh sách thông tin khách hàng"));
-		pnlBangKH.setLayout(null);
+		JPanel pnlBangHD = new JPanel();
+		pnlBangHD.setBounds(15, 191, 1889, 800);
+		contentPane.add(pnlBangHD);
+		pnlBangHD.setBorder(BorderFactory.createTitledBorder("Danh sách hóa đơn"));
+		pnlBangHD.setLayout(null);
 
 		
 
