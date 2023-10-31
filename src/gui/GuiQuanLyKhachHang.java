@@ -27,7 +27,7 @@ import javax.swing.JTable;
 
 public class GuiQuanLyKhachHang extends JFrame implements ActionListener {
 
-	private JPanel contentPane;
+	public static JPanel contentPane;
 	private JTextField txtMaKH;
 	private JTextField txtTenKH;
 	private JTextField txtSDT;
@@ -70,7 +70,6 @@ public class GuiQuanLyKhachHang extends JFrame implements ActionListener {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		contentPane.setBackground(new Color(51, 204, 204));
-		
 		// Kiểu chữ
 		Font font1 = new Font("Times New Roman", Font.BOLD, 36);
 		Font font2 = new Font("Times New Roman", Font.PLAIN, 24);
@@ -97,7 +96,7 @@ public class GuiQuanLyKhachHang extends JFrame implements ActionListener {
 		pnlThongTinKH.setBackground(new Color(255, 255, 255));
 		
 		pnlThongTinKH.setBorder(BorderFactory.createTitledBorder("Thông tin khách hàng"));
-		pnlThongTinKH.setBounds(10, 100, 1894, 280);
+		pnlThongTinKH.setBounds(10, 80, 1894, 280);
 		contentPane.add(pnlThongTinKH);
 		pnlThongTinKH.setLayout(null);
 		
@@ -175,7 +174,7 @@ public class GuiQuanLyKhachHang extends JFrame implements ActionListener {
 		
 		JPanel pnlTacVu = new JPanel();
 		pnlTacVu.setBackground(Color.white);
-		pnlTacVu.setBounds(10, 410, 1894, 80);
+		pnlTacVu.setBounds(10, 370, 1894, 80);
 		pnlTacVu.setBorder(BorderFactory.createTitledBorder("Chọn tác vụ:"));
 		contentPane.add(pnlTacVu);
 		pnlTacVu.setLayout(null);
@@ -262,7 +261,7 @@ public class GuiQuanLyKhachHang extends JFrame implements ActionListener {
 		group.add(radSDT);
 		
 		JPanel pnlBangKH = new JPanel();
-		pnlBangKH.setBounds(10, 520, 1894, 442);
+		pnlBangKH.setBounds(10, 460, 1894, 450);
 		contentPane.add(pnlBangKH);
 		pnlBangKH.setBorder(BorderFactory.createTitledBorder("Bảng thông tin khách hàng"));
 		pnlBangKH.setLayout(null);
@@ -295,7 +294,7 @@ public class GuiQuanLyKhachHang extends JFrame implements ActionListener {
 		txtTrangThai = new JTextField("Không có hoạt động nào gần nhất");
 		txtTrangThai.setForeground(Color.red);
 		txtTrangThai.setHorizontalAlignment(SwingConstants.CENTER);
-		txtTrangThai.setBounds(10, 971, 1894, 20);
+		txtTrangThai.setBounds(10, 920, 1894, 20);
 		contentPane.add(txtTrangThai);
 		txtTrangThai.setColumns(10);
 

@@ -9,11 +9,13 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import java.awt.Font;
 import javax.swing.JTabbedPane;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.MatteBorder;
 import java.awt.Component;
 import java.awt.FlowLayout;
@@ -27,17 +29,61 @@ import javax.swing.JFormattedTextField;
 import java.awt.BorderLayout;
 import java.awt.Choice;
 import javax.swing.JPopupMenu;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.TextField;
 import java.awt.Rectangle;
 import javax.swing.JLabel;
+import java.awt.event.KeyEvent;
+import java.awt.Cursor;
+import java.awt.ComponentOrientation;
+import java.awt.Insets;
 
-public class GuiTrangChu extends JFrame {
+public class GuiTrangChu extends JFrame implements ActionListener {
 
 	private JPanel contentPane;
 	private JMenuItem mniTimKiemHDTH;
-	private JTextField textField;
+	private JTextField txtTenTK;
+	private JMenuItem mniKhachHang;
+	private JTabbedPane tabNoiDung;
+	private JMenuItem mniLoaiVPP;
+	private JPanel pnlTrangChu;
+	private JMenuBar mnbChucNang;
+	private JMenu mnTrangChu;
+	private JMenu mnQuanLy;
+	private JMenuItem mniSanPham;
+	private JMenu mnLoaiSP;
+	private JMenuItem mniLoaiSach;
+	private JMenuItem mniNhanVien;
+	private JMenuItem mniChucVu;
+	private JMenuItem mniTaiKhoan;
+	private JMenuItem mniNSX;
+	private JMenuItem mniMauSac;
+	private JMenu mnXuLy;
+	private JMenuItem mniBanHang;
+	private JMenuItem mniTraHang;
+	private JMenuItem mniInHoaDon;
+	private JMenu mnTimKiem;
+	private JMenuItem mniTimKiemSach;
+	private JMenuItem mniTimKiemVPP;
+	private JMenuItem mniTimKiemTK;
+	private JMenuItem mniTimKiemNV;
+	private JMenuItem mniTimKiemKH;
+	private JMenuItem mniTimKiemHD;
+	private JMenu mnThongKe;
+	private JMenuItem mniThongKeNV;
+	private JMenuItem mniThongKeDT;
+	private JMenuItem mniThongKeSP;
+	private JMenuItem mniBaoCaoThuChi;
+	private JMenu mnHoTro;
+	private JPanel pnlMenu;
+	private JPopupMenu pnmTaiKhoan;
+	private JSeparator separator;
+	private JSeparator separator_19;
+	private JSeparator separator_20;
 
 	/**
 	 * Launch the application.
@@ -72,172 +118,144 @@ public class GuiTrangChu extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JMenuBar mnbChucNang = new JMenuBar();
+		mnbChucNang = new JMenuBar();
+		mnbChucNang.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		mnbChucNang.setBorder(null);
 		mnbChucNang.setBackground(new Color(255, 255, 255));
-		mnbChucNang.setBounds(0, 0, 1550, 100);
+		mnbChucNang.setBounds(0, 0, 1914, 74);
 
-		JMenu mnTrangChu = new JMenu("Trang Chủ");
+		mnTrangChu = new JMenu("Trang Chủ");
 		mnTrangChu.setBorder(new EmptyBorder(20, 20, 20, 20));
 		mnTrangChu.setIcon(new ImageIcon(GuiTrangChu.class.getResource("/image/TrangChu.png")));
 		mnTrangChu.setFont(new Font("Dialog", Font.BOLD, 18));
 		mnbChucNang.add(mnTrangChu);
+	
 		
-		JMenuItem mniThongTinCaNhan = new JMenuItem("Thông tin cá nhân");
-		mniThongTinCaNhan.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-		mnTrangChu.add(mniThongTinCaNhan);
-		
-		JSeparator separator_6 = new JSeparator();
-		mnTrangChu.add(separator_6);
-		
-		JMenuItem mniDoiMK = new JMenuItem("Đổi mật khẩu");
-		mniDoiMK.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-		mnTrangChu.add(mniDoiMK);
-		
-		JSeparator separator_9 = new JSeparator();
-		mnTrangChu.add(separator_9);
-		
-		JMenuItem mniThoat = new JMenuItem("Thoát");
-		mniThoat.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-		mnTrangChu.add(mniThoat);
-		
-		JMenu mnQuanLy = new JMenu("Quản lý");
+		mnQuanLy = new JMenu("Quản lý");
 		mnQuanLy.setBorder(new EmptyBorder(20, 20, 20, 20));
 		mnQuanLy.setIcon(new ImageIcon(GuiTrangChu.class.getResource("/image/QuanLy.png")));
 		mnQuanLy.setFont(new Font("Dialog", Font.BOLD, 18));
 		mnbChucNang.add(mnQuanLy);
 		
-		JMenuItem mniKhachHang = new JMenuItem("Khách hàng");
+		mniKhachHang = new JMenuItem("Khách hàng");
 		mniKhachHang.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		mnQuanLy.add(mniKhachHang);
 		
 		JSeparator separator_2 = new JSeparator();
 		mnQuanLy.add(separator_2);
 		
-		JMenu mnSanPham = new JMenu("Sản phẩm");
-		mnSanPham.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-		mnQuanLy.add(mnSanPham);
+		mniSanPham = new JMenuItem("Sản phẩm");
+		mniSanPham.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		mnQuanLy.add(mniSanPham);
 		
-		JMenuItem mniSach = new JMenuItem("Sách");
-		mniSach.setAlignmentX(Component.LEFT_ALIGNMENT);
-		mniSach.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		mnSanPham.add(mniSach);
+		mnLoaiSP = new JMenu("Loại Sản Phẩm");
+		mnLoaiSP.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		mnQuanLy.add(mnLoaiSP);
 		
-		JSeparator separator = new JSeparator();
-		mnSanPham.add(separator);
-		
-		JMenuItem mniVPP = new JMenuItem("Văn Phòng Phẩm");
-		mniVPP.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		mnSanPham.add(mniVPP);
-		
-		JMenu mniLoaiSP = new JMenu("Loại Sản Phẩm");
-		mniLoaiSP.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-		mnQuanLy.add(mniLoaiSP);
-		
-		JMenuItem mntmNewMenuItem_1 = new JMenuItem("Loại sách");
-		mntmNewMenuItem_1.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		mniLoaiSP.add(mntmNewMenuItem_1);
+		 mniLoaiSach = new JMenuItem("Loại sách");
+		mniLoaiSach.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		mnLoaiSP.add(mniLoaiSach);
 		
 		JSeparator separator_17 = new JSeparator();
-		mniLoaiSP.add(separator_17);
+		mnLoaiSP.add(separator_17);
 		
-		JMenuItem mniLoaiVPP = new JMenuItem("Loại Văn Phòng Phẩm");
+		mniLoaiVPP = new JMenuItem("Loại Văn Phòng Phẩm");
 		mniLoaiVPP.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		mniLoaiSP.add(mniLoaiVPP);
+		mnLoaiSP.add(mniLoaiVPP);
 		
 		JSeparator separator_1 = new JSeparator();
 		mnQuanLy.add(separator_1);
 		
-		JMenuItem mniNhanVien = new JMenuItem("Nhân viên");
+		 mniNhanVien = new JMenuItem("Nhân viên");
 		mniNhanVien.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		mnQuanLy.add(mniNhanVien);
 		
-		JMenuItem mniChucVu = new JMenuItem("Chức vụ");
+		 mniChucVu = new JMenuItem("Chức vụ");
 		mniChucVu.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		mnQuanLy.add(mniChucVu);
 		
-		JMenuItem mniTaiKhoan = new JMenuItem("Tài khoản");
+		 mniTaiKhoan = new JMenuItem("Tài khoản");
 		mniTaiKhoan.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		mnQuanLy.add(mniTaiKhoan);
 		
 		JSeparator separator_3 = new JSeparator();
 		mnQuanLy.add(separator_3);
 		
-		JMenuItem mniNSX = new JMenuItem("Nhà sản xuất");
+		 mniNSX = new JMenuItem("Nhà sản xuất");
 		mniNSX.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		mnQuanLy.add(mniNSX);
 		
-		JMenuItem mniMauSac = new JMenuItem("Màu sắc");
+		 mniMauSac = new JMenuItem("Màu sắc");
 		mniMauSac.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		mnQuanLy.add(mniMauSac);
 		
-		JMenu mnXuLy = new JMenu("Xử lý");
+		 mnXuLy = new JMenu("Xử lý");
 		mnXuLy.setBorder(new EmptyBorder(20, 20, 20, 20));
 		mnXuLy.setHorizontalAlignment(SwingConstants.CENTER);
 		mnXuLy.setIcon(new ImageIcon(GuiTrangChu.class.getResource("/image/BanHang.png")));
 		mnXuLy.setFont(new Font("Dialog", Font.BOLD, 18));
 		mnbChucNang.add(mnXuLy);
 		
-		JMenuItem mniBanHang = new JMenuItem("Bán hàng");
+		 mniBanHang = new JMenuItem("Bán hàng");
 		mniBanHang.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		mnXuLy.add(mniBanHang);
 		
 		JSeparator separator_7 = new JSeparator();
 		mnXuLy.add(separator_7);
 		
-		JMenuItem mniTraHang = new JMenuItem("Trả hàng");
+		 mniTraHang = new JMenuItem("Trả hàng");
 		mniTraHang.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		mnXuLy.add(mniTraHang);
 		
 		JSeparator separator_8 = new JSeparator();
 		mnXuLy.add(separator_8);
 		
-		JMenuItem mniInHoaDon = new JMenuItem("In lại hóa đơn");
+		 mniInHoaDon = new JMenuItem("In lại hóa đơn");
 		mniInHoaDon.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		mnXuLy.add(mniInHoaDon);
 		
-		JMenu mnTimKiem = new JMenu("Tìm kiếm");
+		 mnTimKiem = new JMenu("Tìm kiếm");
 		mnTimKiem.setBorder(new EmptyBorder(20, 20, 20, 20));
 		mnTimKiem.setIcon(new ImageIcon(GuiTrangChu.class.getResource("/image/TimKiem.png")));
 		mnTimKiem.setFont(new Font("Dialog", Font.BOLD, 18));
 		mnbChucNang.add(mnTimKiem);
 		
-		JMenuItem mniTimKiemSach = new JMenuItem("Sách");
+		 mniTimKiemSach = new JMenuItem("Sách");
 		mniTimKiemSach.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		mnTimKiem.add(mniTimKiemSach);
 		
 		JSeparator separator_10 = new JSeparator();
 		mnTimKiem.add(separator_10);
 		
-		JMenuItem mniTimKiemVPP = new JMenuItem("Văn phòng phẩm");
+		 mniTimKiemVPP = new JMenuItem("Văn phòng phẩm");
 		mniTimKiemVPP.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		mnTimKiem.add(mniTimKiemVPP);
 		
 		JSeparator separator_4 = new JSeparator();
 		mnTimKiem.add(separator_4);
 		
-		JMenuItem mniTimKiemTK = new JMenuItem("Tài khoản");
+		 mniTimKiemTK = new JMenuItem("Tài khoản");
 		mniTimKiemTK.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		mnTimKiem.add(mniTimKiemTK);
 		
 		JSeparator separator_5 = new JSeparator();
 		mnTimKiem.add(separator_5);
 		
-		JMenuItem mniTimKiemNV = new JMenuItem("Nhân viên");
+		 mniTimKiemNV = new JMenuItem("Nhân viên");
 		mniTimKiemNV.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		mnTimKiem.add(mniTimKiemNV);
 		
 		JSeparator separator_11 = new JSeparator();
 		mnTimKiem.add(separator_11);
 		
-		JMenuItem mniTimKiemKH = new JMenuItem("Khách hàng");
+		 mniTimKiemKH = new JMenuItem("Khách hàng");
 		mniTimKiemKH.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		mnTimKiem.add(mniTimKiemKH);
 		
 		JSeparator separator_12 = new JSeparator();
 		mnTimKiem.add(separator_12);
 		
-		JMenuItem mniTimKiemHD = new JMenuItem("Hóa đơn\r\n");
+		 mniTimKiemHD = new JMenuItem("Hóa đơn\r\n");
 		mniTimKiemHD.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		mnTimKiem.add(mniTimKiemHD);
 		
@@ -248,71 +266,108 @@ public class GuiTrangChu extends JFrame {
 		mniTimKiemHDTH.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		mnTimKiem.add(mniTimKiemHDTH);
 		
-		JMenu mnThongKe = new JMenu("Thống kê");
+		 mnThongKe = new JMenu("Thống kê");
 		mnThongKe.setBorder(new EmptyBorder(20, 20, 20, 20));
 		mnThongKe.setIcon(new ImageIcon(GuiTrangChu.class.getResource("/image/ThongKe.png")));
 		mnThongKe.setFont(new Font("Dialog", Font.BOLD, 18));
 		mnbChucNang.add(mnThongKe);
 		
-		JMenuItem mniThongKeNV = new JMenuItem("Nhân viên");
+		 mniThongKeNV = new JMenuItem("Nhân viên");
 		mniThongKeNV.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		mnThongKe.add(mniThongKeNV);
 		
 		JSeparator separator_14 = new JSeparator();
 		mnThongKe.add(separator_14);
 		
-		JMenuItem mniThongKeDT = new JMenuItem("Doanh thu");
+		 mniThongKeDT = new JMenuItem("Doanh thu");
 		mniThongKeDT.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		mnThongKe.add(mniThongKeDT);
 		
 		JSeparator separator_15 = new JSeparator();
 		mnThongKe.add(separator_15);
 		
-		JMenuItem mniThongKeSP = new JMenuItem("Sản phẩm bán chạy");
+		 mniThongKeSP = new JMenuItem("Sản phẩm bán chạy");
 		mniThongKeSP.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		mnThongKe.add(mniThongKeSP);
 		
 		JSeparator separator_16 = new JSeparator();
 		mnThongKe.add(separator_16);
 		
-		JMenuItem mniBaoCaoThuChi = new JMenuItem("Báo cáo thu chi trong ngày");
+		 mniBaoCaoThuChi = new JMenuItem("Báo cáo thu chi trong ngày");
 		mniBaoCaoThuChi.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		mnThongKe.add(mniBaoCaoThuChi);
 		
-		JMenu mnTroGiup = new JMenu("Trợ giúp");
-		mnTroGiup.setBorder(new EmptyBorder(20, 20, 20, 20));
-		mnTroGiup.setIcon(new ImageIcon(GuiTrangChu.class.getResource("/image/TroGiup.png")));
-		mnTroGiup.setFont(new Font("Dialog", Font.BOLD, 18));
-		mnbChucNang.add(mnTroGiup);
+		 mnHoTro = new JMenu("Hỗ trợ");
+		mnHoTro.setBorder(new EmptyBorder(20, 20, 20, 20));
+		mnHoTro.setIcon(new ImageIcon(GuiTrangChu.class.getResource("/image/TroGiup.png")));
+		mnHoTro.setFont(new Font("Dialog", Font.BOLD, 18));
+		mnbChucNang.add(mnHoTro);
 		
-		JPanel pnlMenu = new JPanel();
+		 pnlMenu = new JPanel();
 		pnlMenu.setBackground(new Color(255, 255, 255));
-		pnlMenu.setBounds(0, 0, 1914, 100);
+		pnlMenu.setBounds(0, 0, 1914, 75);
 		contentPane.add(pnlMenu);
 		pnlMenu.setLayout(null);
 		pnlMenu.add(mnbChucNang);
 		
-		JLabel lblTaiKhoan = new JLabel("New label");
-		lblTaiKhoan.setIcon(new ImageIcon(GuiTrangChu.class.getResource("/image/TaiKhoan.png")));
-		lblTaiKhoan.setBounds(1578, 11, 46, 32);
-		pnlMenu.add(lblTaiKhoan);
+		JSeparator separator_18 = new JSeparator();
+		separator_18.setBorder(new EmptyBorder(20, 20, 20, 20));
+		mnbChucNang.add(separator_18);
 		
-		textField = new JTextField();
-		textField.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-		textField.setBackground(new Color(255, 255, 255));
-		textField.setEditable(false);
-		textField.setEnabled(false);
-		textField.setBounds(1634, 11, 270, 32);
-		pnlMenu.add(textField);
-		textField.setColumns(10);
+		separator = new JSeparator();
+		separator.setBorder(new EmptyBorder(20, 0, 0, 0));
+		mnbChucNang.add(separator);
 		
-		JTabbedPane tabNoiDung = new JTabbedPane();
+		JPanel pnlThongTinTaiKhoan = new JPanel();
+		mnbChucNang.add(pnlThongTinTaiKhoan);
+		pnlThongTinTaiKhoan.setBackground(new Color(255, 255, 255));
+		pnlThongTinTaiKhoan.setLayout(null);
+		
+				
+				
+				txtTenTK = new JTextField();
+				txtTenTK.setBounds(10, 19, 282, 40);
+				pnlThongTinTaiKhoan.add(txtTenTK);
+				txtTenTK.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
+				txtTenTK.setBackground(new Color(255, 255, 255));
+				txtTenTK.setEditable(false);
+				txtTenTK.setEnabled(false);
+				txtTenTK.setColumns(10);
+		
+		JMenu mnTaiKhoan = new JMenu("");
+		mnTaiKhoan.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		mnTaiKhoan.setMargin(new Insets(2, 2, 2, 30));
+		mnTaiKhoan.setHorizontalAlignment(SwingConstants.TRAILING);
+		mnbChucNang.add(mnTaiKhoan);
+		mnTaiKhoan.setVerticalTextPosition(SwingConstants.BOTTOM);
+		mnTaiKhoan.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+		mnTaiKhoan.setIcon(new ImageIcon(GuiTrangChu.class.getResource("/image/TaiKhoan.png")));
+		
+		JMenuItem mniThongTinTaiKhoan = new JMenuItem("Thông tin tài khoản");
+		mniThongTinTaiKhoan.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		mnTaiKhoan.add(mniThongTinTaiKhoan);
+		
+		separator_19 = new JSeparator();
+		mnTaiKhoan.add(separator_19);
+		
+		JMenuItem mniDoiMatKhau = new JMenuItem("Đổi mật khẩu");
+		mniDoiMatKhau.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		mnTaiKhoan.add(mniDoiMatKhau);
+		
+		separator_20 = new JSeparator();
+		mnTaiKhoan.add(separator_20);
+		
+		JMenuItem mniDangXuat = new JMenuItem("Đăng xuất");
+		mniDangXuat.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		mnTaiKhoan.add(mniDangXuat);
+		
+		tabNoiDung = new JTabbedPane();
+		tabNoiDung.setAutoscrolls(true);
 		tabNoiDung.setTabPlacement(JTabbedPane.BOTTOM);
-		tabNoiDung.setBounds(0, 99, 1914, 1000);
-		tabNoiDung.setTabLayoutPolicy(HIDE_ON_CLOSE);
+		tabNoiDung.setBounds(0, 74, 1930, 1055);
 		contentPane.add(tabNoiDung);
 		
-		JPanel pnlTrangChu = new JPanel();
+		pnlTrangChu = new JPanel();
 		tabNoiDung.add(pnlTrangChu,BorderLayout.CENTER);
 		pnlTrangChu.setLayout(null);
 		
@@ -320,5 +375,77 @@ public class GuiTrangChu extends JFrame {
 		lblTieuDe.setFont(new Font("Tahoma", Font.PLAIN, 28));
 		lblTieuDe.setBounds(700, 89, 210, 69);
 		pnlTrangChu.add(lblTieuDe);
+		
+		//Xử lý sự kiện
+		mnTrangChu.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
+				Object o = e.getSource();
+				if (o.equals(mnTrangChu)) {
+					tabNoiDung.remove(tabNoiDung.getSelectedComponent());
+					tabNoiDung.add(pnlTrangChu);
+				}
+			}
+		});
+		//Quan ly
+		mniSanPham.addActionListener(this);
+		mniKhachHang.addActionListener(this);
+		mniLoaiSach.addActionListener(this);
+		mniLoaiVPP.addActionListener(this);
+		mniNhanVien.addActionListener(this);
+		mniTaiKhoan.addActionListener(this);
+		mniChucVu.addActionListener(this);
+		mniNSX.addActionListener(this);
+		mniMauSac.addActionListener(this);
+		//Xu ly
+		mniBanHang.addActionListener(this);
+		//Tim kiem
+		mniTimKiemHDTH.addActionListener(this);
+		
 	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		Object o = e.getSource();
+		//Chức năng quản lý
+		if(o.equals(mniKhachHang)) {
+			GuiQuanLyKhachHang guiQuanLyKhachHang = new GuiQuanLyKhachHang();
+			tabNoiDung.remove(tabNoiDung.getSelectedComponent());
+			tabNoiDung.add(guiQuanLyKhachHang.contentPane);
+		}
+		else if(o.equals(mniSanPham)) {
+			GuiQuanLySanPham guiQuanLySanPham = new GuiQuanLySanPham();
+			tabNoiDung.remove(tabNoiDung.getSelectedComponent());
+			tabNoiDung.add(guiQuanLySanPham.contentPane);
+		}
+		else if(o.equals(mniLoaiSach)) {
+			GuiQuanLyLoaiSach guiQuanLyLoaiSach = new GuiQuanLyLoaiSach();
+			tabNoiDung.remove(tabNoiDung.getSelectedComponent());
+			tabNoiDung.add(guiQuanLyLoaiSach.contentPane);
+		}
+		else if(o.equals(mniLoaiVPP)) {
+			GuiQuanLyLoaiVanPhongPham guiQuanLyLoaiVPP = new GuiQuanLyLoaiVanPhongPham();
+			tabNoiDung.remove(tabNoiDung.getSelectedComponent());
+			tabNoiDung.add(guiQuanLyLoaiVPP.contentPane);
+		}
+		else if(o.equals(mniNhanVien)) {
+			GuiQuanLyNhanVien guiQuanLyNhanVien = new GuiQuanLyNhanVien();
+			tabNoiDung.remove(tabNoiDung.getSelectedComponent());
+			tabNoiDung.add(guiQuanLyNhanVien.contentPane);
+		}
+		//Chức năng tìm kiếm
+		else if (o.equals(mniTimKiemHDTH)) {
+			tabNoiDung.remove(tabNoiDung.getSelectedComponent());
+			tabNoiDung.add(GuiTimKiemHoaDonTraHang.contentPane);
+		}
+		else if (o.equals(mniTimKiemHDTH)) {
+			tabNoiDung.remove(tabNoiDung.getSelectedComponent());
+			tabNoiDung.add(GuiQuanLyLoaiVanPhongPham.contentPane);
+		}
+		//Chức năng xử lý
+		//Chức năng thống kê
+		//Chức năng hỗ trợ
+}
 }

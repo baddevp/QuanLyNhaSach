@@ -34,7 +34,7 @@ import javax.swing.border.EtchedBorder;
 
 public class GuiQuanLyNhanVien extends JFrame implements ActionListener {
 
-	private JPanel contentPane;
+	public static JPanel contentPane;
 	private JTextField txtMaNV;
 	private JTextField txtTenNV;
 	private JTextField txtCCCD;

@@ -31,13 +31,13 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-public class QuanLySanPham extends JFrame {
+public class GuiQuanLySanPham extends JFrame {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
+	public static JPanel contentPane;
 	private JPanel pnlThongTinSach;
 	private JPanel pnlThongTinVPP;
 	private JTextField txtMaVPP;
@@ -86,7 +86,7 @@ public class QuanLySanPham extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					QuanLySanPham frame = new QuanLySanPham();
+					GuiQuanLySanPham frame = new GuiQuanLySanPham();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -98,7 +98,7 @@ public class QuanLySanPham extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public QuanLySanPham() {
+	public GuiQuanLySanPham() {
 		setBackground(new Color(255, 204, 102));
 		setTitle("FutureZe - Phầm mềm quản lý nhà sách");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

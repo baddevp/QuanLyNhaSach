@@ -27,7 +27,7 @@ import javax.swing.JTable;
 
 public class GuiQuanLyLoaiSach extends JFrame implements ActionListener {
 
-	private JPanel contentPane;
+	public static JPanel contentPane;
 	private JTextField txtMaLoaiSach;
 	private JTextField txtVAT;
 	private JTextField txtMoTa;

@@ -26,10 +26,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JComboBox;
 
-public class GuiTimKiemHoaDonTraHang extends JFrame implements ActionListener {
+public class GuiBanHang extends JFrame implements ActionListener {
 
-	public static JPanel contentPane;
-	private JTextField txtNhap;
+	private JPanel contentPane;
 	private DefaultTableModel modelKH;
 
 	/**
@@ -39,7 +38,7 @@ public class GuiTimKiemHoaDonTraHang extends JFrame implements ActionListener {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					GuiTimKiemHoaDonTraHang frame = new GuiTimKiemHoaDonTraHang();
+					GuiBanHang frame = new GuiBanHang();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -51,7 +50,7 @@ public class GuiTimKiemHoaDonTraHang extends JFrame implements ActionListener {
 	/**
 	 * Create the frame.
 	 */
-	public GuiTimKiemHoaDonTraHang() {
+	public GuiBanHang() {
 		this.setTitle("Quản lý khách hàng");
 		this.setSize(1930, 1030);
 		this.setExtendedState(JFrame.MAXIMIZED_BOTH); // Toàn màn hình
@@ -77,63 +76,11 @@ public class GuiTimKiemHoaDonTraHang extends JFrame implements ActionListener {
 		pnlTieuDe.setBackground(new Color(255, 255, 255));
 		contentPane.add(pnlTieuDe);
 		
-		JLabel lblTieuDe = new JLabel("TÌM KIẾM HÓA ĐƠN TRẢ HÀNG");
+		JLabel lblTieuDe = new JLabel("LẬP HÓA ĐƠN");
 		lblTieuDe.setBackground(new Color(51, 204, 255));
 		pnlTieuDe.add(lblTieuDe);
 		lblTieuDe.setFont(font1);
 		lblTieuDe.setForeground(new Color(0, 204, 204));;
-		
-		JPanel pnlChucNang = new JPanel();
-		pnlChucNang.setBounds(15, 90, 1889, 90);
-		contentPane.add(pnlChucNang);
-		pnlChucNang.setBackground(Color.white);
-		pnlChucNang.setBorder(BorderFactory.createTitledBorder("Tìm kiếm: "));
-		pnlChucNang.setLayout(null);
-		
-		txtNhap = new JTextField("Nhập thông tin cần tìm");
-		txtNhap.setBounds(348, 22, 1026, 48);
-		txtNhap.setFont(font2);
-		pnlChucNang.add(txtNhap);
-		txtNhap.setColumns(10);
-				
-				txtNhap.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                if (txtNhap.getText().equals("Nhập thông tin cần tìm")) {
-                    txtNhap.setText("");
-                    txtNhap.setForeground(Color.BLACK); // Đổi màu chữ khi có focus
-                }
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                if (txtNhap.getText().isEmpty()) {
-                    txtNhap.setText("Nhập thông tin cần tìm");
-                    txtNhap.setForeground(Color.GRAY); // Đổi màu chữ gợi ý khi mất focus
-                }
-            }
-        });
-						
-		JLabel lblNhap = new JLabel("Thông tin hóa đơn :");
-		lblNhap.setBounds(80, 27, 258, 36);
-		lblNhap.setFont(font2);
-		pnlChucNang.add(lblNhap);
-		//Danh sách các thuộc tính của khách hàng
-		JComboBox cmbLoc = new JComboBox();
-		cmbLoc.setBounds(1580, 22, 258, 46);
-		pnlChucNang.add(cmbLoc);
-		
-		JLabel lblLoc = new JLabel("Lọc theo :");
-		lblLoc.setBounds(1436, 22, 124, 48);
-		lblLoc.setFont(font2);
-		pnlChucNang.add(lblLoc);
-		
-		//Thể hiện danh sách tìm kiếm được
-		JPanel pnlBangHDTH = new JPanel();
-		pnlBangHDTH.setBounds(15, 191, 1889, 800);
-		contentPane.add(pnlBangHDTH);
-		pnlBangHDTH.setBorder(BorderFactory.createTitledBorder("Danh sách hóa đơn trả hàng"));
-		pnlBangHDTH.setLayout(null);
 
 		
 
