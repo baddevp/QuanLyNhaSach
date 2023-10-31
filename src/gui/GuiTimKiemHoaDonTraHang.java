@@ -130,7 +130,7 @@ public class GuiTimKiemHoaDonTraHang extends JFrame implements ActionListener {
 		
 		//Thể hiện danh sách tìm kiếm được
 		JPanel pnlBangHDTH = new JPanel();
-		pnlBangHDTH.setBounds(15, 191, 1889, 800);
+		pnlBangHDTH.setBounds(15, 191, 1889, 770);
 		contentPane.add(pnlBangHDTH);
 		pnlBangHDTH.setBorder(BorderFactory.createTitledBorder("Danh sách hóa đơn trả hàng"));
 		pnlBangHDTH.setLayout(null);

@@ -82,7 +82,7 @@ public class GuiQuanLyLoaiVanPhongPham extends JFrame implements ActionListener 
 	
 		//Tiêu đề
 		JPanel pnlTieuDe = new JPanel();
-		pnlTieuDe.setBounds(20, 10, 1884, 60);
+		pnlTieuDe.setBounds(10, 10, 1891, 60);
 		pnlTieuDe.setBackground(new Color(255, 255, 255));
 		contentPane.add(pnlTieuDe);
 		
@@ -96,7 +96,7 @@ public class GuiQuanLyLoaiVanPhongPham extends JFrame implements ActionListener 
 		pnlThongTinLoaiVPP.setBackground(new Color(255, 255, 255));
 		
 		pnlThongTinLoaiVPP.setBorder(BorderFactory.createTitledBorder("Thông tin loại văn phòng phẩm"));
-		pnlThongTinLoaiVPP.setBounds(20, 89, 350, 871);
+		pnlThongTinLoaiVPP.setBounds(10, 80, 350, 855);
 		contentPane.add(pnlThongTinLoaiVPP);
 		pnlThongTinLoaiVPP.setLayout(null);
 		
@@ -147,7 +147,7 @@ public class GuiQuanLyLoaiVanPhongPham extends JFrame implements ActionListener 
 		pnlThongTinLoaiVPP.add(txtTenLoaiVPP);
 		
 		JPanel pnlTacVuCon = new JPanel();
-		pnlTacVuCon.setBounds(10, 703, 330, 157);
+		pnlTacVuCon.setBounds(10, 680, 330, 157);
 		pnlThongTinLoaiVPP.add(pnlTacVuCon);
 		pnlTacVuCon.setBackground(Color.white);
 		pnlTacVuCon.setBorder(BorderFactory.createTitledBorder("Tìm kiếm theo : "));
@@ -194,7 +194,7 @@ public class GuiQuanLyLoaiVanPhongPham extends JFrame implements ActionListener 
 		
 		JPanel pnlTacVu = new JPanel();
 		pnlTacVu.setBackground(Color.white);
-		pnlTacVu.setBounds(400, 880, 1500, 80);
+		pnlTacVu.setBounds(370, 855, 1530, 80);
 		pnlTacVu.setBorder(BorderFactory.createTitledBorder("Chọn tác vụ:"));
 		contentPane.add(pnlTacVu);
 		pnlTacVu.setLayout(null);
@@ -237,7 +237,7 @@ public class GuiQuanLyLoaiVanPhongPham extends JFrame implements ActionListener 
 		
 		
 		JPanel pnlBangLoaiVPP = new JPanel();
-		pnlBangLoaiVPP.setBounds(400, 89, 1500, 780);
+		pnlBangLoaiVPP.setBounds(370, 80, 1531, 765);
 		contentPane.add(pnlBangLoaiVPP);
 		pnlBangLoaiVPP.setBorder(BorderFactory.createTitledBorder("Bảng thông tin loại văn phòng phẩm"));
 		pnlBangLoaiVPP.setLayout(null);
@@ -253,7 +253,7 @@ public class GuiQuanLyLoaiVanPhongPham extends JFrame implements ActionListener 
 		tblVPP = new JTable(modelLoaiVPP);
 		tblVPP.setBackground(new Color(153, 204, 255));
 		JScrollPane jScrollPane = new JScrollPane(tblVPP);
-		jScrollPane.setBounds(20, 20, 1460, 740);
+		jScrollPane.setBounds(20, 20, 1489, 728);
 		JTableHeader tbHeaderVPP = tblVPP.getTableHeader();
 		tbHeaderVPP.setFont(font2);
 		tbHeaderVPP.setBackground(new Color(51, 204, 204));
@@ -265,7 +265,7 @@ public class GuiQuanLyLoaiVanPhongPham extends JFrame implements ActionListener 
 		txtTrangThai = new JTextField("Không có hoạt động nào gần nhất");
 		txtTrangThai.setForeground(Color.red);
 		txtTrangThai.setHorizontalAlignment(SwingConstants.CENTER);
-		txtTrangThai.setBounds(20, 971, 1884, 20);
+		txtTrangThai.setBounds(10, 945, 1894, 20);
 		contentPane.add(txtTrangThai);
 		txtTrangThai.setColumns(10);
 

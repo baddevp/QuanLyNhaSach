@@ -27,7 +27,7 @@ import javax.swing.JTable;
 
 public class GuiQuanLyChucVu extends JFrame implements ActionListener {
 
-	private JPanel contentPane;
+	public static JPanel contentPane;
 	private JTextField txtMaNSX;
 	private JTextField txtTenNSX;
 	private JTextField txtTimKiem;
@@ -85,7 +85,7 @@ public class GuiQuanLyChucVu extends JFrame implements ActionListener {
 	
 		//Tiêu đề
 		JPanel pnlTieuDe = new JPanel();
-		pnlTieuDe.setBounds(20, 10, 1884, 60);
+		pnlTieuDe.setBounds(10, 10, 1892, 60);
 		pnlTieuDe.setBackground(new Color(255, 255, 255));
 		contentPane.add(pnlTieuDe);
 		
@@ -99,7 +99,7 @@ public class GuiQuanLyChucVu extends JFrame implements ActionListener {
 		pnlThongTinKH.setBackground(new Color(255, 255, 255));
 		
 		pnlThongTinKH.setBorder(BorderFactory.createTitledBorder("Thông tin chức vụ"));
-		pnlThongTinKH.setBounds(20, 89, 350, 871);
+		pnlThongTinKH.setBounds(10, 80, 350, 855);
 		contentPane.add(pnlThongTinKH);
 		pnlThongTinKH.setLayout(null);
 		
@@ -127,7 +127,7 @@ public class GuiQuanLyChucVu extends JFrame implements ActionListener {
 		pnlThongTinKH.add(txtTenNSX);
 		
 		JPanel pnlTacVuCon = new JPanel();
-		pnlTacVuCon.setBounds(10, 703, 330, 157);
+		pnlTacVuCon.setBounds(10, 680, 330, 157);
 		pnlThongTinKH.add(pnlTacVuCon);
 		pnlTacVuCon.setBackground(Color.white);
 		pnlTacVuCon.setBorder(BorderFactory.createTitledBorder("Tìm kiếm theo : "));
@@ -174,7 +174,7 @@ public class GuiQuanLyChucVu extends JFrame implements ActionListener {
 		
 		JPanel pnlTacVu = new JPanel();
 		pnlTacVu.setBackground(Color.white);
-		pnlTacVu.setBounds(400, 880, 1500, 80);
+		pnlTacVu.setBounds(370, 855, 1530, 80);
 		pnlTacVu.setBorder(BorderFactory.createTitledBorder("Chọn tác vụ:"));
 		contentPane.add(pnlTacVu);
 		pnlTacVu.setLayout(null);
@@ -217,7 +217,7 @@ public class GuiQuanLyChucVu extends JFrame implements ActionListener {
 		
 		
 		JPanel pnlBangCV = new JPanel();
-		pnlBangCV.setBounds(400, 89, 1500, 780);
+		pnlBangCV.setBounds(370, 80, 1530, 765);
 		contentPane.add(pnlBangCV);
 		pnlBangCV.setBorder(BorderFactory.createTitledBorder("Bảng thông tin chức vụ"));
 		pnlBangCV.setLayout(null);
@@ -232,7 +232,7 @@ public class GuiQuanLyChucVu extends JFrame implements ActionListener {
 		tblCV = new JTable(modelCV);
 		tblCV.setBackground(new Color(153, 204, 255));
 		JScrollPane jScrollPane = new JScrollPane(tblCV);
-		jScrollPane.setBounds(20, 20, 1460, 740);
+		jScrollPane.setBounds(20, 20, 1489, 728);
 		JTableHeader tbHeaderCV = tblCV.getTableHeader();
 		tbHeaderCV.setFont(font2);
 		tbHeaderCV.setBackground(new Color(51, 204, 204));
@@ -246,7 +246,7 @@ public class GuiQuanLyChucVu extends JFrame implements ActionListener {
 		txtTrangThai = new JTextField("Không có hoạt động nào gần nhất");
 		txtTrangThai.setForeground(Color.red);
 		txtTrangThai.setHorizontalAlignment(SwingConstants.CENTER);
-		txtTrangThai.setBounds(20, 971, 1884, 20);
+		txtTrangThai.setBounds(10, 945, 1894, 20);
 		contentPane.add(txtTrangThai);
 		txtTrangThai.setColumns(10);
 

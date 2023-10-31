@@ -27,7 +27,7 @@ import javax.swing.JTable;
 
 public class GuiQuanLyNSX extends JFrame implements ActionListener {
 
-	private JPanel contentPane;
+	public static JPanel contentPane;
 	private JTextField txtMaNSX;
 	private JTextField txtEmail;
 	private JTextField txtSDT;
@@ -85,7 +85,7 @@ public class GuiQuanLyNSX extends JFrame implements ActionListener {
 	
 		//Tiêu đề
 		JPanel pnlTieuDe = new JPanel();
-		pnlTieuDe.setBounds(20, 10, 1884, 60);
+		pnlTieuDe.setBounds(10, 10, 1891, 60);
 		pnlTieuDe.setBackground(new Color(255, 255, 255));
 		contentPane.add(pnlTieuDe);
 		
@@ -99,7 +99,7 @@ public class GuiQuanLyNSX extends JFrame implements ActionListener {
 		pnlThongTinKH.setBackground(new Color(255, 255, 255));
 		
 		pnlThongTinKH.setBorder(BorderFactory.createTitledBorder("Thông tin nhà sản xuất"));
-		pnlThongTinKH.setBounds(20, 89, 350, 871);
+		pnlThongTinKH.setBounds(10, 80, 350, 855);
 		contentPane.add(pnlThongTinKH);
 		pnlThongTinKH.setLayout(null);
 		
@@ -160,7 +160,7 @@ public class GuiQuanLyNSX extends JFrame implements ActionListener {
 		pnlThongTinKH.add(txtTenNSX);
 		
 		JPanel pnlTacVuCon = new JPanel();
-		pnlTacVuCon.setBounds(10, 703, 330, 157);
+		pnlTacVuCon.setBounds(10, 703, 330, 141);
 		pnlThongTinKH.add(pnlTacVuCon);
 		pnlTacVuCon.setBackground(Color.white);
 		pnlTacVuCon.setBorder(BorderFactory.createTitledBorder("Tìm kiếm theo : "));
@@ -213,7 +213,7 @@ public class GuiQuanLyNSX extends JFrame implements ActionListener {
 		
 		JPanel pnlTacVu = new JPanel();
 		pnlTacVu.setBackground(Color.white);
-		pnlTacVu.setBounds(400, 880, 1500, 80);
+		pnlTacVu.setBounds(370, 855, 1530, 80);
 		pnlTacVu.setBorder(BorderFactory.createTitledBorder("Chọn tác vụ:"));
 		contentPane.add(pnlTacVu);
 		pnlTacVu.setLayout(null);
@@ -256,7 +256,7 @@ public class GuiQuanLyNSX extends JFrame implements ActionListener {
 		
 		
 		JPanel pnlBangNSX = new JPanel();
-		pnlBangNSX.setBounds(400, 89, 1500, 780);
+		pnlBangNSX.setBounds(370, 80, 1534, 765);
 		contentPane.add(pnlBangNSX);
 		pnlBangNSX.setBorder(BorderFactory.createTitledBorder("Bảng thông tin nhà sản xuất"));
 		pnlBangNSX.setLayout(null);
@@ -273,7 +273,7 @@ public class GuiQuanLyNSX extends JFrame implements ActionListener {
 		tblNSX = new JTable(modelNSX);
 		tblNSX.setBackground(new Color(153, 204, 255));
 		JScrollPane jScrollPane = new JScrollPane(tblNSX);
-		jScrollPane.setBounds(20, 20, 1460, 740);
+		jScrollPane.setBounds(20, 20, 1493, 725);
 		JTableHeader tbHeaderNSX = tblNSX.getTableHeader();
 		tbHeaderNSX.setFont(font2);
 		tbHeaderNSX.setBackground(new Color(51, 204, 204));
@@ -287,7 +287,7 @@ public class GuiQuanLyNSX extends JFrame implements ActionListener {
 		txtTrangThai = new JTextField("Không có hoạt động nào gần nhất");
 		txtTrangThai.setForeground(Color.red);
 		txtTrangThai.setHorizontalAlignment(SwingConstants.CENTER);
-		txtTrangThai.setBounds(20, 971, 1884, 20);
+		txtTrangThai.setBounds(10, 945, 1894, 20);
 		contentPane.add(txtTrangThai);
 		txtTrangThai.setColumns(10);
 

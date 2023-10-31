@@ -401,7 +401,13 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 		//Xu ly
 		mniBanHang.addActionListener(this);
 		//Tim kiem
+		mniTimKiemSach.addActionListener(this);
+		mniTimKiemHD.addActionListener(this);
+		mniTimKiemKH.addActionListener(this);
+		mniTimKiemNV.addActionListener(this);
+		mniTimKiemTK.addActionListener(this);
 		mniTimKiemHDTH.addActionListener(this);
+		mniTimKiemVPP.addActionListener(this);
 		
 	}
 
@@ -435,14 +441,61 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 			tabNoiDung.remove(tabNoiDung.getSelectedComponent());
 			tabNoiDung.add(guiQuanLyNhanVien.contentPane);
 		}
+		else if(o.equals(mniTaiKhoan)) {
+			GuiQuanLyTaiKhoan guiQuanLyTaiKhoan = new GuiQuanLyTaiKhoan();
+			tabNoiDung.remove(tabNoiDung.getSelectedComponent());
+			tabNoiDung.add(guiQuanLyTaiKhoan.contentPane);
+		}
+		else if(o.equals(mniChucVu)) {
+			GuiQuanLyChucVu guiQuanLyChucVu= new GuiQuanLyChucVu();
+			tabNoiDung.remove(tabNoiDung.getSelectedComponent());
+			tabNoiDung.add(guiQuanLyChucVu.contentPane);
+		}
+		else if(o.equals(mniNSX)) {
+			GuiQuanLyNSX guiQuanLyNSX = new GuiQuanLyNSX();
+			tabNoiDung.remove(tabNoiDung.getSelectedComponent());
+			tabNoiDung.add(guiQuanLyNSX.contentPane);
+		}
+		else if(o.equals(mniMauSac)) {
+			GuiQuanLyMauSac guiQuanLyMauSac = new GuiQuanLyMauSac();
+			tabNoiDung.remove(tabNoiDung.getSelectedComponent());
+			tabNoiDung.add(guiQuanLyMauSac.contentPane);
+		}
 		//Chức năng tìm kiếm
 		else if (o.equals(mniTimKiemHDTH)) {
+			GuiTimKiemHoaDonTraHang guiHoadDonTraHang = new GuiTimKiemHoaDonTraHang();
 			tabNoiDung.remove(tabNoiDung.getSelectedComponent());
 			tabNoiDung.add(GuiTimKiemHoaDonTraHang.contentPane);
 		}
-		else if (o.equals(mniTimKiemHDTH)) {
+		else if (o.equals(mniTimKiemHD)) {
+			GuiTimKiemHoaDon guiTimKiemHoaDon = new GuiTimKiemHoaDon();
 			tabNoiDung.remove(tabNoiDung.getSelectedComponent());
-			tabNoiDung.add(GuiQuanLyLoaiVanPhongPham.contentPane);
+			tabNoiDung.add(guiTimKiemHoaDon.contentPane);
+		}
+		else if (o.equals(mniTimKiemNV)) {
+			GuiTimKiemNhanVien guiTimKiemNhanVien = new GuiTimKiemNhanVien();
+			tabNoiDung.remove(tabNoiDung.getSelectedComponent());
+			tabNoiDung.add(guiTimKiemNhanVien.contentPane);
+		}
+		else if (o.equals(mniTimKiemKH)) {
+			GuiTimKiemKhachHang guiTimKiemKhachHang = new GuiTimKiemKhachHang();
+			tabNoiDung.remove(tabNoiDung.getSelectedComponent());
+			tabNoiDung.add(guiTimKiemKhachHang.contentPane);
+		}
+		else if (o.equals(mniTimKiemSach)) {
+			GuiTimKiemSach guiTimKiemSach = new GuiTimKiemSach();
+			tabNoiDung.remove(tabNoiDung.getSelectedComponent());
+			tabNoiDung.add(guiTimKiemSach.contentPane);
+		}
+		else if (o.equals(mniTimKiemVPP)) {
+			GuiTimKiemVanPhongPham guiTimKiemVanPhongPham = new GuiTimKiemVanPhongPham();
+			tabNoiDung.remove(tabNoiDung.getSelectedComponent());
+			tabNoiDung.add(guiTimKiemVanPhongPham.contentPane);
+		}
+		else if (o.equals(mniTimKiemTK)) {
+			GuiTimKiemTaiKhoan guiTimKiemTaiKhoan = new GuiTimKiemTaiKhoan();
+			tabNoiDung.remove(tabNoiDung.getSelectedComponent());
+			tabNoiDung.add(guiTimKiemTaiKhoan.contentPane);
 		}
 		//Chức năng xử lý
 		//Chức năng thống kê

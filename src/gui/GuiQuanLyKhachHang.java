@@ -261,7 +261,7 @@ public class GuiQuanLyKhachHang extends JFrame implements ActionListener {
 		group.add(radSDT);
 		
 		JPanel pnlBangKH = new JPanel();
-		pnlBangKH.setBounds(10, 460, 1894, 450);
+		pnlBangKH.setBounds(10, 460, 1894, 480);
 		contentPane.add(pnlBangKH);
 		pnlBangKH.setBorder(BorderFactory.createTitledBorder("Bảng thông tin khách hàng"));
 		pnlBangKH.setLayout(null);
@@ -280,7 +280,7 @@ public class GuiQuanLyKhachHang extends JFrame implements ActionListener {
 		tblKH = new JTable(modelKH);
 		tblKH.setBackground(new Color(153, 204, 255));
 		JScrollPane jScrollPane = new JScrollPane(tblKH);
-		jScrollPane.setBounds(22, 28, 1850, 402);
+		jScrollPane.setBounds(10, 20, 1865, 445);
 		JTableHeader tbHeaderKH = tblKH.getTableHeader();
 		tbHeaderKH.setFont(font2);
 		tbHeaderKH.setBackground(new Color(51, 204, 204));
@@ -294,7 +294,7 @@ public class GuiQuanLyKhachHang extends JFrame implements ActionListener {
 		txtTrangThai = new JTextField("Không có hoạt động nào gần nhất");
 		txtTrangThai.setForeground(Color.red);
 		txtTrangThai.setHorizontalAlignment(SwingConstants.CENTER);
-		txtTrangThai.setBounds(10, 920, 1894, 20);
+		txtTrangThai.setBounds(10, 950, 1894, 20);
 		contentPane.add(txtTrangThai);
 		txtTrangThai.setColumns(10);
 

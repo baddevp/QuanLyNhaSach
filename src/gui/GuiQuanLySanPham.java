@@ -113,7 +113,7 @@ public class GuiQuanLySanPham extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		JPanel pnlTieuDe = new JPanel();
-		pnlTieuDe.setBounds(10, 10, 1894, 60);
+		pnlTieuDe.setBounds(10, 10, 1894, 50);
 		pnlTieuDe.setBackground(new Color(255, 255, 255));
 		contentPane.add(pnlTieuDe);
 		
@@ -128,7 +128,7 @@ public class GuiQuanLySanPham extends JFrame {
 		lblTieuDe.setForeground(new Color(0, 204, 204));
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		tabbedPane.setBounds(10, 81, 1894, 964);
+		tabbedPane.setBounds(10, 60, 1894, 964);
 		contentPane.add(tabbedPane);
 		//Tab quản lý sách
 		JPanel pnlSach = new JPanel();
@@ -375,8 +375,6 @@ public class GuiQuanLySanPham extends JFrame {
 		pnlTacVuCon.add(cboTimTinhTrangSach);
 		
 		txtTimTenSach.addFocusListener(new FocusListener() {
-            private AbstractButton txtTimTenSach;
-
 			@Override
             public void focusGained(FocusEvent e) {
                 if (txtTimTenSach.getText().equals("Nhập thông tin cần tìm")) {
@@ -393,10 +391,27 @@ public class GuiQuanLySanPham extends JFrame {
                 }
             }
         });
+		txtTimTacGia.addFocusListener(new FocusListener() {
+			@Override
+            public void focusGained(FocusEvent e) {
+                if (txtTimTacGia.getText().equals("Nhập thông tin cần tìm")) {
+                	txtTimTacGia.setText("");
+                	txtTimTacGia.setForeground(Color.BLACK); // Đổi màu chữ khi có focus
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (txtTimTacGia.getText().isEmpty()) {
+                	txtTimTacGia.setText("Nhập thông tin cần tìm");
+                	txtTimTacGia.setForeground(Color.GRAY); // Đổi màu chữ gợi ý khi mất focus
+                }
+            }
+        });
 		
 		
 		JPanel pnlBangSach = new JPanel();
-		pnlBangSach.setBounds(0, 480, 1890, 435);
+		pnlBangSach.setBounds(0, 480, 1890, 410);
 		pnlSach.add(pnlBangSach);
 		pnlBangSach.setBorder(BorderFactory.createTitledBorder("Bảng thông tin sách"));
 		pnlBangSach.setLayout(null);
@@ -423,7 +438,7 @@ public class GuiQuanLySanPham extends JFrame {
 		tblKH = new JTable(modelSach);
 		tblKH.setBackground(new Color(153, 204, 255));
 		JScrollPane jScrollPane = new JScrollPane(tblKH);
-		jScrollPane.setBounds(15, 20, 1869, 410);
+		jScrollPane.setBounds(15, 20, 1869, 380);
 		JTableHeader tbHeaderKH = tblKH.getTableHeader();
 		tbHeaderKH.setFont(font2);
 		tbHeaderKH.setBackground(new Color(51, 204, 204));
@@ -651,7 +666,7 @@ public class GuiQuanLySanPham extends JFrame {
 		txtXuatXu.setBounds(100, 325, 250, 35);
 		pnlThongTinVPP.add(txtXuatXu);
 		
-		JLabel lblThueVPP = new JLabel("Giá bán :");
+		JLabel lblThueVPP = new JLabel("Thuế :");
 		lblThueVPP.setFont(new Font("Times New Roman", Font.PLAIN, 24));
 		lblThueVPP.setBounds(1075, 110, 94, 36);
 		pnlThongTinVPP.add(lblThueVPP);
@@ -675,9 +690,9 @@ public class GuiQuanLySanPham extends JFrame {
 		btnXuatExcelVPP.setBackground(new Color(255, 255, 255));
 		btnXuatExcelVPP.hide();
 		
-		JLabel lblLoaiVPP = new JLabel("Giá bán :");
+		JLabel lblLoaiVPP = new JLabel("Loại văn phòng phẩm :");
 		lblLoaiVPP.setFont(new Font("Times New Roman", Font.PLAIN, 24));
-		lblLoaiVPP.setBounds(1075, 194, 94, 36);
+		lblLoaiVPP.setBounds(1075, 194, 250, 36);
 		pnlThongTinVPP.add(lblLoaiVPP);
 		
 		txtLoaiVPP = new JTextField();
@@ -728,8 +743,6 @@ public class GuiQuanLySanPham extends JFrame {
 		pnlTacVuCon2.add(cboTimTinhTrangVPP);
 		
 		txtTimTenVPP.addFocusListener(new FocusListener() {
-            private AbstractButton txtTimTenVPP;
-
 			@Override
             public void focusGained(FocusEvent e) {
                 if (txtTimTenVPP.getText().equals("Nhập thông tin cần tìm")) {
@@ -746,10 +759,27 @@ public class GuiQuanLySanPham extends JFrame {
                 }
             }
         });
+		txtTimMaVPP.addFocusListener(new FocusListener() {
+			@Override
+            public void focusGained(FocusEvent e) {
+                if (txtTimMaVPP.getText().equals("Nhập thông tin cần tìm")) {
+                	txtTimMaVPP.setText("");
+                	txtTimMaVPP.setForeground(Color.BLACK); // Đổi màu chữ khi có focus
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (txtTimMaVPP.getText().isEmpty()) {
+                	txtTimMaVPP.setText("Nhập thông tin cần tìm");
+                	txtTimMaVPP.setForeground(Color.GRAY); // Đổi màu chữ gợi ý khi mất focus
+                }
+            }
+        });
 		
 		
 		JPanel pnlBangVPP = new JPanel();
-		pnlBangVPP.setBounds(0, 480, 1890, 435);
+		pnlBangVPP.setBounds(0, 480, 1890, 415);
 		pnlVanPhongPham.add(pnlBangVPP);
 		pnlBangVPP.setBorder(BorderFactory.createTitledBorder("Bảng thông tin văn phòng phẩm"));
 		pnlBangVPP.setLayout(null);
@@ -777,7 +807,7 @@ public class GuiQuanLySanPham extends JFrame {
 		tblKH = new JTable(modelVPP);
 		tblKH.setBackground(new Color(153, 204, 255));
 		JScrollPane jScrollPane1 = new JScrollPane(tblKH);
-		jScrollPane1.setBounds(15, 20, 1869, 410);
+		jScrollPane1.setBounds(10, 24, 1869, 380);
 		JTableHeader tbHeaderVPP = tblKH.getTableHeader();
 		tbHeaderVPP.setFont(font2);
 		tbHeaderVPP.setBackground(new Color(51, 204, 204));

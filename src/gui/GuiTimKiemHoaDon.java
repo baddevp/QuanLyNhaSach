@@ -28,7 +28,7 @@ import javax.swing.JComboBox;
 
 public class GuiTimKiemHoaDon extends JFrame implements ActionListener {
 
-	private JPanel contentPane;
+	public static JPanel contentPane;
 	private JTextField txtNhap;
 	private DefaultTableModel modelKH;
 
@@ -130,7 +130,7 @@ public class GuiTimKiemHoaDon extends JFrame implements ActionListener {
 		
 		//Thể hiện danh sách tìm kiếm được
 		JPanel pnlBangHD = new JPanel();
-		pnlBangHD.setBounds(15, 191, 1889, 800);
+		pnlBangHD.setBounds(15, 191, 1889, 770);
 		contentPane.add(pnlBangHD);
 		pnlBangHD.setBorder(BorderFactory.createTitledBorder("Danh sách hóa đơn"));
 		pnlBangHD.setLayout(null);
