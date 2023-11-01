@@ -9,35 +9,24 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
+
 import javax.swing.JSeparator;
 import java.awt.Font;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.border.MatteBorder;
-import java.awt.Component;
-import java.awt.FlowLayout;
-import javax.swing.JComboBox;
-import javax.swing.JTextField;
-import javax.swing.JToggleButton;
-import javax.swing.JSlider;
-import java.awt.List;
-import javax.swing.JFormattedTextField;
 
 import java.awt.BorderLayout;
-import java.awt.Choice;
-import javax.swing.JPopupMenu;
+
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.TextField;
-import java.awt.Rectangle;
 import javax.swing.JLabel;
-import java.awt.event.KeyEvent;
+
 import java.awt.Cursor;
 import java.awt.ComponentOrientation;
 import java.awt.Insets;
@@ -80,7 +69,6 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 	private JMenuItem mniBaoCaoThuChi;
 	private JMenu mnHoTro;
 	private JPanel pnlMenu;
-	private JPopupMenu pnmTaiKhoan;
 	private JSeparator separator;
 	private JSeparator separator_19;
 	private JSeparator separator_20;
@@ -499,16 +487,12 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 			tabNoiDung.add(guiTimKiemTaiKhoan.contentPane);
 		}
 		//Chức năng xử lý
-		else if (o.equals(mniTraHang)) {
-			GuiTraHang guiTraHang = new GuiTraHang();
-			tabNoiDung.remove(tabNoiDung.getSelectedComponent());
-			tabNoiDung.add(guiTraHang.contentPane);
-		}
 		else if (o.equals(mniBanHang)) {
 			GuiBanHang guiBanHang = new GuiBanHang();
 			tabNoiDung.remove(tabNoiDung.getSelectedComponent());
 			tabNoiDung.add(guiBanHang.contentPane);
 		}
+
 		//Chức năng thống kê
 		//Chức năng hỗ trợ
 }
