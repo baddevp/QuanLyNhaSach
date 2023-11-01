@@ -34,27 +34,27 @@ import javax.swing.border.TitledBorder;
 import javax.swing.border.EtchedBorder;
 import java.awt.Rectangle;
 import javax.swing.JCheckBox;
+import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 
-public class GuiBanHang extends JFrame implements ActionListener {
+public class GuiTraHang extends JFrame implements ActionListener {
 
 	public static JPanel contentPane;
 	private DefaultTableModel modelKH;
-	private JTextField txtMaKH;
+	private JTextField txtMAHD;
 	private JTextField txtTenKH;
 	private JTextField txtSDT;
-	private JDateChooser dtmNgayLapKH;
-	private JTextField txtDiaChi;
+	private JDateChooser dtmNgayLapHD;
+	private JTextField txtTongTien;
 	private DefaultTableModel modelSP;
 	private JTable tblSP;
-	private JTextField txtMaHD;
-	private JDateChooser textField_1;
-	private JTextField textField_4;
-	private JTextField textField_5;
-	private JTextField textField_6;
-	private JTextField textField_7;
-	private JTextField textField_8;
-	private JTextField textField_2;
-	private JTextField textField_9;
+	private JTextField txtMaYCTH;
+	private JDateChooser dtmTraHang;
+	private JTextField txtTenNhanVien;
+	private JTextField txtTongSoLuong;
+	private JTextField txtTongTienSP;
+	private JTextField txtTongGiam;
+	private JTextField txtTongThanhToan;
 
 	/**
 	 * Launch the application.
@@ -63,7 +63,7 @@ public class GuiBanHang extends JFrame implements ActionListener {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					GuiBanHang frame = new GuiBanHang();
+					GuiTraHang frame = new GuiTraHang();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -75,7 +75,7 @@ public class GuiBanHang extends JFrame implements ActionListener {
 	/**
 	 * Create the frame.
 	 */
-	public GuiBanHang() {
+	public GuiTraHang() {
 		this.setTitle("Quản lý khách hàng");
 		this.setSize(1930, 1030);
 		this.setExtendedState(JFrame.MAXIMIZED_BOTH); // Toàn màn hình
@@ -101,7 +101,7 @@ public class GuiBanHang extends JFrame implements ActionListener {
 		pnlTieuDe.setBackground(new Color(255, 255, 255));
 		contentPane.add(pnlTieuDe);
 		
-		JLabel lblTieuDe = new JLabel("LẬP HÓA ĐƠN");
+		JLabel lblTieuDe = new JLabel("TRẢ HÀNG");
 		lblTieuDe.setBackground(new Color(51, 204, 255));
 		pnlTieuDe.add(lblTieuDe);
 		lblTieuDe.setFont(font1);
@@ -124,59 +124,59 @@ public class GuiBanHang extends JFrame implements ActionListener {
 		pnlChonKhachHang.add(pnlThongTinKhachHang);
 		pnlThongTinKhachHang.setLayout(null);
 		
-		JLabel lblMaKH = new JLabel("Mã khách hàng:");
-		lblMaKH.setFont(new Font("Times New Roman", Font.PLAIN, 24));
-		lblMaKH.setBounds(10, 11, 163, 29);
-		pnlThongTinKhachHang.add(lblMaKH);
+		JLabel lblMaHD = new JLabel("Mã hóa đơn :");
+		lblMaHD.setFont(new Font("Times New Roman", Font.PLAIN, 24));
+		lblMaHD.setBounds(10, 11, 163, 29);
+		pnlThongTinKhachHang.add(lblMaHD);
 		
-		txtMaKH = new JTextField();
-		txtMaKH.setEditable(false);
-		txtMaKH.setColumns(10);
-		txtMaKH.setBounds(10, 51, 300, 34);
-		pnlThongTinKhachHang.add(txtMaKH);
+		txtMAHD = new JTextField();
+		txtMAHD.setEditable(false);
+		txtMAHD.setColumns(10);
+		txtMAHD.setBounds(10, 51, 300, 34);
+		pnlThongTinKhachHang.add(txtMAHD);
 		
 		JLabel lblTenKH = new JLabel("Tên khách hàng :");
 		lblTenKH.setFont(new Font("Times New Roman", Font.PLAIN, 24));
-		lblTenKH.setBounds(10, 96, 187, 29);
+		lblTenKH.setBounds(498, 11, 187, 29);
 		pnlThongTinKhachHang.add(lblTenKH);
 		
 		txtTenKH = new JTextField();
 		txtTenKH.setEditable(false);
 		txtTenKH.setColumns(10);
-		txtTenKH.setBounds(10, 136, 300, 34);
+		txtTenKH.setBounds(498, 51, 300, 34);
 		pnlThongTinKhachHang.add(txtTenKH);
 		
 		JLabel lblSDT = new JLabel("Số điện thoại :");
 		lblSDT.setFont(new Font("Times New Roman", Font.PLAIN, 24));
-		lblSDT.setBounds(10, 181, 163, 29);
+		lblSDT.setBounds(498, 96, 163, 29);
 		pnlThongTinKhachHang.add(lblSDT);
 		
 		txtSDT = new JTextField();
 		txtSDT.setEditable(false);
 		txtSDT.setColumns(10);
-		txtSDT.setBounds(10, 224, 300, 34);
+		txtSDT.setBounds(498, 136, 300, 34);
 		pnlThongTinKhachHang.add(txtSDT);
 		
 		JLabel lblNgayLap = new JLabel("Ngày lập :");
 		lblNgayLap.setFont(new Font("Times New Roman", Font.PLAIN, 24));
-		lblNgayLap.setBounds(498, 11, 163, 29);
+		lblNgayLap.setBounds(10, 96, 163, 29);
 		pnlThongTinKhachHang.add(lblNgayLap);
 		
-		dtmNgayLapKH = new JDateChooser();
-		dtmNgayLapKH.setEnabled(false);
-		dtmNgayLapKH.setBounds(498, 51, 300, 34);
-		pnlThongTinKhachHang.add(dtmNgayLapKH);
+		dtmNgayLapHD = new JDateChooser();
+		dtmNgayLapHD.setEnabled(false);
+		dtmNgayLapHD.setBounds(10, 136, 300, 34);
+		pnlThongTinKhachHang.add(dtmNgayLapHD);
 		
-		txtDiaChi = new JTextField();
-		txtDiaChi.setEditable(false);
-		txtDiaChi.setColumns(10);
-		txtDiaChi.setBounds(498, 136, 300, 34);
-		pnlThongTinKhachHang.add(txtDiaChi);
+		txtTongTien = new JTextField();
+		txtTongTien.setEditable(false);
+		txtTongTien.setColumns(10);
+		txtTongTien.setBounds(10, 224, 300, 34);
+		pnlThongTinKhachHang.add(txtTongTien);
 		
-		JLabel lblDiaChi = new JLabel("Địa chỉ :");
-		lblDiaChi.setFont(new Font("Times New Roman", Font.PLAIN, 24));
-		lblDiaChi.setBounds(498, 96, 163, 29);
-		pnlThongTinKhachHang.add(lblDiaChi);
+		JLabel lblTongTienThanhToan = new JLabel("Tổng tiền :");
+		lblTongTienThanhToan.setFont(new Font("Times New Roman", Font.PLAIN, 24));
+		lblTongTienThanhToan.setBounds(10, 181, 163, 29);
+		pnlThongTinKhachHang.add(lblTongTienThanhToan);
 		
 		JLabel lblDTL = new JLabel("Điểm tích lũy :");
 		lblDTL.setFont(new Font("Times New Roman", Font.PLAIN, 24));
@@ -189,16 +189,16 @@ public class GuiBanHang extends JFrame implements ActionListener {
 		txtDTL.setBounds(498, 221, 300, 41);
 		pnlThongTinKhachHang.add(txtDTL);
 		
-		JLabel lblChonKhachHang = new JLabel("Thông tin khách hàng");
-		lblChonKhachHang.setFont(new Font("Tahoma", Font.BOLD, 18));
-		lblChonKhachHang.setBounds(10, 11, 266, 36);
-		pnlChonKhachHang.add(lblChonKhachHang);
+		JLabel lblChonHoaDon = new JLabel("Thông tin khách hàng");
+		lblChonHoaDon.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblChonHoaDon.setBounds(10, 11, 266, 36);
+		pnlChonKhachHang.add(lblChonHoaDon);
 		
-		JButton btnChonKhachHang = new JButton("Chọn khách hàng");
-		btnChonKhachHang.setBackground(new Color(255, 255, 255));
-		btnChonKhachHang.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		btnChonKhachHang.setBounds(730, 11, 275, 36);
-		pnlChonKhachHang.add(btnChonKhachHang);
+		JButton btnChonHD = new JButton("Chọn hóa đơn");
+		btnChonHD.setBackground(new Color(255, 255, 255));
+		btnChonHD.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		btnChonHD.setBounds(730, 11, 275, 36);
+		pnlChonKhachHang.add(btnChonHD);
 		
 		JPanel pnlHoaDon = new JPanel();
 		pnlHoaDon.setBackground(new Color(255, 255, 255));
@@ -222,47 +222,47 @@ public class GuiBanHang extends JFrame implements ActionListener {
 		pnlHoaDon.add(pnlThongTinHoaDon);
 		pnlThongTinHoaDon.setLayout(null);
 		
-		JLabel lblNgayLap_1 = new JLabel("Ngày lập :");
-		lblNgayLap_1.setFont(new Font("Times New Roman", Font.PLAIN, 24));
-		lblNgayLap_1.setBounds(40, 110, 163, 30);
-		pnlThongTinHoaDon.add(lblNgayLap_1);
+		JLabel lblNgayLapHDTH = new JLabel("Ngày lập :");
+		lblNgayLapHDTH.setFont(new Font("Times New Roman", Font.PLAIN, 24));
+		lblNgayLapHDTH.setBounds(40, 110, 163, 30);
+		pnlThongTinHoaDon.add(lblNgayLapHDTH);
 		
-		JLabel lblMaHD = new JLabel("Mã hóa đơn :");
-		lblMaHD.setFont(new Font("Times New Roman", Font.PLAIN, 24));
-		lblMaHD.setBounds(40, 40, 163, 30);
-		pnlThongTinHoaDon.add(lblMaHD);
+		JLabel lblMaYCTH = new JLabel("Mã yêu cầu trả hàng :");
+		lblMaYCTH.setFont(new Font("Times New Roman", Font.PLAIN, 24));
+		lblMaYCTH.setBounds(40, 40, 232, 30);
+		pnlThongTinHoaDon.add(lblMaYCTH);
 		
 		JLabel lblTnNhnVin = new JLabel("Tên nhân viên :");
 		lblTnNhnVin.setFont(new Font("Times New Roman", Font.PLAIN, 24));
 		lblTnNhnVin.setBounds(40, 180, 163, 30);
 		pnlThongTinHoaDon.add(lblTnNhnVin);
 		
-		txtMaHD = new JTextField();
-		txtMaHD.setEditable(false);
-		txtMaHD.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		txtMaHD.setBounds(295, 40, 426, 30);
-		pnlThongTinHoaDon.add(txtMaHD);
-		txtMaHD.setColumns(10);
+		txtMaYCTH = new JTextField();
+		txtMaYCTH.setEditable(false);
+		txtMaYCTH.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		txtMaYCTH.setBounds(295, 40, 426, 30);
+		pnlThongTinHoaDon.add(txtMaYCTH);
+		txtMaYCTH.setColumns(10);
 		
-		textField_1 = new JDateChooser();
-		textField_1.setEnabled(false);
+		dtmTraHang = new JDateChooser();
+		dtmTraHang.setEnabled(false);
 
-		textField_1.setBounds(295, 110, 426, 30);
-		pnlThongTinHoaDon.add(textField_1);
+		dtmTraHang.setBounds(295, 110, 426, 30);
+		pnlThongTinHoaDon.add(dtmTraHang);
 		
-		textField_4 = new JTextField();
-		textField_4.setEditable(false);
-		textField_4.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		textField_4.setColumns(10);
-		textField_4.setBounds(295, 180, 426, 30);
-		pnlThongTinHoaDon.add(textField_4);
+		txtTenNhanVien = new JTextField();
+		txtTenNhanVien.setEditable(false);
+		txtTenNhanVien.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		txtTenNhanVien.setColumns(10);
+		txtTenNhanVien.setBounds(295, 180, 426, 30);
+		pnlThongTinHoaDon.add(txtTenNhanVien);
 		
-		textField_5 = new JTextField();
-		textField_5.setEditable(false);
-		textField_5.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		textField_5.setColumns(10);
-		textField_5.setBounds(295, 250, 426, 30);
-		pnlThongTinHoaDon.add(textField_5);
+		txtTongSoLuong = new JTextField();
+		txtTongSoLuong.setEditable(false);
+		txtTongSoLuong.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		txtTongSoLuong.setColumns(10);
+		txtTongSoLuong.setBounds(295, 250, 426, 30);
+		pnlThongTinHoaDon.add(txtTongSoLuong);
 		
 		JLabel lblSoLuong = new JLabel("Tổng sản phẩm :");
 		lblSoLuong.setFont(new Font("Times New Roman", Font.PLAIN, 24));
@@ -274,71 +274,54 @@ public class GuiBanHang extends JFrame implements ActionListener {
 		lblTongTien.setBounds(40, 320, 163, 30);
 		pnlThongTinHoaDon.add(lblTongTien);
 		
-		textField_6 = new JTextField();
-		textField_6.setEditable(false);
-		textField_6.setColumns(10);
-		textField_6.setBounds(295, 320, 426, 30);
-		pnlThongTinHoaDon.add(textField_6);
+		txtTongTienSP = new JTextField();
+		txtTongTienSP.setEditable(false);
+		txtTongTienSP.setColumns(10);
+		txtTongTienSP.setBounds(295, 320, 426, 30);
+		pnlThongTinHoaDon.add(txtTongTienSP);
 		
 		JLabel lblTongGiam = new JLabel("Tổng giảm :");
 		lblTongGiam.setFont(new Font("Times New Roman", Font.PLAIN, 24));
 		lblTongGiam.setBounds(40, 390, 163, 30);
 		pnlThongTinHoaDon.add(lblTongGiam);
 		
-		textField_7 = new JTextField();
-		textField_7.setEditable(false);
-		textField_7.setColumns(10);
-		textField_7.setBounds(295, 394, 426, 30);
-		pnlThongTinHoaDon.add(textField_7);
+		txtTongGiam = new JTextField();
+		txtTongGiam.setEditable(false);
+		txtTongGiam.setColumns(10);
+		txtTongGiam.setBounds(295, 394, 426, 30);
+		pnlThongTinHoaDon.add(txtTongGiam);
 		
-		JLabel lblTongThanhToan = new JLabel("Tổng thanh toán :");
-		lblTongThanhToan.setFont(new Font("Times New Roman", Font.PLAIN, 24));
-		lblTongThanhToan.setBounds(40, 460, 197, 30);
-		pnlThongTinHoaDon.add(lblTongThanhToan);
+		JLabel lblTongHoanTra = new JLabel("Tổng hoàn trả :");
+		lblTongHoanTra.setFont(new Font("Times New Roman", Font.PLAIN, 24));
+		lblTongHoanTra.setBounds(40, 460, 197, 30);
+		pnlThongTinHoaDon.add(lblTongHoanTra);
 		
-		textField_8 = new JTextField();
-		textField_8.setEditable(false);
-		textField_8.setColumns(10);
-		textField_8.setBounds(295, 464, 426, 30);
-		pnlThongTinHoaDon.add(textField_8);
+		txtTongThanhToan = new JTextField();
+		txtTongThanhToan.setEditable(false);
+		txtTongThanhToan.setColumns(10);
+		txtTongThanhToan.setBounds(295, 464, 426, 30);
+		pnlThongTinHoaDon.add(txtTongThanhToan);
 		
-		JLabel lblTienNhan = new JLabel("Tiền nhận :");
+		JLabel lblTienNhan = new JLabel("Lý do hoàn trả :");
 		lblTienNhan.setFont(new Font("Times New Roman", Font.PLAIN, 24));
 		lblTienNhan.setBounds(40, 530, 197, 30);
 		pnlThongTinHoaDon.add(lblTienNhan);
 		
-		JLabel lblTienTraLai = new JLabel("Tiền trả lại :");
-		lblTienTraLai.setFont(new Font("Times New Roman", Font.PLAIN, 24));
-		lblTienTraLai.setBounds(40, 600, 197, 30);
-		pnlThongTinHoaDon.add(lblTienTraLai);
-		
-		textField_2 = new JTextField();
-		textField_2.setColumns(10);
-		textField_2.setBounds(295, 529, 426, 30);
-		pnlThongTinHoaDon.add(textField_2);
-		
-		textField_9 = new JTextField();
-		textField_9.setEditable(false);
-		textField_9.setColumns(10);
-		textField_9.setBounds(295, 600, 426, 30);
-		pnlThongTinHoaDon.add(textField_9);
-		
-		JButton btnTaoDonMoi = new JButton("Tạo đơn mới");
-		btnTaoDonMoi.setBackground(new Color(255, 255, 255));
-		btnTaoDonMoi.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		btnTaoDonMoi.setBounds(40, 743, 275, 36);
-		pnlThongTinHoaDon.add(btnTaoDonMoi);
-		
-		JButton btnThanhToan = new JButton("Thanh toán");
-		btnThanhToan.setBackground(new Color(255, 255, 255));
-		btnThanhToan.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		btnThanhToan.setBounds(446, 743, 275, 36);
-		pnlThongTinHoaDon.add(btnThanhToan);
+		JButton btnHoanTra = new JButton("Trả hàng");
+		btnHoanTra.setBackground(new Color(255, 255, 255));
+		btnHoanTra.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		btnHoanTra.setBounds(446, 743, 275, 36);
+		pnlThongTinHoaDon.add(btnHoanTra);
 		
 		JCheckBox chkInHoaDon = new JCheckBox("In hóa đơn");
 		chkInHoaDon.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		chkInHoaDon.setBounds(558, 707, 163, 30);
 		pnlThongTinHoaDon.add(chkInHoaDon);
+		
+		JTextPane txpLyDoTraHang = new JTextPane();
+		txpLyDoTraHang.setFont(new Font("Times New Roman", Font.PLAIN, 24));
+		txpLyDoTraHang.setBounds(294, 530, 427, 105);
+		pnlThongTinHoaDon.add(txpLyDoTraHang);
 		
 		JPanel pnlSanPhamChon = new JPanel();
 		pnlSanPhamChon.setBackground(new Color(255, 255, 255));

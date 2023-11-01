@@ -400,6 +400,7 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 		mniMauSac.addActionListener(this);
 		//Xu ly
 		mniBanHang.addActionListener(this);
+		mniTraHang.addActionListener(this);
 		//Tim kiem
 		mniTimKiemSach.addActionListener(this);
 		mniTimKiemHD.addActionListener(this);
@@ -498,6 +499,11 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 			tabNoiDung.add(guiTimKiemTaiKhoan.contentPane);
 		}
 		//Chức năng xử lý
+		else if (o.equals(mniTraHang)) {
+			GuiTraHang guiTraHang = new GuiTraHang();
+			tabNoiDung.remove(tabNoiDung.getSelectedComponent());
+			tabNoiDung.add(guiTraHang.contentPane);
+		}
 		else if (o.equals(mniBanHang)) {
 			GuiBanHang guiBanHang = new GuiBanHang();
 			tabNoiDung.remove(tabNoiDung.getSelectedComponent());
