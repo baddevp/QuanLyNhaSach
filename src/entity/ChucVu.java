@@ -13,6 +13,10 @@ public class ChucVu {
 		this.tenChucVu = tenChucVu;
 	}
 	
+	public ChucVu(String maChucVu) {
+		super();
+		this.maChucVu = maChucVu;
+	}
 	public String getMaChucVu() {
 		return maChucVu;
 	}

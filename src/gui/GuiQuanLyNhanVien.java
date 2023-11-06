@@ -81,6 +81,8 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener {
 		contentPane.setLayout(null);
 		contentPane.setBackground(new Color(51, 204, 204));
 		
+		
+		
 		// Kiểu chữ
 		Font font1 = new Font("Times New Roman", Font.BOLD, 36);
 		Font font2 = new Font("Times New Roman", Font.PLAIN, 24);

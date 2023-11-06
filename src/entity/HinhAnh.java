@@ -15,6 +15,10 @@ public class HinhAnh {
 		this.url = url;
 	}
 	
+	public HinhAnh(String maAnh) {
+		super();
+		this.maAnh = maAnh;
+	}
 	public String getMaAnh() {
 		return maAnh;
 	}

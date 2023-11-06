@@ -8,6 +8,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -15,9 +18,18 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+
+import connectDB.ConnectDB;
+import dao.DAO_ChucVu;
+import entity.ChucVu;
+import entity.NhanVien;
+
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
@@ -25,7 +37,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-public class GuiQuanLyChucVu extends JFrame implements ActionListener {
+public class GuiQuanLyChucVu extends JFrame implements ActionListener, MouseListener, ListSelectionListener {
 
 	public static JPanel contentPane;
 	private JTextField txtMaNSX;
@@ -42,6 +54,8 @@ public class GuiQuanLyChucVu extends JFrame implements ActionListener {
 	private JButton btnXoa;
 	private JButton btnLuu;
 	private JButton btnDatLai;
+	private DAO_ChucVu chucvu_dao;
+
 
 	/**
 	 * Launch the application.
@@ -249,12 +263,156 @@ public class GuiQuanLyChucVu extends JFrame implements ActionListener {
 		txtTrangThai.setBounds(10, 945, 1894, 20);
 		contentPane.add(txtTrangThai);
 		txtTrangThai.setColumns(10);
+		
+		//
+		tblCV.addMouseListener(this);
+		btnDatLai.addActionListener(this);
+		btnLuu.addActionListener(this);
+		btnSua.addActionListener(this);
+		btnThem.addActionListener(this);
+		btnXoa.addActionListener(this);
+		
+		
+		// ket noi sql
+		chucvu_dao = new DAO_ChucVu();
+		try {
+			ConnectDB.getInstance().connect();
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+		
+		
+		
+		// xu ly
+		DocDuLieuDatabase();
+		id();
 
 	}
+	
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
+		Object o = e.getSource();
+		if (o.equals(btnDatLai)) {
+			xoaRong();
+		}
+		if (o.equals(btnXoa)) {
+			xoa();
+		}
+		if (o.equals(btnThem)) {
+			themCV();
+		}
+		if (o.equals(btnSua)) {
+			int row = tblCV.getSelectedRow();
+			if(row == -1) {
+				JOptionPane.showMessageDialog(this, "Hãy chọn chức vụ cần sửa");
+			}
+			else {
+				txtTenNSX.setEditable(true);
+				txtTenNSX.requestFocus();
+				btnLuu.setEnabled(true);
+			}
+		}
+	}
+	
+	// Lấy dữ liệu từ Database
+	public void DocDuLieuDatabase() {
+		chucvu_dao = new DAO_ChucVu();
+		//tblCV.setRowHeight(25);
+		for(ChucVu cv : chucvu_dao.getAllCV()) {
+			modelCV.addRow(new Object[] {cv.getMaChucVu(), cv.getTenChucVu()});
+		}
+	}
+	
+	// Phát sinh mã
+	public void id() {
+		String newMaChucVu = chucvu_dao.generateNewMaChucVu();
+		txtMaNSX.setText(newMaChucVu);
+	}
+	
+	// nút dặt lại
+	public void xoaRong() {
+		id();
+		txtTenNSX.setText("");
+		txtTimKiem.setText("");
+		txtTenNSX.setEditable(true);
+		txtTenNSX.requestFocus();
+	}
+	
+	// nút xoá
+	public void xoa() {
+		int row = tblCV.getSelectedRow();
+		if(row == -1) {
+			JOptionPane.showMessageDialog(this, "Hãy chọn chức vụ cần xoá");
+		} else {
+			int tl;
+			tl = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa chức vụ này không ?", "Cảnh báo",
+					JOptionPane.YES_OPTION);
+			if (tl == JOptionPane.YES_OPTION) {
+				int index = tblCV.getSelectedRow();
+				chucvu_dao.xoaCV(modelCV.getValueAt(tblCV.getSelectedRow(), 0).toString());
+				modelCV.removeRow(index);
+				xoaRong();
+			}
+		}
+	}
+	
+	
+	// Nút thêm
+	private void themCV() {
+		String tenCV = txtTenNSX.getText();
+		String newMaChucVu = chucvu_dao.generateNewMaChucVu();
+		txtMaNSX.setText(newMaChucVu);
+		ChucVu cv = new ChucVu(newMaChucVu, tenCV);
+		if (chucvu_dao.createCV(cv)) {
+			modelCV.addRow(new Object[] { cv.getMaChucVu(), cv.getTenChucVu()});	
+			JOptionPane.showMessageDialog(this, "Thêm chức vụ thành công");
+			xoaRong();
+		}else {
+			JOptionPane.showMessageDialog(this, "Không thành công");
+		}
+	}
+	
+
+	@Override
+	public void valueChanged(ListSelectionEvent e) {
+		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		int row = 	tblCV.getSelectedRow();
+		txtMaNSX.setText(tblCV.getValueAt(row, 0).toString());
+		txtTenNSX.setText(tblCV.getValueAt(row, 1).toString());
+		txtTenNSX.setEditable(false);
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 }

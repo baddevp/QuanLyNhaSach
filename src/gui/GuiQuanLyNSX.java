@@ -8,6 +8,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -15,8 +17,15 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+
+import connectDB.ConnectDB;
+import dao.DAO_NSX;
+import entity.NhaSanXuat;
+
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -25,7 +34,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-public class GuiQuanLyNSX extends JFrame implements ActionListener {
+public class GuiQuanLyNSX extends JFrame implements ActionListener, MouseListener, ListSelectionListener{
 
 	public static JPanel contentPane;
 	private JTextField txtMaNSX;
@@ -41,6 +50,7 @@ public class GuiQuanLyNSX extends JFrame implements ActionListener {
 	private JRadioButton radSDT;
 	private JRadioButton radTenKH;
 	private JRadioButton radMaNSX;
+	private DAO_NSX nsx_dao;
 
 	/**
 	 * Launch the application.
@@ -290,11 +300,78 @@ public class GuiQuanLyNSX extends JFrame implements ActionListener {
 		txtTrangThai.setBounds(10, 945, 1894, 20);
 		contentPane.add(txtTrangThai);
 		txtTrangThai.setColumns(10);
+		
+		// ket noi sql
+		nsx_dao = new DAO_NSX();
+		
+		try {
+			ConnectDB.getInstance().connect();
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+		
+		//
+		tblNSX.addMouseListener(this);
+		
+		//xu lý
+		DocDuLieuDatabase();
 
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	//
+	
+	public void DocDuLieuDatabase() {
+		nsx_dao = new DAO_NSX();
+		for(NhaSanXuat nsx : nsx_dao.getAllNSX()) {
+			modelNSX.addRow(new Object[] {nsx.getMaNSX(), nsx.getTenNSX(),nsx.getThanhPho(),
+					                      nsx.getEmail(), nsx.getSdt()});
+		}
+	}
+
+	@Override
+	public void valueChanged(ListSelectionEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		int row = tblNSX.getSelectedRow();
+		txtMaNSX.setText(tblNSX.getValueAt(row, 0).toString());
+		txtTenNSX.setText(tblNSX.getValueAt(row, 1).toString());
+		txtThanhPho.setText(tblNSX.getValueAt(row, 2).toString());
+		txtEmail.setText(tblNSX.getValueAt(row, 3).toString());
+		txtSDT.setText(tblNSX.getValueAt(row, 4).toString());
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
