@@ -492,6 +492,11 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 			tabNoiDung.remove(tabNoiDung.getSelectedComponent());
 			tabNoiDung.add(guiBanHang.contentPane);
 		}
+//		else if (o.equals(mniTraHang)) {
+//			GuiTraHang traHang = new GuiTraHang();
+//			tabNoiDung.remove(tabNoiDung.getSelectedComponent());
+//			tabNoiDung.add(traHang.contentPane);
+//		}	
 
 		//Chức năng thống kê
 		//Chức năng hỗ trợ
