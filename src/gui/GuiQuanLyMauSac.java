@@ -8,6 +8,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -17,7 +19,13 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+
+import connectDB.ConnectDB;
+import dao.DAO_MauSac;
+import entity.MauSac;
+
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
@@ -25,7 +33,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-public class GuiQuanLyMauSac extends JFrame implements ActionListener {
+public class GuiQuanLyMauSac extends JFrame implements ActionListener, MouseListener{
 
 	public static JPanel contentPane;
 	private JTextField txtMaMauSac;
@@ -39,6 +47,12 @@ public class GuiQuanLyMauSac extends JFrame implements ActionListener {
 	private JPanel pnlTacVuCon;
 	private JTextField txtTenMau;
 	private JLabel lblTenMau;
+	private JButton btnThem;
+	private JButton btnSua;
+	private JButton btnXoa;
+	private JButton btnLuu;
+	private JButton btnDatLai;
+	private DAO_MauSac mausac_dao;
 
 	/**
 	 * Launch the application.
@@ -111,7 +125,7 @@ public class GuiQuanLyMauSac extends JFrame implements ActionListener {
 
 		txtMaMauSac = new JTextField();
 		txtMaMauSac.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		txtMaMauSac.setEditable(false);
+//		txtMaMauSac.setEditable(false);
 		txtMaMauSac.setBounds(20, 100, 319, 40);
 		pnlThongTinKH.add(txtMaMauSac);
 		txtMaMauSac.setColumns(10);
@@ -173,28 +187,28 @@ public class GuiQuanLyMauSac extends JFrame implements ActionListener {
 		contentPane.add(pnlTacVu);
 		pnlTacVu.setLayout(null);
 
-		JButton btnThem = new JButton("Thêm");
+		btnThem = new JButton("Thêm");
 		btnThem.setBounds(140, 21, 180, 48);
 		pnlTacVu.add(btnThem);
 		btnThem.setFont(font2);
 		btnThem.setIcon(new ImageIcon(GuiQuanLyMauSac.class.getResource("/image/TacVu_Them1.png")));
 		btnThem.setBackground(Color.WHITE);
 
-		JButton btnSua = new JButton("Sửa");
+		btnSua = new JButton("Sửa");
 		btnSua.setFont(new Font("Times New Roman", Font.PLAIN, 24));
 		btnSua.setBounds(410, 21, 180, 48);
 		pnlTacVu.add(btnSua);
 		btnSua.setIcon(new ImageIcon(GuiQuanLyMauSac.class.getResource("/image/TacVu_Sua.png")));
 		btnSua.setBackground(Color.WHITE);
 
-		JButton btnXoa = new JButton("Xóa");
+		btnXoa = new JButton("Xóa");
 		btnXoa.setFont(new Font("Times New Roman", Font.PLAIN, 24));
 		btnXoa.setBounds(680, 21, 180, 48);
 		pnlTacVu.add(btnXoa);
 		btnXoa.setIcon(new ImageIcon(GuiQuanLyMauSac.class.getResource("/image/TacVu_Xoa1.png")));
 		btnXoa.setBackground(Color.WHITE);
 
-		JButton btnLuu = new JButton("Lưu");
+		btnLuu = new JButton("Lưu");
 		btnLuu.setEnabled(false);
 		btnLuu.setFont(new Font("Times New Roman", Font.PLAIN, 24));
 		btnLuu.setBounds(950, 21, 180, 48);
@@ -202,7 +216,7 @@ public class GuiQuanLyMauSac extends JFrame implements ActionListener {
 		btnLuu.setIcon(new ImageIcon(GuiQuanLyMauSac.class.getResource("/image/TacVu_Luu.png")));
 		btnLuu.setBackground(Color.WHITE);
 
-		JButton btnDatLai = new JButton("Đặt lại");
+		btnDatLai = new JButton("Đặt lại");
 		btnDatLai.setFont(new Font("Times New Roman", Font.PLAIN, 24));
 		btnDatLai.setBounds(1220, 21, 180, 48);
 		pnlTacVu.add(btnDatLai);
@@ -240,12 +254,125 @@ public class GuiQuanLyMauSac extends JFrame implements ActionListener {
 		txtTrangThai.setBounds(10, 945, 1894, 20);
 		contentPane.add(txtTrangThai);
 		txtTrangThai.setColumns(10);
+		
+		//
+		tblMS.addMouseListener(this);
+		btnDatLai.addActionListener(this);
+		btnLuu.addActionListener(this);
+		btnSua.addActionListener(this);
+		btnXoa.addActionListener(this);
+		btnThem.addActionListener(this);
+		
+		//
+		mausac_dao = new DAO_MauSac();
+		try {
+			ConnectDB.getInstance().connect();
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+		
+		//
+		DocDuLieuDatabase();
 
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
+		Object o = e.getSource();
+		if (o.equals(btnDatLai)) {
+			xoaRong();
+		}
+		if (o.equals(btnThem)) {
+			themCV();
+		}
+		if (o.equals(btnXoa)) {
+			xoa();
+		}
 
+	}
+	public void DocDuLieuDatabase() {
+		mausac_dao = new DAO_MauSac();
+		//tblCV.setRowHeight(25);
+		for(MauSac ms : mausac_dao.getAllMauSac()) {
+			modelMS.addRow(new Object[] {ms.getMaMau(), ms.getTenMau()});
+		}
+	}
+	
+	public void xoaRong() {
+		txtMaMauSac.setText("");
+		txtTimKiem.setText("");
+		txtTenMau.setText("");
+		txtTenMau.setEditable(true);
+		txtMaMauSac.setEditable(true);
+		txtMaMauSac.requestFocus();
+		btnLuu.setEnabled(false);
+	}
+	
+	private void themCV() {
+		String tenMS = txtTenMau.getText();
+		String mauMS = txtMaMauSac.getText();
+		
+		MauSac ms = new MauSac(mauMS, tenMS);
+		if (mausac_dao.createMS(ms)) {
+			modelMS.addRow(new Object[] { ms.getMaMau(), ms.getTenMau()});	
+			JOptionPane.showMessageDialog(this, "Thêm chức vụ thành công");
+			xoaRong();
+		}else {
+			JOptionPane.showMessageDialog(this, "Không thành công");
+		}
+	}
+	
+	public void xoa() {
+		int row = tblMS.getSelectedRow();
+		if(row == -1) {
+			JOptionPane.showMessageDialog(this, "Hãy chọn màu sắc cần xoá");
+		} else {
+			int tl;
+			tl = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa màu sắc này không ?", "Cảnh báo",
+					JOptionPane.YES_OPTION);
+			if (tl == JOptionPane.YES_OPTION) {
+				int index = tblMS.getSelectedRow();
+				mausac_dao.xoaMS(modelMS.getValueAt(tblMS.getSelectedRow(), 0).toString());
+				modelMS.removeRow(index);
+				xoaRong();
+			}
+		}
+	}
+
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		int row = 	tblMS.getSelectedRow();
+		txtMaMauSac.setText(tblMS.getValueAt(row, 0).toString());
+		txtTenMau.setText(tblMS.getValueAt(row, 1).toString());
+		txtTenMau.setEditable(false);
+		txtMaMauSac.setEditable(false);
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }
