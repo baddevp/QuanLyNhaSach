@@ -101,5 +101,26 @@ public class DAO_ChucVu {
 		}
 	    return n>0;
     }
+	
+	// sửa chức vụ
+	public boolean updateCV(String maChucVu, String tenChucVu) {
+	    int k = 0;
+	    try {
+	        ConnectDB.getInstance();
+	        Connection con = ConnectDB.getConnection();
+	        
+	        // Customize the SQL statement based on your database schema
+	        String sql = "UPDATE CHUCVU SET TENCHUCVU = ? WHERE MACHUCVU = ?";
+	        
+	        PreparedStatement preparedStatement = con.prepareStatement(sql);
+	        preparedStatement.setString(1, tenChucVu);
+	        preparedStatement.setString(2, maChucVu);
+	        
+	        k = preparedStatement.executeUpdate();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return k > 0;
+	}
 
 }

@@ -305,15 +305,10 @@ public class GuiQuanLyChucVu extends JFrame implements ActionListener, MouseList
 			themCV();
 		}
 		if (o.equals(btnSua)) {
-			int row = tblCV.getSelectedRow();
-			if(row == -1) {
-				JOptionPane.showMessageDialog(this, "Hãy chọn chức vụ cần sửa");
-			}
-			else {
-				txtTenNSX.setEditable(true);
-				txtTenNSX.requestFocus();
-				btnLuu.setEnabled(true);
-			}
+			btSua();
+		}
+		if (o.equals(btnLuu)) {
+			updateCV();
 		}
 	}
 	
@@ -339,6 +334,8 @@ public class GuiQuanLyChucVu extends JFrame implements ActionListener, MouseList
 		txtTimKiem.setText("");
 		txtTenNSX.setEditable(true);
 		txtTenNSX.requestFocus();
+		btnLuu.setEnabled(false);
+		tblCV.clearSelection();
 	}
 	
 	// nút xoá
@@ -375,6 +372,40 @@ public class GuiQuanLyChucVu extends JFrame implements ActionListener, MouseList
 		}
 	}
 	
+	private void btSua() {
+		int row = tblCV.getSelectedRow();
+	    if (row == -1) {
+	        JOptionPane.showMessageDialog(this, "Hãy chọn chức vụ cần sửa");
+	    } else {
+	        txtTenNSX.setEditable(true);
+	        txtTenNSX.requestFocus();
+	        btnSua.setEnabled(false); // Disable the "Sửa" button
+	        btnLuu.setEnabled(true);
+	    }
+	}
+	
+	private void updateCV() {
+		int selectedRow = tblCV.getSelectedRow();
+
+	    if (selectedRow == -1) {
+	        JOptionPane.showMessageDialog(this, "Hãy chọn chức vụ cần sửa");
+	    } else {
+	        String maChucVu = txtMaNSX.getText();
+	        String tenChucVu = txtTenNSX.getText();
+
+	        if (chucvu_dao.updateCV(maChucVu, tenChucVu)) {
+	            modelCV.setValueAt(maChucVu, selectedRow, 0);
+	            modelCV.setValueAt(tenChucVu, selectedRow, 1);
+
+	            JOptionPane.showMessageDialog(this, "Cập nhật chức vụ thành công");
+	            xoaRong();
+	            btnSua.setEnabled(true); // Enable the "Sửa" button
+	            btnLuu.setEnabled(false);
+	        } else {
+	            JOptionPane.showMessageDialog(this, "Không thành công");
+	        }
+	    }
+	}
 
 	@Override
 	public void valueChanged(ListSelectionEvent e) {

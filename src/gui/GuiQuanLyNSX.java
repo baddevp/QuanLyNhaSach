@@ -27,6 +27,7 @@ import dao.DAO_NSX;
 import entity.NhaSanXuat;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
@@ -51,6 +52,11 @@ public class GuiQuanLyNSX extends JFrame implements ActionListener, MouseListene
 	private JRadioButton radTenKH;
 	private JRadioButton radMaNSX;
 	private DAO_NSX nsx_dao;
+	private JButton btnDatLai;
+	private JButton btnLuu;
+	private JButton btnXoa;
+	private JButton btnSua;
+	private JButton btnThem;
 
 	/**
 	 * Launch the application.
@@ -228,28 +234,28 @@ public class GuiQuanLyNSX extends JFrame implements ActionListener, MouseListene
 		contentPane.add(pnlTacVu);
 		pnlTacVu.setLayout(null);
 		
-		JButton btnThem = new JButton("Thêm");
+		btnThem = new JButton("Thêm");
 		btnThem.setBounds(140, 21, 180, 48);
 		pnlTacVu.add(btnThem);
 		btnThem.setFont(font2);
 		btnThem.setIcon(new ImageIcon(GuiQuanLyNSX.class.getResource("/image/TacVu_Them1.png")));
 		btnThem.setBackground(Color.WHITE);
 		
-		JButton btnSua = new JButton("Sửa");
+		btnSua = new JButton("Sửa");
 		btnSua.setFont(new Font("Times New Roman", Font.PLAIN, 24));
 		btnSua.setBounds(410, 21, 180, 48);
 		pnlTacVu.add(btnSua);
 		btnSua.setIcon(new ImageIcon(GuiQuanLyNSX.class.getResource("/image/TacVu_Sua.png")));
 		btnSua.setBackground(Color.WHITE);
 		
-		JButton btnXoa = new JButton("Xóa");
+		btnXoa = new JButton("Xóa");
 		btnXoa.setFont(new Font("Times New Roman", Font.PLAIN, 24));
 		btnXoa.setBounds(680, 21, 180, 48);
 		pnlTacVu.add(btnXoa);
 		btnXoa.setIcon(new ImageIcon(GuiQuanLyNSX.class.getResource("/image/TacVu_Xoa1.png")));
 		btnXoa.setBackground(Color.WHITE);
 		
-		JButton btnLuu = new JButton("Lưu");
+		btnLuu = new JButton("Lưu");
 		btnLuu.setEnabled(false);
 		btnLuu.setFont(new Font("Times New Roman", Font.PLAIN, 24));
 		btnLuu.setBounds(950, 21, 180, 48);
@@ -257,7 +263,7 @@ public class GuiQuanLyNSX extends JFrame implements ActionListener, MouseListene
 		btnLuu.setIcon(new ImageIcon(GuiQuanLyNSX.class.getResource("/image/TacVu_Luu.png")));
 		btnLuu.setBackground(Color.WHITE);
 		
-		JButton btnDatLai = new JButton("Đặt lại");
+		btnDatLai = new JButton("Đặt lại");
 		btnDatLai.setFont(new Font("Times New Roman", Font.PLAIN, 24));
 		btnDatLai.setBounds(1220, 21, 180, 48);
 		pnlTacVu.add(btnDatLai);
@@ -301,6 +307,14 @@ public class GuiQuanLyNSX extends JFrame implements ActionListener, MouseListene
 		contentPane.add(txtTrangThai);
 		txtTrangThai.setColumns(10);
 		
+		//
+		tblNSX.addMouseListener(this);
+		btnDatLai.addActionListener(this);
+		btnLuu.addActionListener(this);
+		btnSua.addActionListener(this);
+		btnThem.addActionListener(this);
+		btnXoa.addActionListener(this);
+		
 		// ket noi sql
 		nsx_dao = new DAO_NSX();
 		
@@ -322,7 +336,16 @@ public class GuiQuanLyNSX extends JFrame implements ActionListener, MouseListene
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		
+		Object o = e.getSource();
+		if (o.equals(btnDatLai)) {
+			xoaRong();
+		}
+		if (o.equals(btnThem)) {
+			themNSX();
+		}
+		if (o.equals(btnXoa)) {
+			xoa();
+		}
 	}
 	
 	//
@@ -332,6 +355,53 @@ public class GuiQuanLyNSX extends JFrame implements ActionListener, MouseListene
 		for(NhaSanXuat nsx : nsx_dao.getAllNSX()) {
 			modelNSX.addRow(new Object[] {nsx.getMaNSX(), nsx.getTenNSX(),nsx.getThanhPho(),
 					                      nsx.getEmail(), nsx.getSdt()});
+		}
+	}
+	public void xoaRong() {
+		txtEmail.setText("");
+		txtMaNSX.setText("");
+		txtSDT.setText("");
+		txtTenNSX.setText("");
+		txtThanhPho.setText("");
+		txtTimKiem.setText("");
+		txtEmail.setEditable(true);
+		txtSDT.setEditable(true);
+		txtTenNSX.setEditable(true);
+		txtThanhPho.setEditable(true);
+		txtMaNSX.setEditable(true);
+	}
+	
+	private void themNSX() {
+		String maNSX = txtMaNSX.getText();
+		String tenNSX = txtTenNSX.getText();
+		String city = txtThanhPho.getText();
+		String email = txtEmail.getText();
+		String sdt = txtSDT.getText();
+		
+		NhaSanXuat nsx = new NhaSanXuat(maNSX, tenNSX, city, email, sdt);
+		if (nsx_dao.createNSX(nsx)) {
+			modelNSX.addRow(new Object[] { nsx.getMaNSX(), nsx.getTenNSX(), nsx.getThanhPho(), nsx.getEmail(), nsx.getSdt()});	
+			JOptionPane.showMessageDialog(this, "Thêm chức vụ thành công");
+			xoaRong();
+		}else {
+			JOptionPane.showMessageDialog(this, "Không thành công");
+		}
+	}
+	
+	public void xoa() {
+		int row = tblNSX.getSelectedRow();
+		if(row == -1) {
+			JOptionPane.showMessageDialog(this, "Hãy chọn nhà sản xuất cần xoá");
+		} else {
+			int tl;
+			tl = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa nhà sản xuất này không ?", "Cảnh báo",
+					JOptionPane.YES_OPTION);
+			if (tl == JOptionPane.YES_OPTION) {
+				int index = tblNSX.getSelectedRow();
+				nsx_dao.xoaNSX(modelNSX.getValueAt(tblNSX.getSelectedRow(), 0).toString());
+				modelNSX.removeRow(index);
+				xoaRong();
+			}
 		}
 	}
 
@@ -350,6 +420,11 @@ public class GuiQuanLyNSX extends JFrame implements ActionListener, MouseListene
 		txtThanhPho.setText(tblNSX.getValueAt(row, 2).toString());
 		txtEmail.setText(tblNSX.getValueAt(row, 3).toString());
 		txtSDT.setText(tblNSX.getValueAt(row, 4).toString());
+		txtEmail.setEditable(false);
+		txtSDT.setEditable(false);
+		txtTenNSX.setEditable(false);
+		txtThanhPho.setEditable(false);
+		txtMaNSX.setEditable(false);
 	}
 
 	@Override
