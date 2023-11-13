@@ -16,6 +16,7 @@ import entity.MauSac;
 import entity.NhanVien;
 
 public class DAO_KhachHang {
+	
 	public ArrayList<KhachHang> getAllKH(){
 		ArrayList<KhachHang> dsKH = new ArrayList<KhachHang>();
 		try {
@@ -44,6 +45,32 @@ public class DAO_KhachHang {
 		return dsKH; 
 	}
 	
+	public ArrayList<KhachHang> getKhachHangTheoSDT(String sdtTim){
+		ArrayList<KhachHang> list = new ArrayList<KhachHang>();
+		try {
+			ConnectDB.getInstance();
+			Connection con = ConnectDB.getConnection();
+			String sql = "select * from KHACHHANG where sdt = ?";
+			PreparedStatement preparedStatement = con.prepareStatement(sql);
+			preparedStatement.setString(1, sdtTim);
+			ResultSet rs = preparedStatement.executeQuery();
+			while(rs.next()) {
+				String ma = rs.getString(1);
+				String tenKH = rs.getString(2);
+				String diaChi = rs.getString(3);
+				String sdt = rs.getString(4);
+				int diemTL = rs.getInt(5);
+				java.util.Date ngayLap = rs.getDate(6);
+				String email = rs.getString(7);
+				
+				KhachHang kh = new KhachHang(ma, tenKH, diaChi, sdt, diemTL, ngayLap, email);
+				list.add(kh);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
 	
 	public boolean createKH(KhachHang kh) {
 		ConnectDB.getInstance();
@@ -146,4 +173,5 @@ public class DAO_KhachHang {
 		
 		return k>0; 
 	}
+	
 }

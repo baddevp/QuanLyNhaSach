@@ -45,7 +45,7 @@ public class GuiQuanLyKhachHang extends JFrame implements ActionListener, MouseL
 	public static JPanel contentPane;
 	private JTextField txtMaKH;
 	private JTextField txtTenKH;
-	private JTextField txtSDT;
+	JTextField txtSDT;
 	private JTextField txtNgayLap;
 	private JTextField txtDiaChi;
 	private JTextField txtDTL;

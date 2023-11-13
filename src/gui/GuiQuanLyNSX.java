@@ -48,9 +48,6 @@ public class GuiQuanLyNSX extends JFrame implements ActionListener, MouseListene
 	private JTable tblNSX;
 	private JTextField txtTrangThai;
 	private ButtonGroup group;
-	private JRadioButton radSDT;
-	private JRadioButton radTenKH;
-	private JRadioButton radMaNSX;
 	private DAO_NSX nsx_dao;
 	private JButton btnDatLai;
 	private JButton btnLuu;
@@ -176,37 +173,18 @@ public class GuiQuanLyNSX extends JFrame implements ActionListener, MouseListene
 		pnlThongTinKH.add(txtTenNSX);
 		
 		JPanel pnlTacVuCon = new JPanel();
-		pnlTacVuCon.setBounds(10, 703, 330, 141);
+		pnlTacVuCon.setBounds(9, 741, 330, 103);
 		pnlThongTinKH.add(pnlTacVuCon);
 		pnlTacVuCon.setBackground(Color.white);
 		pnlTacVuCon.setBorder(BorderFactory.createTitledBorder("Tìm kiếm theo : "));
 		pnlTacVuCon.setLayout(null);
 		
 		txtTimKiem = new JTextField("Nhập thông tin cần tìm");
-		txtTimKiem.setBounds(10, 95, 308, 40);
+		txtTimKiem.setBounds(10, 39, 308, 40);
 		pnlTacVuCon.add(txtTimKiem);
 		txtTimKiem.setColumns(10);
 		
-		radSDT = new JRadioButton("Số điện thoại");
-		radSDT.setBackground(new Color(255, 255, 255));
-		radSDT.setBounds(10, 65, 109, 23);
-		pnlTacVuCon.add(radSDT);
-		
-				
-				radTenKH = new JRadioButton("Tên nhà sản xuất");
-				radTenKH.setBackground(new Color(255, 255, 255));
-				radTenKH.setBounds(10, 32, 126, 23);
-				pnlTacVuCon.add(radTenKH);
-		
 				group = new ButtonGroup();
-				group.add(radSDT);
-				group.add(radTenKH);
-				
-				radMaNSX = new JRadioButton("Mã nhà sản xuất");
-				radMaNSX.setBackground(new Color(255, 255, 255));
-				radMaNSX.setBounds(177, 32, 141, 23);
-				pnlTacVuCon.add(radMaNSX);
-				group.add(radMaNSX);
 				
 				txtTimKiem.addFocusListener(new FocusListener() {
             @Override

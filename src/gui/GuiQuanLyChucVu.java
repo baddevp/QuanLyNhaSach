@@ -47,8 +47,6 @@ public class GuiQuanLyChucVu extends JFrame implements ActionListener, MouseList
 	private JTable tblCV;
 	private JTextField txtTrangThai;
 	private ButtonGroup group;
-	private JRadioButton radTenChucVu;
-	private JRadioButton radMaChucVu;
 	private JButton btnThem;
 	private JButton btnSua;
 	private JButton btnXoa;
@@ -141,31 +139,18 @@ public class GuiQuanLyChucVu extends JFrame implements ActionListener, MouseList
 		pnlThongTinKH.add(txtTenNSX);
 		
 		JPanel pnlTacVuCon = new JPanel();
-		pnlTacVuCon.setBounds(10, 680, 330, 157);
+		pnlTacVuCon.setBounds(9, 742, 330, 102);
 		pnlThongTinKH.add(pnlTacVuCon);
 		pnlTacVuCon.setBackground(Color.white);
 		pnlTacVuCon.setBorder(BorderFactory.createTitledBorder("Tìm kiếm theo : "));
 		pnlTacVuCon.setLayout(null);
 		
 		txtTimKiem = new JTextField("Nhập thông tin cần tìm");
-		txtTimKiem.setBounds(10, 95, 308, 40);
+		txtTimKiem.setBounds(10, 34, 308, 40);
 		pnlTacVuCon.add(txtTimKiem);
 		txtTimKiem.setColumns(10);
 		
-				
-				radTenChucVu = new JRadioButton("Tên chức vụ");
-				radTenChucVu.setBackground(new Color(255, 255, 255));
-				radTenChucVu.setBounds(10, 32, 126, 23);
-				pnlTacVuCon.add(radTenChucVu);
-		
 				group = new ButtonGroup();
-				group.add(radTenChucVu);
-				
-				radMaChucVu = new JRadioButton("Mã chức vụ");
-				radMaChucVu.setBackground(new Color(255, 255, 255));
-				radMaChucVu.setBounds(177, 32, 141, 23);
-				pnlTacVuCon.add(radMaChucVu);
-				group.add(radMaChucVu);
 				
 				txtTimKiem.addFocusListener(new FocusListener() {
             @Override

@@ -38,8 +38,7 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener {
 	private JTextField txtMaNV;
 	private JTextField txtTenNV;
 	private JTextField txtCCCD;
-	private JTextField txtDiaChi;
-	private JTextField txtDTL;
+	private JTextField txtSDT;
 	private JTextField txtEmail;
 	private JTextField txtTimKiem;
 	private DefaultTableModel modelKH;
@@ -48,7 +47,7 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener {
 	private JDateChooser dtmNgaySinh;
 	private JDateChooser dtmNgayVaoLam;
 	private JButton btnChonAnh;
-	private JRadioButton radMaNV;
+	private JTextField txtDiaChi;
 
 	/**
 	 * Launch the application.
@@ -143,10 +142,10 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener {
 		lblNgayVaoLam.setBounds(850, 130, 163, 29);
 		pnlThongTinKH.add(lblNgayVaoLam);
 		
-		JLabel lblDTL = new JLabel("Địa chỉ :");
-		lblDTL.setFont(new Font("Times New Roman", Font.PLAIN, 24));
-		lblDTL.setBounds(50, 235, 81, 29);
-		pnlThongTinKH.add(lblDTL);
+		JLabel lblGioiTinh = new JLabel("Giới tính:");
+		lblGioiTinh.setFont(new Font("Times New Roman", Font.PLAIN, 24));
+		lblGioiTinh.setBounds(50, 235, 102, 29);
+		pnlThongTinKH.add(lblGioiTinh);
 		
 		txtMaNV = new JTextField();
 		txtMaNV.setEditable(false);
@@ -168,15 +167,10 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener {
 		dtmNgayVaoLam.setBounds(850, 175, 300, 35);
 		pnlThongTinKH.add(dtmNgayVaoLam);
 		
-		txtDiaChi = new JTextField();
-		txtDiaChi.setColumns(10);
-		txtDiaChi.setBounds(450, 175, 300, 35);
-		pnlThongTinKH.add(txtDiaChi);
-		
-		txtDTL = new JTextField();
-		txtDTL.setColumns(10);
-		txtDTL.setBounds(142, 230, 206, 35);
-		pnlThongTinKH.add(txtDTL);
+		txtSDT = new JTextField();
+		txtSDT.setColumns(10);
+		txtSDT.setBounds(450, 175, 300, 35);
+		pnlThongTinKH.add(txtSDT);
 		
 		txtEmail = new JTextField();
 		txtEmail.setColumns(10);
@@ -217,41 +211,19 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener {
 		btnChonAnh.setIcon(new ImageIcon(GuiQuanLyNhanVien.class.getResource("/image/ChonAnh.png")));
 		pnlChuaAnh.add(btnChonAnh);
 		
-		JLabel lblGioiTinh = new JLabel("Giới tính:");
-		lblGioiTinh.setFont(new Font("Times New Roman", Font.PLAIN, 24));
-		lblGioiTinh.setBounds(1250, 130, 163, 30);
-		pnlThongTinKH.add(lblGioiTinh);
+		JLabel lblDiaChi = new JLabel("Địa chỉ:");
+		lblDiaChi.setFont(new Font("Times New Roman", Font.PLAIN, 24));
+		lblDiaChi.setBounds(1250, 130, 163, 30);
+		pnlThongTinKH.add(lblDiaChi);
 		
 		JComboBox cboGioiTinh = new JComboBox();
-		cboGioiTinh.setBounds(1250, 175, 300, 35);
+		cboGioiTinh.setBounds(161, 229, 189, 35);
 		pnlThongTinKH.add(cboGioiTinh);
 		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setBounds(596, 230, 154, 35);
-		pnlThongTinKH.add(comboBox);
-		
-		JComboBox comboBox_1 = new JComboBox();
-		comboBox_1.setBounds(1000, 230, 150, 35);
-		pnlThongTinKH.add(comboBox_1);
-		
-		JComboBox comboBox_1_1 = new JComboBox();
-		comboBox_1_1.setBounds(1400, 230, 150, 35);
-		pnlThongTinKH.add(comboBox_1_1);
-		
-		JLabel lblPhuongXa = new JLabel("Phường / Xã:");
-		lblPhuongXa.setBounds(450, 235, 136, 29);
-		lblPhuongXa.setFont(new Font("Times New Roman", Font.PLAIN, 24));
-		pnlThongTinKH.add(lblPhuongXa);
-		
-		JLabel lblQuan = new JLabel("Quận/ Huyện :");
-		lblQuan.setBounds(850, 235, 147, 29);
-		lblQuan.setFont(new Font("Times New Roman", Font.PLAIN, 24));
-		pnlThongTinKH.add(lblQuan);
-		
-		JLabel lblTinh = new JLabel("Tỉnh/ T.Phố :");
-		lblTinh.setBounds(1250, 235, 140, 29);
-		lblTinh.setFont(new Font("Times New Roman", Font.PLAIN, 24));
-		pnlThongTinKH.add(lblTinh);
+		txtDiaChi = new JTextField();
+		txtDiaChi.setColumns(10);
+		txtDiaChi.setBounds(1250, 175, 300, 35);
+		pnlThongTinKH.add(txtDiaChi);
 		
 		
 		JPanel pnlTacVu = new JPanel();
@@ -300,25 +272,14 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener {
 		JPanel pnlTacVuCon = new JPanel();
 		pnlTacVuCon.setBackground(Color.white);;
 		pnlTacVuCon.setBounds(1286, 11, 598, 58);
-		pnlTacVuCon.setBorder(BorderFactory.createTitledBorder("Tìm kiếm theo : "));
+		pnlTacVuCon.setBorder(BorderFactory.createTitledBorder("Tìm kiếm nhân viên : "));
 		pnlTacVu.add(pnlTacVuCon);
 		pnlTacVuCon.setLayout(null);
 		
 		txtTimKiem = new JTextField("Nhập thông tin cần tìm");
-		txtTimKiem.setBounds(280, 13, 308, 36);
+		txtTimKiem.setBounds(129, 15, 362, 32);
 		pnlTacVuCon.add(txtTimKiem);
 		txtTimKiem.setColumns(10);
-		
-		JRadioButton radSDT = new JRadioButton("Số điện thoại");
-		radSDT.setBackground(new Color(255, 255, 255));
-		radSDT.setBounds(133, 12, 109, 23);
-		pnlTacVuCon.add(radSDT);
-
-		
-		JRadioButton radTenNV = new JRadioButton("Tên nhân viên");
-		radTenNV.setBackground(new Color(255, 255, 255));
-		radTenNV.setBounds(133, 30, 126, 23);
-		pnlTacVuCon.add(radTenNV);
 		
 		txtTimKiem.addFocusListener(new FocusListener() {
             @Override
@@ -339,14 +300,6 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener {
         });
 		
 		ButtonGroup group = new ButtonGroup();
-		group.add(radTenNV);
-		group.add(radSDT);
-		
-		radMaNV = new JRadioButton("Mã nhân viên");
-		radMaNV.setBackground(new Color(255, 255, 255));
-		radMaNV.setBounds(8, 30, 109, 23);
-		pnlTacVuCon.add(radMaNV);
-		group.add(radMaNV);
 		
 		JPanel pnlBangKH = new JPanel();
 		pnlBangKH.setBounds(10, 460, 1894, 480);
