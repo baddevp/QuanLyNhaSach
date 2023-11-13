@@ -8,9 +8,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.SimpleDateFormat;
+import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -20,6 +24,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableRowSorter;
 
 import connectDB.ConnectDB;
 import dao.DAO_KhachHang;
@@ -28,6 +33,7 @@ import entity.KhachHang;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.RowFilter;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
 import javax.swing.JRadioButton;
@@ -172,6 +178,7 @@ public class GuiQuanLyKhachHang extends JFrame implements ActionListener, MouseL
         String formattedDate = dateFormat.format(currentDate);
         
 		txtNgayLap = new JTextField(formattedDate);
+		txtNgayLap.setEditable(false);
 		txtNgayLap.setColumns(10);
 		txtNgayLap.setBounds(1271, 165, 442, 34);
 		pnlThongTinKH.add(txtNgayLap);
@@ -342,6 +349,13 @@ public class GuiQuanLyKhachHang extends JFrame implements ActionListener, MouseL
 		
 		hienThiMaKH();
 		
+		txtTimKiem.addKeyListener((KeyListener) new KeyAdapter() {
+		    @Override
+		    public void keyReleased(KeyEvent e) {
+		        String tuKhoa = txtTimKiem.getText().trim();
+		        timKiem(tuKhoa);
+		    }
+		}); 
 
 	}
 
@@ -393,6 +407,9 @@ public class GuiQuanLyKhachHang extends JFrame implements ActionListener, MouseL
 		txtTenKH.setEditable(true);
 		txtEmail.setEditable(true);
 		txtSDT.setEditable(true);
+		
+		btnSua.setEnabled(true);
+        btnLuu.setEnabled(false);
 		
 	}
 	
@@ -530,6 +547,20 @@ public class GuiQuanLyKhachHang extends JFrame implements ActionListener, MouseL
 	        btnLuu.setEnabled(false);
 	    } else {
 	        JOptionPane.showMessageDialog(this, "Cập nhật thông tin khách hàng không thành công");
+	    }
+	}
+	
+	private void timKiem(String tuKhoa) {
+	    TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(modelKH);
+	    tblKH.setRowSorter(sorter);
+
+	    if (tuKhoa.isEmpty()) {
+	        sorter.setRowFilter(null);
+	    } else {
+	        RowFilter<DefaultTableModel, Object> filter = RowFilter.regexFilter("(?i)" + Pattern.quote(tuKhoa), 2, 1);
+	        // 2 corresponds to the column index of "Số điện thoại"
+	        // 1 corresponds to the column index of "Tên khách hàng"
+	        sorter.setRowFilter(filter);
 	    }
 	}
 	
