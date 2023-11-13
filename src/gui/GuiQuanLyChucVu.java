@@ -253,8 +253,6 @@ public class GuiQuanLyChucVu extends JFrame implements ActionListener, MouseList
 		pnlBangCV.setLayout(null);
 		tblCV.setFont(font2);
 		tblCV.setRowHeight(35);
-		// String row[] = {"KH001","Nguyễn Văn B","0123456789","0","Thường"," "};
-		// modelKH.addRow(row);
 		pnlBangCV.add(jScrollPane);
 		
 		txtTrangThai = new JTextField("Không có hoạt động nào gần nhất");
