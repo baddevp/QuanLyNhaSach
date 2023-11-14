@@ -73,7 +73,28 @@ public class DAO_MauSac {
 		}
 	    return n>0;
     }
-	
+	public boolean updateMauSac(MauSac ms) {
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		PreparedStatement pstm = null;
+		int n = 0;
+		try {
+			pstm = con.prepareStatement(
+					"update NHASANXUAT set TENMAU = ? where MAMAU = ?");
+			pstm.setString(2, ms.getMaMau());
+			pstm.setString(1, ms.getTenMau());
+			n = pstm.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				pstm.close();
+			} catch (SQLException e2) {
+				e2.printStackTrace();
+			}
+		}
+		return n > 0;
+	}
 	public boolean xoaMS(String maMauSac) {
 		int k = 0;
 		try {

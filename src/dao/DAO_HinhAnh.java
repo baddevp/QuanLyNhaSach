@@ -9,7 +9,6 @@ import java.util.ArrayList;
 
 import connectDB.ConnectDB;
 import entity.HinhAnh;
-import entity.MauSac;
 import entity.NhaSanXuat;
 
 public class DAO_HinhAnh {
@@ -81,7 +80,7 @@ public class DAO_HinhAnh {
         return newMaChucVu;
     }
 	
-	public String generateNewMaChucVusdsd() {
+	public String generateNewTenHinhAnh() {
         String newMaChucVu = "Image00001"; // Giá trị mặc định nếu không có dữ liệu trong bảng
 
         try {
@@ -133,6 +132,30 @@ public class DAO_HinhAnh {
 	}
 	
 	
+	public ArrayList<HinhAnh> getAnhTheoMa(String maIMG){
+		ArrayList<HinhAnh> dsIMG = new ArrayList<HinhAnh>();
+		
+		try {
+			ConnectDB.getInstance();
+			Connection con = ConnectDB.getConnection();
+			String sql = "select * from HINHANH where MAANH = ?";
+			PreparedStatement preparedStatement = con.prepareStatement(sql);
+			preparedStatement.setString(1, maIMG);
+			ResultSet rs = preparedStatement.executeQuery();
+			while (rs.next()) {
+				String maAnh = rs.getString(1);
+				String tenAnh = rs.getString(2);
+				String url = rs.getNString(3);
+				
+				HinhAnh img = new HinhAnh(maAnh, tenAnh, url);
+				dsIMG.add(img);
+			}	
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return dsIMG;	
+	}
 	public HinhAnh getHinhAnhTheoMa(String ma) {
 		ConnectDB.getInstance();
 		Connection con = ConnectDB.getConnection();
