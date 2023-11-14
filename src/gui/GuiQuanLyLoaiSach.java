@@ -37,8 +37,6 @@ public class GuiQuanLyLoaiSach extends JFrame implements ActionListener {
 	private JTable tblLS;
 	private JTextField txtTrangThai;
 	private ButtonGroup group;
-	private JRadioButton radTenLoaiSach;
-	private JRadioButton radMaLoaiSach;
 
 	/**
 	 * Launch the application.
@@ -148,31 +146,18 @@ public class GuiQuanLyLoaiSach extends JFrame implements ActionListener {
 		pnlThongTinLoaiSach.add(txtTenLoaiSach);
 		
 		JPanel pnlTacVuCon = new JPanel();
-		pnlTacVuCon.setBounds(10, 680, 330, 157);
+		pnlTacVuCon.setBounds(9, 741, 330, 103);
 		pnlThongTinLoaiSach.add(pnlTacVuCon);
 		pnlTacVuCon.setBackground(Color.white);
 		pnlTacVuCon.setBorder(BorderFactory.createTitledBorder("Tìm kiếm theo : "));
 		pnlTacVuCon.setLayout(null);
 		
 		txtTimKiem = new JTextField("Nhập thông tin cần tìm");
-		txtTimKiem.setBounds(10, 95, 308, 40);
+		txtTimKiem.setBounds(10, 36, 308, 40);
 		pnlTacVuCon.add(txtTimKiem);
 		txtTimKiem.setColumns(10);
 		
-				
-				radTenLoaiSach = new JRadioButton("Tên loại sách");
-				radTenLoaiSach.setBackground(new Color(255, 255, 255));
-				radTenLoaiSach.setBounds(10, 32, 126, 23);
-				pnlTacVuCon.add(radTenLoaiSach);
-		
 				group = new ButtonGroup();
-				group.add(radTenLoaiSach);
-				
-				radMaLoaiSach = new JRadioButton("Mã loại sách");
-				radMaLoaiSach.setBackground(new Color(255, 255, 255));
-				radMaLoaiSach.setBounds(177, 32, 141, 23);
-				pnlTacVuCon.add(radMaLoaiSach);
-				group.add(radMaLoaiSach);
 				
 				txtTimKiem.addFocusListener(new FocusListener() {
             @Override

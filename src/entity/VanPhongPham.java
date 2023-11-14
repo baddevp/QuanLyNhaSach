@@ -11,7 +11,9 @@ public class VanPhongPham extends SanPham {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public VanPhongPham(String thuongHieu, String xuatXu, MauSac maMau, LoaiVanPhongPham loaiVanPhongPham) {
+	public VanPhongPham(String maSanPham, String tenSanPham, double giaGoc, HinhAnh hinhAnh, String moTa, Date ngayNhap,
+			boolean trangThai, int soLuong, double thue, double giaBan, NhaSanXuat nhaSanXuat, String maKhuyenMai,
+			String thuongHieu, String xuatXu, MauSac maMau, LoaiVanPhongPham loaiVanPhongPham) {
 		super();
 		this.thuongHieu = thuongHieu;
 		this.xuatXu = xuatXu;

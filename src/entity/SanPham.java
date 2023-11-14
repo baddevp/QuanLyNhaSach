@@ -14,13 +14,13 @@ public class SanPham {
 	double thue;
 	double giaBan;
 	NhaSanXuat nhaSanXuat;
-	float khuyenMai;
+	String maKhuyenMai;
 	public SanPham() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 	public SanPham(String maSanPham, String tenSanPham, double giaGoc, HinhAnh hinhAnh, String moTa, Date ngayNhap,
-			boolean trangThai, int soLuong, double thue, double giaBan, NhaSanXuat nhaSanXuat, float khuyenMai) {
+			boolean trangThai, int soLuong, double thue, double giaBan, NhaSanXuat nhaSanXuat, String maKhuyenMai) {
 		super();
 		this.maSanPham = maSanPham;
 		this.tenSanPham = tenSanPham;
@@ -33,7 +33,7 @@ public class SanPham {
 		this.thue = thue;
 		this.giaBan = giaBan;
 		this.nhaSanXuat = nhaSanXuat;
-		this.khuyenMai = khuyenMai;
+		this.maKhuyenMai = maKhuyenMai;
 	}
 	public String getMaSanPham() {
 		return maSanPham;
@@ -101,11 +101,11 @@ public class SanPham {
 	public void setNhaSanXuat(NhaSanXuat nhaSanXuat) {
 		this.nhaSanXuat = nhaSanXuat;
 	}
-	public float getKhuyenMai() {
-		return khuyenMai;
+	public String getKhuyenMai() {
+		return maKhuyenMai;
 	}
-	public void setKhuyenMai(float khuyenMai) {
-		this.khuyenMai = khuyenMai;
+	public void setKhuyenMai(String khuyenMai) {
+		this.maKhuyenMai = khuyenMai;
 	}
 	
 	@Override
@@ -113,7 +113,7 @@ public class SanPham {
 		return "SanPham [maSanPham=" + maSanPham + ", tenSanPham=" + tenSanPham + ", giaGoc=" + giaGoc + ", hinhAnh="
 				+ hinhAnh + ", moTa=" + moTa + ", ngayNhap=" + ngayNhap + ", trangThai=" + trangThai + ", soLuong="
 				+ soLuong + ", thue=" + thue + ", giaBan=" + giaBan + ", nhaSanXuat=" + nhaSanXuat + ", khuyenMai="
-				+ khuyenMai + "]";
+				+ maKhuyenMai + "]";
 	}
 	
 	

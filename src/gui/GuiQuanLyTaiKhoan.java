@@ -36,8 +36,6 @@ public class GuiQuanLyTaiKhoan extends JFrame implements ActionListener {
 	private JTable tblTK;
 	private JTextField txtTrangThai;
 	private ButtonGroup group;
-	private JRadioButton radPhanQuyen;
-	private JRadioButton radMaTaiKhoan;
 	private JButton btnThem;
 	private JButton btnSua;
 	private JButton btnXoa;
@@ -124,31 +122,18 @@ public class GuiQuanLyTaiKhoan extends JFrame implements ActionListener {
 		pnlThongTinKH.add(txtMaTaiKhoan);
 		
 		JPanel pnlTacVuCon = new JPanel();
-		pnlTacVuCon.setBounds(10, 680, 330, 157);
+		pnlTacVuCon.setBounds(9, 736, 330, 108);
 		pnlThongTinKH.add(pnlTacVuCon);
 		pnlTacVuCon.setBackground(Color.white);
 		pnlTacVuCon.setBorder(BorderFactory.createTitledBorder("Tìm kiếm theo : "));
 		pnlTacVuCon.setLayout(null);
 		
 		txtTimKiem = new JTextField("Nhập thông tin cần tìm");
-		txtTimKiem.setBounds(10, 95, 308, 40);
+		txtTimKiem.setBounds(10, 40, 308, 40);
 		pnlTacVuCon.add(txtTimKiem);
 		txtTimKiem.setColumns(10);
 		
-				
-				radPhanQuyen = new JRadioButton("Phân quyền");
-				radPhanQuyen.setBackground(new Color(255, 255, 255));
-				radPhanQuyen.setBounds(10, 32, 126, 23);
-				pnlTacVuCon.add(radPhanQuyen);
-		
 				group = new ButtonGroup();
-				group.add(radPhanQuyen);
-				
-				radMaTaiKhoan = new JRadioButton("Mã tài khoản");
-				radMaTaiKhoan.setBackground(new Color(255, 255, 255));
-				radMaTaiKhoan.setBounds(177, 32, 141, 23);
-				pnlTacVuCon.add(radMaTaiKhoan);
-				group.add(radMaTaiKhoan);
 				
 				JComboBox comboBox = new JComboBox();
 				comboBox.setFont(new Font("Tahoma", Font.PLAIN, 18));

@@ -62,7 +62,7 @@ public class DAO_QuanLyLoaiVPP {
 		return loai;
 	}
 
-	public boolean addLoaiPhong(LoaiVanPhongPham loaiVanPhongPham) {
+	public boolean addLoaiVPP(LoaiVanPhongPham loaiVanPhongPham) {
 		ConnectDB.getInstance();
 		Connection con = ConnectDB.getConnection();
 		PreparedStatement pstm = null;

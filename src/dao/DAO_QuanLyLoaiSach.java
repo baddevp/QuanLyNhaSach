@@ -62,7 +62,7 @@ public class DAO_QuanLyLoaiSach {
 		return loai;
 	}
 
-	public boolean addLoaiPhong(LoaiSach loaisach) {
+	public boolean addLoaiSach(LoaiSach loaisach) {
 		ConnectDB.getInstance();
 		Connection con = ConnectDB.getConnection();
 		PreparedStatement pstm = null;
@@ -86,7 +86,7 @@ public class DAO_QuanLyLoaiSach {
 		return n > 0;
 	}
 
-	public boolean updateLoaiPhong(LoaiSach loaiSach) {
+	public boolean updateLoaiSach(LoaiSach loaiSach) {
 		ConnectDB.getInstance();
 		Connection con = ConnectDB.getConnection();
 		PreparedStatement pstm = null;
@@ -111,7 +111,7 @@ public class DAO_QuanLyLoaiSach {
 		return n > 0;
 	}
 
-	public boolean deleteLoaiPhong(String maLoaiSach) {
+	public boolean deleteLoaiSach(String maLoaiSach) {
 		ConnectDB.getInstance();
 		Connection con = ConnectDB.getConnection();
 		PreparedStatement pstm = null;
