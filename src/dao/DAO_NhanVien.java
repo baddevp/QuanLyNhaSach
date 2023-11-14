@@ -214,6 +214,22 @@ public class DAO_NhanVien {
         return chuvu;
     }
     
+    public boolean xoaNV(String maNV) {
+		int k = 0;
+		try {
+			ConnectDB.getInstance();
+			Connection con = ConnectDB.getConnection();
+			String sql = "delete from NHANVIEN where MANV = ?";
+			PreparedStatement preparedStatement = con.prepareStatement(sql);
+			preparedStatement.setString(1, maNV);
+			k = preparedStatement.executeUpdate();
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return k>0;
+	}
+    
     // gọi theo mã vs2
 //    public NhanVien getMaAnhByMaNVnnnnnn(String maNV) {
 //    	NhanVien nv =null;

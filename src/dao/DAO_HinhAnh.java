@@ -130,7 +130,24 @@ public class DAO_HinhAnh {
 	    return imagePath;
 	}
 	
+	public boolean xoaIMG(String maIMG) {
+		int k = 0;
+		try {
+			ConnectDB.getInstance();
+			Connection con = ConnectDB.getConnection();
+			String sql = "delete from HINHANH where MAANH = ?";
+			PreparedStatement preparedStatement = con.prepareStatement(sql);
+			preparedStatement.setString(1, maIMG);
+			k = preparedStatement.executeUpdate();
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return k>0;
+	}
 	
+	
+	//
 	public ArrayList<HinhAnh> getAnhTheoMa(String maIMG){
 		ArrayList<HinhAnh> dsIMG = new ArrayList<HinhAnh>();
 		

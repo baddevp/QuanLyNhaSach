@@ -341,8 +341,8 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener, MouseLi
 		modelKH.addColumn("Tên nhân viên");
 		modelKH.addColumn("CCCD");
 		modelKH.addColumn("Ngày Sinh");
-		modelKH.addColumn("Email");
 		modelKH.addColumn("Số điện thoại");
+		modelKH.addColumn("Địa chỉ");
 		modelKH.addColumn("Ngày vào làm");
 		tblKH = new JTable(modelKH);
 		tblKH.setBackground(new Color(153, 204, 255));
@@ -422,6 +422,9 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener, MouseLi
 		if (o.equals(btnThem)) {
 			themNV();
 		}
+		if (o.equals(btnXoa)) {
+			xoa();
+		}
 	}
 	
 	private void DocDuLieuDatabase() {
@@ -500,11 +503,9 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener, MouseLi
             Image img = icon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
             lblShowAnh.setIcon(new ImageIcon(img));
             lblShowAnh.setIcon(new ImageIcon(img));
-			btnChonAnh.setVisible(false); 
-			
+			btnChonAnh.setVisible(false); 			
 		}		
-	}
-	
+	}	
 	private void saveImageToDatabase() {
 
 	      String maAnh = hinhanh_dao.generateNewMaHinhAnh();
@@ -537,7 +538,7 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener, MouseLi
 		      String newMaAnh = hinhanh_dao.generateNewMaHinhAnh();
 		  } 
 		  private void generateTenANh() {
-		      // Gọi hàm phát sinh mã từ DAO_HinhAnh
+		      // Gọi hàm phát sinh tên từ DAO_HinhAnh
 		      String newTenAnh = hinhanh_dao.generateNewTenHinhAnh();
 		  }
 			
@@ -566,6 +567,7 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener, MouseLi
 			            return;
 			        }
 			        
+			        // lưu ảnh vào csdl HINHANH
 			        saveImageToDatabase();
 
 			        // Create a new NhanVien object
@@ -590,6 +592,31 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener, MouseLi
 			        JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 			    }
 			}
+		  public void xoa() {
+				int row = tblKH.getSelectedRow();
+				if(row == -1) {
+					JOptionPane.showMessageDialog(this, "Hãy chọn nhân viên cần xoá");
+				} else {
+					int tl;
+					tl = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa nhân viên này không ?", "Cảnh báo",
+							JOptionPane.YES_OPTION);
+					if (tl == JOptionPane.YES_OPTION) {
+						
+						//xoá ảnh trong csdl HINHANH
+						String maNV = modelKH.getValueAt(row, 0).toString();
+						String maAnh = nhanvien_dao.getMaAnhByMaNV(maNV);
+						HinhAnh hinhAnh = nhanvien_dao.getHinhAnhByMaAnh(maAnh);
+						hinhanh_dao.xoaIMG(maAnh);
+						
+						//
+						int index = tblKH.getSelectedRow();
+						nhanvien_dao.xoaNV(modelKH.getValueAt(tblKH.getSelectedRow(), 0).toString());
+						modelKH.removeRow(index);
+						xoaRong();
+					}
+				}
+			}		  
+
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
