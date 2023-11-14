@@ -33,11 +33,12 @@ public class DAO_HinhAnh {
 		}
 		return dsIMG; 
 	}
+
 	
 	public boolean themHinhAnh(HinhAnh img) {
         try {
             ConnectDB.getInstance();
-            Connection con = ConnectDB.getConnection();
+            Connection con = ConnectDB.getConnection(); 
             
             // Sử dụng PreparedStatement để thêm dữ liệu 
             String sql = "INSERT INTO HINHANH (MAANH, TENANH, URL) VALUES (?, ?, ?)";
@@ -54,7 +55,7 @@ public class DAO_HinhAnh {
         }
     }
 	
-	public String generateNewMaChucVu() {
+	public String generateNewMaHinhAnh() {
         String newMaChucVu = "HA00001"; // Giá trị mặc định nếu không có dữ liệu trong bảng
 
         try {
@@ -78,22 +79,7 @@ public class DAO_HinhAnh {
         }
         return newMaChucVu;
     }
-	public HinhAnh getHinhAnhTheoMa(String ma) {
-		ConnectDB.getInstance();
-		Connection con = ConnectDB.getConnection();
-		HinhAnh ha = null;
-		try {
-			PreparedStatement pstm = con.prepareStatement("select * from HINHANH where MAANH = ?");
-			pstm.setString(1, ma);
-			ResultSet rs = pstm.executeQuery();
-			while (rs.next()) {
-				ha = new HinhAnh(rs.getString(1), rs.getString(2),rs.getString(3));
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return ha;
-	}
+	
 	public String generateNewMaChucVusdsd() {
         String newMaChucVu = "Image00001"; // Giá trị mặc định nếu không có dữ liệu trong bảng
 
@@ -118,5 +104,57 @@ public class DAO_HinhAnh {
         }
         return newMaChucVu;
     }
+	
+	
+	public String getImagePathByMaANh(String maANh) {
+	    String imagePath = null;
 
+	    // SQL query to retrieve the image path based on maANh
+	    String sql = "SELECT URL FROM HINHANH WHERE MAANH = ?";
+
+	    try (Connection connection = ConnectDB.getConnection();
+	         PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+	        preparedStatement.setString(1, maANh);
+
+	        try (ResultSet resultSet = preparedStatement.executeQuery()) {
+	            if (resultSet.next()) {
+	                // Assuming 'URL' is the column name storing the image paths in your table
+	                imagePath = resultSet.getString("URL");
+	            }
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        // Handle the exception according to your application's needs
+	    }
+
+	    return imagePath;
+	}
+	
+	
+	public ArrayList<HinhAnh> getAnhTheoMa(String maIMG){
+		ArrayList<HinhAnh> dsIMG = new ArrayList<HinhAnh>();
+		
+		try {
+			ConnectDB.getInstance();
+			Connection con = ConnectDB.getConnection();
+			String sql = "select * from HINHANH where MAANH = ?";
+			PreparedStatement preparedStatement = con.prepareStatement(sql);
+			preparedStatement.setString(1, maIMG);
+			ResultSet rs = preparedStatement.executeQuery();
+			while (rs.next()) {
+				String maAnh = rs.getString(1);
+				String tenAnh = rs.getString(2);
+				String url = rs.getNString(3);
+				
+				HinhAnh img = new HinhAnh(maAnh, tenAnh, url);
+				dsIMG.add(img);
+			}	
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return dsIMG;	
+	}
 }
+
