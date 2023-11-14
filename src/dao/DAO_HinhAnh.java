@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import connectDB.ConnectDB;
 import entity.HinhAnh;
+import entity.MauSac;
 import entity.NhaSanXuat;
 
 public class DAO_HinhAnh {
@@ -132,29 +133,21 @@ public class DAO_HinhAnh {
 	}
 	
 	
-	public ArrayList<HinhAnh> getAnhTheoMa(String maIMG){
-		ArrayList<HinhAnh> dsIMG = new ArrayList<HinhAnh>();
-		
+	public HinhAnh getHinhAnhTheoMa(String ma) {
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		HinhAnh ha = null;
 		try {
-			ConnectDB.getInstance();
-			Connection con = ConnectDB.getConnection();
-			String sql = "select * from HINHANH where MAANH = ?";
-			PreparedStatement preparedStatement = con.prepareStatement(sql);
-			preparedStatement.setString(1, maIMG);
-			ResultSet rs = preparedStatement.executeQuery();
+			PreparedStatement pstm = con.prepareStatement("select * from HINHANH where MAANH = ?");
+			pstm.setString(1, ma);
+			ResultSet rs = pstm.executeQuery();
 			while (rs.next()) {
-				String maAnh = rs.getString(1);
-				String tenAnh = rs.getString(2);
-				String url = rs.getNString(3);
-				
-				HinhAnh img = new HinhAnh(maAnh, tenAnh, url);
-				dsIMG.add(img);
-			}	
-		}
-		catch(SQLException e) {
+				ha = new HinhAnh(rs.getString(1), rs.getString(2),rs.getString(3));
+			}
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return dsIMG;	
+		return ha;
 	}
 }
 
