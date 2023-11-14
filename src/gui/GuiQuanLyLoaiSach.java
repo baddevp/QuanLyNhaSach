@@ -8,6 +8,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -17,15 +23,23 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableRowSorter;
+
+import connectDB.ConnectDB;
+import dao.DAO_QuanLyLoaiSach;
+import entity.LoaiSach;
+
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.RowFilter;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-public class GuiQuanLyLoaiSach extends JFrame implements ActionListener {
+public class GuiQuanLyLoaiSach extends JFrame implements ActionListener, MouseListener {
 
 	public static JPanel contentPane;
 	private JTextField txtMaLoaiSach;
@@ -37,6 +51,12 @@ public class GuiQuanLyLoaiSach extends JFrame implements ActionListener {
 	private JTable tblLS;
 	private JTextField txtTrangThai;
 	private ButtonGroup group;
+	private JButton btnDatLai;
+	private JButton btnLuu;
+	private JButton btnXoa;
+	private JButton btnSua;
+	private JButton btnThem;
+	private DAO_QuanLyLoaiSach loaiSach_dao;
 
 	/**
 	 * Launch the application.
@@ -185,28 +205,28 @@ public class GuiQuanLyLoaiSach extends JFrame implements ActionListener {
 		contentPane.add(pnlTacVu);
 		pnlTacVu.setLayout(null);
 		
-		JButton btnThem = new JButton("Thêm");
+		btnThem = new JButton("Thêm");
 		btnThem.setBounds(140, 21, 180, 48);
 		pnlTacVu.add(btnThem);
 		btnThem.setFont(font2);
 		btnThem.setIcon(new ImageIcon(GuiQuanLyLoaiSach.class.getResource("/image/TacVu_Them1.png")));
 		btnThem.setBackground(Color.WHITE);
 		
-		JButton btnSua = new JButton("Sửa");
+		btnSua = new JButton("Sửa");
 		btnSua.setFont(new Font("Times New Roman", Font.PLAIN, 24));
 		btnSua.setBounds(410, 21, 180, 48);
 		pnlTacVu.add(btnSua);
 		btnSua.setIcon(new ImageIcon(GuiQuanLyLoaiSach.class.getResource("/image/TacVu_Sua.png")));
 		btnSua.setBackground(Color.WHITE);
 		
-		JButton btnXoa = new JButton("Xóa");
+		btnXoa = new JButton("Xóa");
 		btnXoa.setFont(new Font("Times New Roman", Font.PLAIN, 24));
 		btnXoa.setBounds(680, 21, 180, 48);
 		pnlTacVu.add(btnXoa);
 		btnXoa.setIcon(new ImageIcon(GuiQuanLyLoaiSach.class.getResource("/image/TacVu_Xoa1.png")));
 		btnXoa.setBackground(Color.WHITE);
 		
-		JButton btnLuu = new JButton("Lưu");
+		btnLuu = new JButton("Lưu");
 		btnLuu.setEnabled(false);
 		btnLuu.setFont(new Font("Times New Roman", Font.PLAIN, 24));
 		btnLuu.setBounds(950, 21, 180, 48);
@@ -214,7 +234,7 @@ public class GuiQuanLyLoaiSach extends JFrame implements ActionListener {
 		btnLuu.setIcon(new ImageIcon(GuiQuanLyLoaiSach.class.getResource("/image/TacVu_Luu.png")));
 		btnLuu.setBackground(Color.WHITE);
 		
-		JButton btnDatLai = new JButton("Đặt lại");
+		btnDatLai = new JButton("Đặt lại");
 		btnDatLai.setFont(new Font("Times New Roman", Font.PLAIN, 24));
 		btnDatLai.setBounds(1220, 21, 180, 48);
 		pnlTacVu.add(btnDatLai);
@@ -254,11 +274,212 @@ public class GuiQuanLyLoaiSach extends JFrame implements ActionListener {
 		txtTrangThai.setBounds(10, 945, 1894, 20);
 		contentPane.add(txtTrangThai);
 		txtTrangThai.setColumns(10);
+		
+		//
+		tblLS.addMouseListener(this);
+		btnDatLai.addActionListener(this);
+		btnLuu.addActionListener(this);
+		btnSua.addActionListener(this);
+		btnThem.addActionListener(this);
+		btnXoa.addActionListener(this);
+		
+		//
+		loaiSach_dao = new DAO_QuanLyLoaiSach();
+		try {
+			ConnectDB.getInstance().connect();
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+		//
+		DocDuLieuDatabase();
+		id();
+		
+		txtTimKiem.addKeyListener((KeyListener) new KeyAdapter() {
+		    @Override
+		    public void keyReleased(KeyEvent e) {
+		        String tuKhoa = txtTimKiem.getText().trim();
+		        timKiem(tuKhoa);
+		    }
+		}); 
 
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		Object o = e.getSource();
+		if (o.equals(btnDatLai)) {
+			xoaRong();
+		}
+		if (o.equals(btnThem)) {
+			themLS();
+		}
+		if (o.equals(btnXoa)) {
+			xoa();
+		}
+		if (o.equals(btnSua)) {
+			btSua();
+		}
+		if (o.equals(btnLuu)) {
+			updateLS();
+		}
+	}
+	
+	public void DocDuLieuDatabase() {
+		loaiSach_dao = new DAO_QuanLyLoaiSach();
+		//tblCV.setRowHeight(25);
+		for(LoaiSach ls : loaiSach_dao.getALLLoaiSach()) {
+			modelLoaiSach.addRow(new Object[] {ls.getMaLoaiSach(), ls.getTenLoai(), ls.getMoTa(), ls.getVat()});
+		}
+	}
+	
+	// phát sinh mã tự động
+	public void id() {
+		String newMaLoaiSach = loaiSach_dao.TuPhatSinhMaLoaiSach();
+		txtMaLoaiSach.setText(newMaLoaiSach);
+	}
+	
+	public void xoaRong() {
+		id();
+		txtTimKiem.setText("");
+		txtTenLoaiSach.setText("");
+		txtMoTa.setText("");
+		txtVAT.setText("");
+		txtTenLoaiSach.requestFocus();
+		txtTenLoaiSach.setEditable(true);
+		txtMoTa.setEditable(true);
+		txtVAT.setEditable(true);
+		btnLuu.setEnabled(false);
+		btnSua.setEnabled(true);
+	}
+	
+	private void themLS() {
+		String tenCV = txtTenLoaiSach.getText();
+		String newMaLoaiSach = loaiSach_dao.TuPhatSinhMaLoaiSach();
+		txtMaLoaiSach.setText(newMaLoaiSach);
+		String mota = txtMoTa.getText();
+		Double vat = Double.parseDouble(txtVAT.getText());
+		LoaiSach ls = new LoaiSach(newMaLoaiSach, tenCV, mota, vat);
+		if (loaiSach_dao.addLoaiSach(ls)) {
+			modelLoaiSach.addRow(new Object[] { ls.getMaLoaiSach(), ls.getTenLoai(), ls.getMoTa(), ls.getVat()});	
+			JOptionPane.showMessageDialog(this, "Thêm chức vụ thành công");
+			xoaRong();
+		}else {
+			JOptionPane.showMessageDialog(this, "Không thành công");
+		}
+	}
+	
+	public void xoa() {
+		int row = tblLS.getSelectedRow();
+		if(row == -1) {
+			JOptionPane.showMessageDialog(this, "Hãy chọn loại sách cần xoá");
+		} else {
+			int tl;
+			tl = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa loại sách này không ?", "Cảnh báo",
+					JOptionPane.YES_OPTION);
+			if (tl == JOptionPane.YES_OPTION) {
+				int index = tblLS.getSelectedRow();
+				loaiSach_dao.deleteLoaiSach(modelLoaiSach.getValueAt(tblLS.getSelectedRow(), 0).toString());
+				modelLoaiSach.removeRow(index);
+				xoaRong();
+			}
+		}
+	}
+	
+	private void btSua() {
+		int row = tblLS.getSelectedRow();
+	    if (row == -1) {
+	        JOptionPane.showMessageDialog(this, "Hãy chọn chức vụ cần sửa");
+	    } else {
+	        txtTenLoaiSach.setEditable(true);
+	        txtTenLoaiSach.requestFocus();
+	        txtMoTa.setEditable(true);
+			txtVAT.setEditable(true);
+			btnLuu.setEnabled(false);
+	        
+	        btnSua.setEnabled(false); // Disable the "Sửa" button
+	        btnLuu.setEnabled(true);
+	    }
+	}
+	
+	private void updateLS() {
+		
+		String maLS = txtMaLoaiSach.getText();
+	    String tenLS = txtTenLoaiSach.getText();
+	    String mota = txtMoTa.getText();
+	    double vat = Double.parseDouble(txtVAT.getText());
+	    
+	    LoaiSach ls = new LoaiSach(maLS, tenLS, mota, vat);
+
+	    // Call the DAO method to update the KhachHang in the database
+	    boolean result = loaiSach_dao.updateLoaiSach(ls);
+
+	    // Check the result and show appropriate messages
+	    if (result) {
+	        JOptionPane.showMessageDialog(this, "Cập nhật thông tin loại sách thành công");
+	        // Update the corresponding row in the table
+	        int selectedRow = tblLS.getSelectedRow();
+	        modelLoaiSach.setValueAt(tenLS, selectedRow, 1);
+	        modelLoaiSach.setValueAt(mota, selectedRow, 2);
+	        modelLoaiSach.setValueAt(vat, selectedRow, 3);
+	        
+	        // Reset the form and button states
+	        xoaRong();
+	        btnSua.setEnabled(true);
+	        btnLuu.setEnabled(false);
+	    } else {
+	        JOptionPane.showMessageDialog(this, "Cập nhật thông tin loại sách không thành công");
+	    }
+	}
+	
+	private void timKiem(String tuKhoa) {
+	    TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(modelLoaiSach);
+	    tblLS.setRowSorter(sorter);
+
+	    if (tuKhoa.isEmpty()) {
+	        sorter.setRowFilter(null);
+	    } else {
+	        RowFilter<DefaultTableModel, Object> filter = RowFilter.regexFilter("(?i)" + Pattern.quote(tuKhoa), 1, 3);
+	        sorter.setRowFilter(filter);
+	    }
+	}
+
+	
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		int row = 	tblLS.getSelectedRow();
+		txtMaLoaiSach.setText(tblLS.getValueAt(row, 0).toString());
+		txtTenLoaiSach.setText(tblLS.getValueAt(row, 1).toString());
+		txtMoTa.setText(tblLS.getValueAt(row, 2).toString());
+		txtVAT.setText(tblLS.getValueAt(row, 3).toString());
+		txtMoTa.setEditable(false);
+		txtVAT.setEditable(false);
+		txtTenLoaiSach.setEditable(false);
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -189,5 +189,26 @@ public class DAO_HinhAnh {
 		}
 		return ha;
 	}
+	
+//	public boolean updateIMG(String maIMG, String url) {
+//	    int k = 0;
+//	    try {
+//	        ConnectDB.getInstance();
+//	        Connection con = ConnectDB.getConnection();
+//	        
+//	        // Customize the SQL statement based on your database schema
+//	        String sql = "UPDATE HINHANH SET URL = ? WHERE MAANH = ?";
+//	        
+//	        PreparedStatement preparedStatement = con.prepareStatement(sql);
+//	        preparedStatement.setString(1, url);
+//	        preparedStatement.setString(2, maIMG);
+//	        
+//	        k = preparedStatement.executeUpdate();
+//	    } catch (Exception e) {
+//	        e.printStackTrace();
+//	    }
+//	    return k > 0;
+//	}
+
 }
 

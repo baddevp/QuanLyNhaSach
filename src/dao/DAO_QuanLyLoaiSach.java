@@ -19,7 +19,7 @@ public class DAO_QuanLyLoaiSach {
 			Statement stm = con.createStatement();
 			ResultSet rs = stm.executeQuery("select * from LOAISACH");
 			while (rs.next()) {
-				ds.add(new LoaiSach(rs.getString(1), rs.getString(2), rs.getString(4), rs.getDouble(4)));
+				ds.add(new LoaiSach(rs.getString(1), rs.getString(2), rs.getString(3), rs.getDouble(4)));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -131,4 +131,29 @@ public class DAO_QuanLyLoaiSach {
 		}
 		return n > 0;
 	}
+	
+	public String TuPhatSinhMaLoaiSach() {
+        String newMaLoaiSach = "LS001"; // Giá trị mặc định nếu không có dữ liệu trong bảng
+
+        try {
+            ConnectDB.getInstance();
+            Connection con = ConnectDB.getConnection();
+            String sql = "SELECT MAX(MALOAISACH) FROM LOAISACH";
+            Statement stm = con.createStatement();
+            ResultSet rs = stm.executeQuery(sql);
+
+            if (rs.next()) {
+                String lastMaChucVu = rs.getString(1);
+
+                if (lastMaChucVu != null) {
+                    int number = Integer.parseInt(lastMaChucVu.substring(2).trim()) + 1;
+                    String numberStr = String.format("%03d", number);
+                    newMaLoaiSach = "LS" + numberStr;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return newMaLoaiSach;
+    }
 }
