@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -10,6 +11,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -22,6 +24,7 @@ import javax.swing.table.JTableHeader;
 
 import connectDB.ConnectDB;
 import dao.DAO_MauSac;
+import entity.KhachHang;
 import entity.MauSac;
 
 import javax.swing.JLabel;
@@ -52,7 +55,8 @@ public class GuiQuanLyMauSac extends JFrame implements ActionListener, MouseList
 	private JButton btnXoa;
 	private JButton btnLuu;
 	private JButton btnDatLai;
-	private DAO_MauSac mausac_dao;
+	private DAO_MauSac dao_mausac;
+	private Component btnXoaTrang;
 
 	/**
 	 * Launch the application.
@@ -264,7 +268,7 @@ public class GuiQuanLyMauSac extends JFrame implements ActionListener, MouseList
 		btnThem.addActionListener(this);
 		
 		//
-		mausac_dao = new DAO_MauSac();
+		dao_mausac = new DAO_MauSac();
 		try {
 			ConnectDB.getInstance().connect();
 		} catch (Exception e) {
@@ -273,7 +277,8 @@ public class GuiQuanLyMauSac extends JFrame implements ActionListener, MouseList
 		}
 		
 		//
-		DocDuLieuDatabase();
+		loadData(dao_mausac.getAllMauSac());
+		dongMoNhapLieu(false);
 
 	}
 
@@ -285,21 +290,115 @@ public class GuiQuanLyMauSac extends JFrame implements ActionListener, MouseList
 			xoaRong();
 		}
 		if (o.equals(btnThem)) {
-			themCV();
+			if (btnThem.getText().equals("Thêm")) {
+				moNutThem();
+			} else {
+				tblMS.addMouseListener(this);
+				dongMoNhapLieu(false);
+				btnThem.setText("Thêm");
+				btnSua.setEnabled(true);
+				btnXoa.setEnabled(true);
+				btnXoaTrang.setEnabled(false);
+				btnLuu.setEnabled(false);
+				txtMaMauSac.setText("");
+				xoaRong();
+				loadData(dao_mausac.getAllMauSac());
+			}
 		}
 		if (o.equals(btnXoa)) {
 			xoa();
-		}
+		}if (o.equals(btnSua)) {
+			if (btnSua.getText().equals("Sửa")) {
+				int hangDuocChon = tblMS.getSelectedRow();
+				if (hangDuocChon > -1) {
+					dongMoNhapLieu(true);
+					btnSua.setText("Hủy");
+					btnThem.setEnabled(false);
+					btnXoa.setEnabled(false);
+					btnXoaTrang.setEnabled(true);
+					btnLuu.setEnabled(true);
+				} else {
+					JOptionPane.showMessageDialog(this,
+							"Vui lòng chọn 1 hàng trong bảng danh sách khách hàng, trước khi sửa!");
+				}
+			} else {
+				dongMoNhapLieu(false);
+				btnSua.setText("Sửa");
+				btnThem.setEnabled(true);
+				btnXoa.setEnabled(true);
+				btnXoaTrang.setEnabled(false);
+				btnLuu.setEnabled(false);
+				txtMaMauSac.setText("");
+				xoaRong();
+			}
+		}if (o.equals(btnLuu)) {
+			if (btnThem.getText().equals("Hủy")) {
+				themMauSac();
+			}
+			if (btnSua.getText().equals("Hủy")) {
+				if (validData()) {
+					String maMau = txtMaMauSac.getText().trim();
+					String tenMau = txtTenMau.getText().trim();
+
+					if (dao_mausac.updateMauSac(new MauSac(maMau, tenMau))) {
+						loadData(dao_mausac.getAllMauSac());
+						JOptionPane.showMessageDialog(this, "Sửa thông tin màu sắc thành công");
+						dongMoNhapLieu(false);
+						btnSua.setText("Sửa");
+						btnThem.setEnabled(true);
+						btnXoa.setEnabled(true);
+						btnXoaTrang.setEnabled(false);
+						btnLuu.setEnabled(false);
+					}
+				}
+			}
+		} 
 
 	}
-	public void DocDuLieuDatabase() {
-		mausac_dao = new DAO_MauSac();
-		//tblCV.setRowHeight(25);
-		for(MauSac ms : mausac_dao.getAllMauSac()) {
-			modelMS.addRow(new Object[] {ms.getMaMau(), ms.getTenMau()});
+	
+	public void moNutThem() {
+		dongMoNhapLieu(true);
+		btnLuu.setEnabled(true);
+		btnSua.setEnabled(false);
+		btnXoa.setEnabled(false);
+		btnDatLai.setEnabled(true);
+		btnThem.setText("Hủy");
+		tblMS.removeMouseListener(this);
+		xoaRong();
+	}
+	public void themMauSac() {
+		if (validData()) {
+			String maMS = txtMaMauSac.getText().trim();
+			String tenMau = txtTenMau.getText().trim();
+			
+			if (dao_mausac.createMS(new MauSac(maMS, tenMau))) {
+				loadData(dao_mausac.getAllMauSac());
+				JOptionPane.showMessageDialog(this, "Thêm màu sắc mới thành công");	
+				btnThem.setText("Thêm");
+				xoaRong();
+				btnSua.setEnabled(true);
+				btnXoa.setEnabled(true);
+				btnDatLai.setEnabled(false);
+				btnLuu.setEnabled(false);
+				txtMaMauSac.setText("");
+				tblMS.addMouseListener(this);
+				dongMoNhapLieu(false);
+			}
 		}
 	}
-	
+	private void loadData(ArrayList<MauSac> ms) {
+		modelMS.setRowCount(0);
+		for (int i = 0; i < ms.size(); i++) {
+			String maMau = ms.get(i).getMaMau();
+			String tenMau = ms.get(i).getTenMau();
+			String row[] = { maMau, tenMau};
+			modelMS.addRow(row);
+		}
+	}
+	private void dongMoNhapLieu(Boolean b) {
+		txtMaMauSac.setEditable(false);
+		txtTenMau.setEditable(b);
+	}
 	public void xoaRong() {
 		txtMaMauSac.setText("");
 		txtTimKiem.setText("");
@@ -307,23 +406,7 @@ public class GuiQuanLyMauSac extends JFrame implements ActionListener, MouseList
 		txtTenMau.setEditable(true);
 		txtMaMauSac.setEditable(true);
 		txtMaMauSac.requestFocus();
-		btnLuu.setEnabled(false);
 	}
-	
-	private void themCV() {
-		String tenMS = txtTenMau.getText();
-		String mauMS = txtMaMauSac.getText();
-		
-		MauSac ms = new MauSac(mauMS, tenMS);
-		if (mausac_dao.createMS(ms)) {
-			modelMS.addRow(new Object[] { ms.getMaMau(), ms.getTenMau()});	
-			JOptionPane.showMessageDialog(this, "Thêm chức vụ thành công");
-			xoaRong();
-		}else {
-			JOptionPane.showMessageDialog(this, "Không thành công");
-		}
-	}
-	
 	public void xoa() {
 		int row = tblMS.getSelectedRow();
 		if(row == -1) {
@@ -334,13 +417,30 @@ public class GuiQuanLyMauSac extends JFrame implements ActionListener, MouseList
 					JOptionPane.YES_OPTION);
 			if (tl == JOptionPane.YES_OPTION) {
 				int index = tblMS.getSelectedRow();
-				mausac_dao.xoaMS(modelMS.getValueAt(tblMS.getSelectedRow(), 0).toString());
+				dao_mausac.xoaMS(modelMS.getValueAt(tblMS.getSelectedRow(), 0).toString());
 				modelMS.removeRow(index);
 				xoaRong();
 			}
 		}
 	}
-
+	private boolean validData() {
+		String tenMau  = txtTenMau.getText().trim();
+		if (tenMau.length() == 0) {
+			showMessage(txtTenMau, "Nhập tên màu sắc!");
+			return false;
+		}
+		if (!tenMau.matches(
+				"^([A-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪỬỮỰỲỴÝỶỸa-záàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệóòỏõọôốồổỗộơớờởỡợíìỉĩịúùủũụưứừửữựýỳỷỹỵđ\\d]*\\s?)+$")) {
+			showMessage(txtTenMau, "Tên màu sắc bao gồm chữ cái, chữ số tiếng Việt, không bao gồm ký tự đặc biệt!");
+			return false;
+		}
+		
+		return true;
+	}
+	private void showMessage(JTextField txt, String message) {
+		txt.setText("");
+		JOptionPane.showMessageDialog(this, message);
+	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
