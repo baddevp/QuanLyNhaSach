@@ -4,13 +4,21 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -20,7 +28,16 @@ import javax.swing.table.JTableHeader;
 
 import com.toedter.calendar.JDateChooser;
 
+import connectDB.ConnectDB;
+import dao.DAO_ChucVu;
+import dao.DAO_HinhAnh;
+import dao.DAO_NhanVien;
+import entity.ChucVu;
+import entity.HinhAnh;
+import entity.NhanVien;
+
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
@@ -32,14 +49,13 @@ import javax.swing.JComboBox;
 import javax.swing.border.TitledBorder;
 import javax.swing.border.EtchedBorder;
 
-public class GuiQuanLyNhanVien extends JFrame implements ActionListener {
+public class GuiQuanLyNhanVien extends JFrame implements ActionListener, MouseListener {
 
 	public static JPanel contentPane;
 	private JTextField txtMaNV;
 	private JTextField txtTenNV;
 	private JTextField txtCCCD;
 	private JTextField txtSDT;
-	private JTextField txtEmail;
 	private JTextField txtTimKiem;
 	private DefaultTableModel modelKH;
 	private JTable tblKH;
@@ -48,6 +64,19 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener {
 	private JDateChooser dtmNgayVaoLam;
 	private JButton btnChonAnh;
 	private JTextField txtDiaChi;
+	private JButton btnDatLai;
+	private JButton btnLuu;
+	private JButton btnXoa;
+	private JButton btnSua;
+	private JButton btnThem;
+	private JComboBox cboChucVu;
+	private JComboBox cboGioiTinh;
+	private JLabel lblShowAnh;
+	private DAO_HinhAnh hinhanh_dao;
+	private DAO_NhanVien nhanvien_dao;
+	private DAO_ChucVu chucvu_dao;
+	private Date date1;
+	private String selectedImagePath;
 
 	/**
 	 * Launch the application.
@@ -127,11 +156,6 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener {
 		lblCCCD.setBounds(850, 35, 163, 29);
 		pnlThongTinKH.add(lblCCCD);
 		
-		JLabel lblEmail = new JLabel("Email :");
-		lblEmail.setFont(new Font("Times New Roman", Font.PLAIN, 24));
-		lblEmail.setBounds(50, 130, 163, 30);
-		pnlThongTinKH.add(lblEmail);
-		
 		JLabel lblSDT = new JLabel("Số điện thoại :");
 		lblSDT.setFont(new Font("Times New Roman", Font.PLAIN, 24));
 		lblSDT.setBounds(450, 130, 163, 29);
@@ -144,7 +168,7 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener {
 		
 		JLabel lblGioiTinh = new JLabel("Giới tính:");
 		lblGioiTinh.setFont(new Font("Times New Roman", Font.PLAIN, 24));
-		lblGioiTinh.setBounds(50, 235, 102, 29);
+		lblGioiTinh.setBounds(50, 130, 102, 29);
 		pnlThongTinKH.add(lblGioiTinh);
 		
 		txtMaNV = new JTextField();
@@ -172,11 +196,6 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener {
 		txtSDT.setBounds(450, 175, 300, 35);
 		pnlThongTinKH.add(txtSDT);
 		
-		txtEmail = new JTextField();
-		txtEmail.setColumns(10);
-		txtEmail.setBounds(50, 175, 300, 35);
-		pnlThongTinKH.add(txtEmail);
-		
 		dtmNgaySinh = new JDateChooser();
 		dtmNgaySinh.setBounds(1250, 80, 300, 35);
 		pnlThongTinKH.add(dtmNgaySinh);
@@ -191,39 +210,46 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener {
 		pnlAnhNhanVien.setBackground(new Color(255, 255, 255));
 		pnlAnhNhanVien.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		pnlAnhNhanVien.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Ảnh nhân viên", TitledBorder.CENTER, TitledBorder.TOP, font2, new Color(0, 0, 0)));
-		pnlAnhNhanVien.setBounds(1670, 11, 214, 258);
+		pnlAnhNhanVien.setBounds(1603, 11, 214, 258);
 		pnlThongTinKH.add(pnlAnhNhanVien);
 		pnlAnhNhanVien.setLayout(null);
 		
-		JPanel pnlChuaAnh = new JPanel();
-		pnlChuaAnh.setBackground(new Color(255, 255, 255));
-		pnlChuaAnh.setBounds(10, 31, 194, 216);
-		pnlAnhNhanVien.add(pnlChuaAnh);
-		pnlChuaAnh.setLayout(null);
+		lblShowAnh = new JLabel("");
+		lblShowAnh.setBounds(10, 26, 194, 221);
+		pnlAnhNhanVien.add(lblShowAnh);
 		
 		btnChonAnh = new JButton("");
+		btnChonAnh.setBounds(73, 90, 70, 70);
+		pnlAnhNhanVien.add(btnChonAnh);
 		btnChonAnh.setBackground(new Color(255, 255, 255));
 		btnChonAnh.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			}
 		});
-		btnChonAnh.setBounds(62, 73, 70, 70);
 		btnChonAnh.setIcon(new ImageIcon(GuiQuanLyNhanVien.class.getResource("/image/ChonAnh.png")));
-		pnlChuaAnh.add(btnChonAnh);
 		
 		JLabel lblDiaChi = new JLabel("Địa chỉ:");
 		lblDiaChi.setFont(new Font("Times New Roman", Font.PLAIN, 24));
-		lblDiaChi.setBounds(1250, 130, 163, 30);
+		lblDiaChi.setBounds(50, 239, 123, 30);
 		pnlThongTinKH.add(lblDiaChi);
 		
-		JComboBox cboGioiTinh = new JComboBox();
-		cboGioiTinh.setBounds(161, 229, 189, 35);
+		cboGioiTinh = new JComboBox();
+		cboGioiTinh.setBounds(50, 175, 299, 35);
 		pnlThongTinKH.add(cboGioiTinh);
 		
 		txtDiaChi = new JTextField();
 		txtDiaChi.setColumns(10);
-		txtDiaChi.setBounds(1250, 175, 300, 35);
+		txtDiaChi.setBounds(142, 234, 1223, 35);
 		pnlThongTinKH.add(txtDiaChi);
+		
+		cboChucVu = new JComboBox();
+		cboChucVu.setBounds(1251, 175, 299, 35);
+		pnlThongTinKH.add(cboChucVu);
+		
+		JLabel lblChcV = new JLabel("Chức vụ :");
+		lblChcV.setFont(new Font("Times New Roman", Font.PLAIN, 24));
+		lblChcV.setBounds(1250, 130, 163, 29);
+		pnlThongTinKH.add(lblChcV);
 		
 		
 		JPanel pnlTacVu = new JPanel();
@@ -233,28 +259,28 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener {
 		contentPane.add(pnlTacVu);
 		pnlTacVu.setLayout(null);
 		
-		JButton btnThem = new JButton("Thêm");
+		btnThem = new JButton("Thêm");
 		btnThem.setBounds(100, 21, 180, 48);
 		pnlTacVu.add(btnThem);
 		btnThem.setFont(font2);
 		btnThem.setIcon(new ImageIcon(GuiQuanLyNhanVien.class.getResource("/image/TacVu_Them1.png")));
 		btnThem.setBackground(Color.WHITE);
 		
-		JButton btnSua = new JButton("Sửa");
+		btnSua = new JButton("Sửa");
 		btnSua.setFont(new Font("Times New Roman", Font.PLAIN, 24));
 		btnSua.setBounds(320, 21, 180, 48);
 		pnlTacVu.add(btnSua);
 		btnSua.setIcon(new ImageIcon(GuiQuanLyNhanVien.class.getResource("/image/TacVu_Sua.png")));
 		btnSua.setBackground(Color.WHITE);
 		
-		JButton btnXoa = new JButton("Xóa");
+		btnXoa = new JButton("Xóa");
 		btnXoa.setFont(new Font("Times New Roman", Font.PLAIN, 24));
 		btnXoa.setBounds(550, 21, 180, 48);
 		pnlTacVu.add(btnXoa);
 		btnXoa.setIcon(new ImageIcon(GuiQuanLyNhanVien.class.getResource("/image/TacVu_Xoa1.png")));
 		btnXoa.setBackground(Color.WHITE);
 		
-		JButton btnLuu = new JButton("Lưu");
+		btnLuu = new JButton("Lưu");
 		btnLuu.setEnabled(false);
 		btnLuu.setFont(new Font("Times New Roman", Font.PLAIN, 24));
 		btnLuu.setBounds(780, 21, 180, 48);
@@ -262,7 +288,7 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener {
 		btnLuu.setIcon(new ImageIcon(GuiQuanLyNhanVien.class.getResource("/image/TacVu_Luu.png")));
 		btnLuu.setBackground(Color.WHITE);
 		
-		JButton btnDatLai = new JButton("Đặt lại");
+		btnDatLai = new JButton("Đặt lại");
 		btnDatLai.setFont(new Font("Times New Roman", Font.PLAIN, 24));
 		btnDatLai.setBounds(1010, 21, 180, 48);
 		pnlTacVu.add(btnDatLai);
@@ -336,11 +362,316 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener {
 		txtTrangThai.setBounds(10, 950, 1894, 20);
 		contentPane.add(txtTrangThai);
 		txtTrangThai.setColumns(10);
+		
+		btnDatLai.addActionListener(this);
+		btnChonAnh.addActionListener(this);
+		btnDatLai.addActionListener(this);
+		btnThem.addActionListener(this);
+		btnSua.addActionListener(this);
+		btnXoa.addActionListener(this);
+		tblKH.addMouseListener(this);
+		
+		
+		//
+		DefaultComboBoxModel<String> gioiTinhModel = new DefaultComboBoxModel<>();
+
+		// Add items to the model
+		gioiTinhModel.addElement("Nam");
+		gioiTinhModel.addElement("Nữ");
+		
+		// Set the model to the JComboBox
+		cboGioiTinh.setModel(gioiTinhModel);
+		
+		// 
+		
+		try {
+			ConnectDB.getInstance().connect();
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+		
+		hinhanh_dao = new DAO_HinhAnh();
+		nhanvien_dao = new DAO_NhanVien();
+		chucvu_dao = new DAO_ChucVu();
+		
+		ArrayList<ChucVu> listTK = chucvu_dao.getAllCV();
+		for(ChucVu cv : listTK) {
+			cboChucVu.addItem(cv.getMaChucVu());
+		}
+		
+        DocDuLieuDatabase();
+		
+		// khi chọn xong ngày vào làm thì txtMaNV sẽ hiện thị mã
+		dtmNgayVaoLam.addPropertyChangeListener("date", e -> {
+            // cập nhật mã lên txtMaNV
+            hienThiMaKH();
+        });
 
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		Object o = e.getSource();
+		if (o.equals(btnDatLai)) {
+			xoaRong();
+		}
+		if (o.equals(btnChonAnh)) {
+			chonAnh();
+		}
+		if (o.equals(btnThem)) {
+			themNV();
+		}
+	}
+	
+	private void DocDuLieuDatabase() {
+		nhanvien_dao = new DAO_NhanVien();
+		tblKH.setRowHeight(25);
+		for (NhanVien nv : nhanvien_dao.getAllNV()) {
+				
+			modelKH.addRow(new Object[] {nv.getMaNV(), nv.getTenNV(), nv.getCccd(), nv.getNgaySinh(),
+                    nv.getSdt(),nv.getDiaChi(),nv.getNgayVaoLam()});
+		}
+	}
+	
+	private String generateMaNhanVien() {
+		
+		 java.util.Date selectedDate = dtmNgayVaoLam.getDate();
+
+		    if (selectedDate != null) {
+		        try {
+		            // Format selected date to get the part of the ID
+		            SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy");
+		            String datePart = dateFormat.format(selectedDate);
+
+		            // Get the current sequence number from the database
+		            int sequenceNumber = nhanvien_dao.getCurrentSequenceNumber();
+
+		            // Increase the sequence number
+		            sequenceNumber++;
+
+		            // Format the sequence number with leading zeros
+		            String sequencePart = String.format("%03d", sequenceNumber);
+
+		            // Combine date part and sequence part to form the ID
+		            return "NV" + datePart + sequencePart;
+		        } catch (Exception e) {
+		            e.printStackTrace();
+		        }
+		    }
+		    
+		    return "";
+    }
+	
+	//hàm hiện thị mã lên txtMaKH
+	private void hienThiMaKH() {
+	    String maNV = generateMaNhanVien(); // Generate the ID based on the date
+	    txtMaNV.setText(maNV);
+	}
+	
+	public void xoaRong() {
+		lblShowAnh.setIcon(null);
+		btnChonAnh.setVisible(true);
+		hienThiMaKH();
+		txtTenNV.setText("");
+		txtDiaChi.setText("");
+		txtCCCD.setText("");
+		txtTimKiem.setText("");
+		txtSDT.setText("");
+		txtTenNV.requestFocus();
+	}
+	
+	// Chọn ảnh
+	public void chonAnh() {
+		//JFileChooser fileChooser = new JFileChooser();  mở thisPC
+		
+		// Đặt thư mục ban đầu thành D:\\HK5\\PTUD...
+		File initialDirectory = new File("D:\\HK5\\PTUD\\CodeQLCH_FutureZE\\QuanLyNhaSach\\src\\image");
+	    JFileChooser fileChooser = new JFileChooser(initialDirectory);
+		
+		//Hiển thị hộp thoại chọn tập tin
+        int result = fileChooser.showOpenDialog(this);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            selectedImagePath = selectedFile.getAbsolutePath();
+
+            ImageIcon icon = new ImageIcon(selectedImagePath);
+            Image img = icon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+            lblShowAnh.setIcon(new ImageIcon(img));
+            lblShowAnh.setIcon(new ImageIcon(img));
+			btnChonAnh.setVisible(false); 
+			
+		}		
+	}
+	
+	private void saveImageToDatabase() {
+
+	      String maAnh = hinhanh_dao.generateNewMaHinhAnh();
+	      String tenAnh = hinhanh_dao.generateNewTenHinhAnh();
+	      String imagePath = lblShowAnh.getIcon() != null ? lblShowAnh.getIcon().toString() : "";
+
+	      // Validate that required fields are not empty
+	      if (maAnh.isEmpty() || tenAnh.isEmpty() || imagePath.isEmpty()) {
+	          JOptionPane.showMessageDialog(this, "Please fill in all fields and choose an image.", 
+	          		                              "Error", JOptionPane.ERROR_MESSAGE);
+	          return;
+	      }
+
+	      // Use the image path obtained from choosing the image
+	      imagePath = selectedImagePath;
+
+	      // Create an instance of the HinhAnh class with the provided data
+	      HinhAnh hinhAnh = new HinhAnh(maAnh, tenAnh, imagePath);
+
+	      // Save the HinhAnh instance to the database
+	      hinhanh_dao.themHinhAnh(hinhAnh);
+
+	      // Display a success message
+	      JOptionPane.showMessageDialog(this, "Image saved to the database successfully!");
+	         
+	   }
+		
+		  private void generateAndSetMaAnh() {
+		      // Gọi hàm phát sinh mã từ DAO_HinhAnh
+		      String newMaAnh = hinhanh_dao.generateNewMaHinhAnh();
+		  } 
+		  private void generateTenANh() {
+		      // Gọi hàm phát sinh mã từ DAO_HinhAnh
+		      String newTenAnh = hinhanh_dao.generateNewTenHinhAnh();
+		  }
+			
+		  
+		  public void themNV() {
+			    try {
+			        // Get values from the input fields
+			        String maNV = txtMaNV.getText();
+			        String tenNV = txtTenNV.getText();
+			        String cccd = txtCCCD.getText();
+			        java.util.Date ngaySinh = dtmNgaySinh.getDate();
+			        String diaChi = txtDiaChi.getText();
+			        String sdt = txtSDT.getText();
+			        java.util.Date ngayVaoLam = dtmNgayVaoLam.getDate();
+			        boolean gioiTinh = cboGioiTinh.getSelectedItem().equals("Nam"); // Assuming "Nam" is for male
+			        String chucVu = cboChucVu.getSelectedItem().toString();
+			        String maANh = hinhanh_dao.generateNewMaHinhAnh();
+			        ChucVu maCV = new ChucVu(chucVu);
+			        HinhAnh maIMG = new HinhAnh(maANh);
+			        
+			        
+			        // Validate required fields
+			        if (maNV.isEmpty() || tenNV.isEmpty() || cccd.isEmpty() || ngaySinh == null
+			                || diaChi.isEmpty() || sdt.isEmpty() || ngayVaoLam == null || chucVu.isEmpty()) {
+			            JOptionPane.showMessageDialog(this, "Please fill in all required fields.", "Error", JOptionPane.ERROR_MESSAGE);
+			            return;
+			        }
+			        
+			        saveImageToDatabase();
+
+			        // Create a new NhanVien object
+			        NhanVien nhanVien = new NhanVien(maNV, tenNV, ngaySinh, diaChi, ngayVaoLam, sdt, cccd, gioiTinh, maCV, maIMG);
+
+			        // Add the NhanVien to the database
+			        if (nhanvien_dao.createNV(nhanVien)) {
+			            // Refresh the table with the updated data
+			            modelKH.setRowCount(0); // Clear the current rows
+			            DocDuLieuDatabase(); // Reload data from the database
+
+			            // Display a success message
+			            JOptionPane.showMessageDialog(this, "Employee added successfully.");
+
+			            // Clear input fields
+			            xoaRong();
+			        } else {
+			            JOptionPane.showMessageDialog(this, "Failed to add employee.", "Error", JOptionPane.ERROR_MESSAGE);
+			        }
+			    } catch (Exception e) {
+			        e.printStackTrace();
+			        JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			    }
+			}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		int row = tblKH.getSelectedRow();
+	    if (row >= 0) {
+	        // Lấy thông tin nhân viên
+	        String maNV = modelKH.getValueAt(row, 0).toString();
+
+	        // Lấy thông tin ảnh từ cơ sở dữ liệu dựa trên mã nhân viên
+	        String maAnh = nhanvien_dao.getMaAnhByMaNV(maNV); // Hàm này cần được thêm vào DAO_NhanVien
+
+	        // Lấy thông tin ảnh từ cơ sở dữ liệu dựa trên mã ảnh
+	        HinhAnh hinhAnh = nhanvien_dao.getHinhAnhByMaAnh(maAnh); // Hàm này cần được thêm vào DAO_NhanVien
+
+	        // Hiển thị ảnh lên lblShowAnh
+	        if (hinhAnh != null) {
+	        	
+	            ImageIcon icon = new ImageIcon(hinhAnh.getUrl());
+	            Image img = icon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+	            lblShowAnh.setIcon(new ImageIcon(img));
+	        } else {
+	            lblShowAnh.setIcon(null); // Nếu không tìm thấy ảnh, xóa ảnh trên lblShowAnh
+	        }
+
+	        // 
+	        
+	        txtMaNV.setText(modelKH.getValueAt(row, 0).toString());
+	        txtTenNV.setText(modelKH.getValueAt(row, 1).toString());
+	        txtCCCD.setText(modelKH.getValueAt(row, 2).toString());
+	        txtDiaChi.setText(modelKH.getValueAt(row, 5).toString());
+	        txtSDT.setText(modelKH.getValueAt(row, 4).toString());
+	        
+	        String ngaySinh = modelKH.getValueAt(row, 3).toString();
+	        String ngayVaoLam = modelKH.getValueAt(row, 6).toString();
+	        
+	        java.util.Date date;
+            try {
+                date = new java.text.SimpleDateFormat("yyyy-MM-dd").parse(ngaySinh);
+                date1 = new java.text.SimpleDateFormat("yyyy-MM-dd").parse(ngayVaoLam);
+                dtmNgaySinh.setDate(date);
+                dtmNgayVaoLam.setDate(date1);
+            } catch (java.text.ParseException ex) {
+                ex.printStackTrace();
+            }
+	        
+	        //
+            
+	        dtmNgayVaoLam.setEnabled(false);
+	        btnChonAnh.setVisible(false);
+	        
+	        String gioiTinh = nhanvien_dao.getGioiTinhByMaNV(maNV);
+	        String chucvu = nhanvien_dao.getGioiTinhByMaCV(maNV);
+
+	        // Đưa giới tính vào combobox
+	        cboGioiTinh.setSelectedItem(gioiTinh);
+	        cboChucVu.setSelectedItem(chucvu);
+        
+	    }
+	}
+	
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
