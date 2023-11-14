@@ -5,6 +5,7 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
@@ -72,15 +73,19 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 	private JSeparator separator;
 	private JSeparator separator_19;
 	private JSeparator separator_20;
+	
+	private static JTextField txtusername;
+	private static JPasswordField txtpassword;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					GuiTrangChu frame = new GuiTrangChu();
+					GuiTrangChu frame = new GuiTrangChu( txtusername,txtpassword);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -92,7 +97,9 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 	/**
 	 * Create the frame.
 	 */
-	public GuiTrangChu() {
+	public GuiTrangChu(JTextField txtusername, JPasswordField txtpassword) {
+		this.txtusername = txtusername;
+		this.txtpassword = txtpassword;
 		setBackground(new Color(255, 204, 102));
 		setTitle("FutureZe - Phầm mềm quản lý nhà sách");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

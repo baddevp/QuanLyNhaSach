@@ -1,15 +1,21 @@
 package gui;
 
 import java.awt.EventQueue;
-
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import connectDB.ConnectDB;
+import dao.DAO_DangNhap;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -19,7 +25,7 @@ import javax.swing.JButton;
 import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
 
-public class GuiDangNhap extends JFrame {
+public class GuiDangNhap extends JFrame implements ActionListener{
 
 	/**
 	 * 
@@ -77,6 +83,12 @@ public class GuiDangNhap extends JFrame {
 		setResizable(false);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		
+		try {
+			ConnectDB.getInstance().connect();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
@@ -291,6 +303,9 @@ public class GuiDangNhap extends JFrame {
 		txtThongBao2.setBorder(javax.swing.BorderFactory.createEmptyBorder());
 		thietLapGiaoDien(true);
 		
+		btnDangNhap.addActionListener(this);
+		btnDangNhap.addActionListener(this);
+		
 	}
 
 	protected void thietLapGiaoDien(boolean b) {
@@ -348,7 +363,25 @@ public class GuiDangNhap extends JFrame {
 			contentPane.setBackground(new Color(51,255,204));
 		}
 		return;
-		
-		
+	}
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object o = e.getSource();
+		if(o == btnThoat) {
+			System.exit(0);
+		}else if(o == btnDangNhap) {
+			login();
+		}
+	}
+	public void login() {
+		String user = txtTenDN.getText().trim();
+		String pass = txtMK.getText().trim();
+		boolean checkLogin = new DAO_DangNhap().checkLogin(user, pass);
+		if(!checkLogin) {
+			JOptionPane.showMessageDialog(this, "Tên đăng nhập hoặc mật khẩu không chính xác!");
+			return;
+		}
+		setVisible(false);
+		new GuiTrangChu(txtTenDN, txtMK).setVisible(true);
 	}
 }

@@ -36,7 +36,7 @@ public class DAO_QuanLyLoaiSach {
 			pstm.setString(1, ma);
 			ResultSet rs = pstm.executeQuery();
 			while (rs.next()) {
-				loai = new LoaiSach(rs.getString(1), rs.getString(2), rs.getString(4), rs.getDouble(3));
+				loai = new LoaiSach(rs.getString(1), rs.getString(2), rs.getString(3), rs.getDouble(4));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

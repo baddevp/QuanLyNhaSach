@@ -13,6 +13,7 @@ import entity.HinhAnh;
 import entity.LoaiSach;
 import entity.NhaSanXuat;
 import entity.Sach;
+import entity.SanPham;
 
 public class DAO_QuanLySach {
 	private DAO_NSX dao_NSX= new DAO_NSX();
@@ -26,12 +27,12 @@ public class DAO_QuanLySach {
 			Statement stm = con.createStatement();
 			ResultSet rs = stm.executeQuery("select * from SACH");
 			while (rs.next()) {
-				NhaSanXuat nsx = dao_NSX.getNSXTheoMa(rs.getString("MANSX"));
-				HinhAnh ha = dao_HA.getHinhAnhTheoMa(rs.getString("MAANH"));
-				LoaiSach ls = dao_LoaiSach.getLoaiTheoMa(rs.getString("MALOAISACH"));
+				NhaSanXuat nsx = dao_NSX.getNSXTheoMa(rs.getString(11));
+				HinhAnh ha = dao_HA.getHinhAnhTheoMa(rs.getString(4));
+				LoaiSach ls = dao_LoaiSach.getLoaiTheoMa(rs.getString(16));
 				
-				ds.add(new Sach(rs.getString("MASACH"), rs.getString("TENSACH"),rs.getDouble("GIAGOC"), ha, rs.getString("MOTA"), rs.getDate("NGAYNHAP"), rs.getBoolean("TRANGTHAI"),rs.getInt("SOLUONG"),
-						rs.getDouble("THUE"), rs.getDouble("GIABAN"), nsx ,rs.getString("MAKHUYENMAI"),rs.getInt("SOTRANG"),rs.getString("LOAIBIA"),rs.getString("TACGIA"),ls));
+				ds.add(new Sach(rs.getString(1), rs.getString(2),rs.getDouble(3), ha, rs.getString(5), rs.getDate(6), rs.getBoolean(7),rs.getInt(8),
+						rs.getDouble(9), rs.getDouble(10), nsx ,rs.getString(13),rs.getInt(13),rs.getString(14),rs.getString(15),ls));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

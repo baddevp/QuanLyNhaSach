@@ -15,7 +15,13 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -31,12 +37,20 @@ import com.toedter.calendar.JDateChooser;
 
 import connectDB.ConnectDB;
 import dao.DAO_ChucVu;
+import dao.DAO_HoaDon;
 import dao.DAO_KhachHang;
+import dao.DAO_QuanLySach;
+import dao.DAO_QuanLyVPP;
 import entity.KhachHang;
+import entity.NhanVien;
+import entity.Sach;
+import entity.SanPham;
+import entity.VanPhongPham;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.RowFilter;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
 import javax.swing.JRadioButton;
@@ -52,16 +66,17 @@ import java.awt.Rectangle;
 import javax.swing.JCheckBox;
 import java.awt.Component;
 import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
-public class GuiBanHang extends JFrame implements ActionListener {
+public class GuiBanHang extends JFrame implements ActionListener, MouseListener {
 
 	public static JPanel contentPane;
 	private DefaultTableModel modelKH;
-	private JTextField txtMaSP;
+	private JTextField txtTimMaSP;
 	private DefaultTableModel modelSP;
 	private JTable tblSP;
 	private JTextField txtMaHD;
-	private JDateChooser txtNgayLap;
+	private JTextField txtNgayLap;
 	private JTextField txtTenNV;
 	private JTextField txtTimSP;
 	private Container pnlTimSP;
@@ -70,7 +85,7 @@ public class GuiBanHang extends JFrame implements ActionListener {
 	private JTable tblChonSP;
 	private Font font1;
 	private Font font2;
-	private JTextField txtTenSP;
+	private JTextField txtTimTenSP;
 	private JTextField txtSDTKH;
 	private JTextField txtTenKH;
 	private JTextField txtDiemTL;
@@ -89,7 +104,11 @@ public class GuiBanHang extends JFrame implements ActionListener {
 	private JButton btnTaoDonMoi;
 	private JButton btnThanhToan;
 	private JButton btnTimKiemKH;
+	//private List<Object[]> rows;
 	private GuiQuanLyKhachHang guiQLKH;
+	private DAO_QuanLySach sach_dao;
+	private DAO_QuanLyVPP vpp_dao;
+	private DAO_HoaDon hoadon_dao;
 
 	/**
 	 * Launch the application.
@@ -164,20 +183,20 @@ public class GuiBanHang extends JFrame implements ActionListener {
 		lblMaSP.setBounds(53, 35, 163, 29);
 		pnlTimKiemSP.add(lblMaSP);
 		
-		txtMaSP = new JTextField();
-		txtMaSP.setColumns(10);
-		txtMaSP.setBounds(226, 37, 632, 34);
-		pnlTimKiemSP.add(txtMaSP);
+		txtTimMaSP = new JTextField();
+		txtTimMaSP.setColumns(10);
+		txtTimMaSP.setBounds(226, 37, 632, 34);
+		pnlTimKiemSP.add(txtTimMaSP);
 		
 		JLabel lblTenSP = new JLabel("Tên sản phẩm:");
 		lblTenSP.setFont(new Font("Times New Roman", Font.PLAIN, 24));
 		lblTenSP.setBounds(53, 92, 163, 29);
 		pnlTimKiemSP.add(lblTenSP);
 		
-		txtTenSP = new JTextField();
-		txtTenSP.setColumns(10);
-		txtTenSP.setBounds(226, 94, 632, 34);
-		pnlTimKiemSP.add(txtTenSP);
+		txtTimTenSP = new JTextField();
+		txtTimTenSP.setColumns(10);
+		txtTimTenSP.setBounds(226, 94, 632, 34);
+		pnlTimKiemSP.add(txtTimTenSP);
 		
 		btnTimSP = new JButton("Tìm kiếm");
 		btnTimSP.setIcon(new ImageIcon(GuiBanHang.class.getResource("/image/TimKiem.png")));
@@ -224,9 +243,14 @@ public class GuiBanHang extends JFrame implements ActionListener {
 		pnlThongTinHoaDon.add(txtMaHD);
 		txtMaHD.setColumns(10);
 		
-		txtNgayLap = new JDateChooser();
-		txtNgayLap.setEnabled(false);
-
+		//hien thi ngay lap
+		java.util.Date currentDate = new java.util.Date();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        String formattedDate = dateFormat.format(currentDate);
+        
+		txtNgayLap = new JTextField(formattedDate);
+		txtNgayLap.setEditable(false);
+		txtNgayLap.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		txtNgayLap.setBounds(391, 40, 187, 30);
 		pnlThongTinHoaDon.add(txtNgayLap);
 		
@@ -421,36 +445,79 @@ public class GuiBanHang extends JFrame implements ActionListener {
 		modelSP.addColumn("Tên SP");
 		modelSP.addColumn("Loại SP");
 		modelSP.addColumn("Loại bìa");
-		modelSP.addColumn("Màu sắc");
+//		modelSP.addColumn("Màu sắc");
 		modelSP.addColumn("Số lượng tồn");
 		modelSP.addColumn("Thuế");
 		modelSP.addColumn("Giá bán");
 		tblSP = new JTable(modelSP);
 		tblSP.setBackground(new Color(153, 204, 255));
-		JScrollPane jScrollPane = new JScrollPane(tblSP);
-		jScrollPane.setBounds(10, 10 , 925, 558);
+		JScrollPane jScrollPaneSP = new JScrollPane(tblSP);
+		jScrollPaneSP.setBounds(10, 10 , 925, 558);
 		JTableHeader tbHeaderKH = tblSP.getTableHeader();
 		tbHeaderKH.setFont(font2);
 		tbHeaderKH.setBackground(new Color(51, 204, 204));
 		pnlSanPham.setLayout(null);
 		tblSP.setFont(font2);
 		tblSP.setRowHeight(35);
-		pnlSanPham.add(jScrollPane);
+		pnlSanPham.add(jScrollPaneSP);
 		
 		// ket noi sql
 		khachhang_dao = new DAO_KhachHang();
+		hoadon_dao = new DAO_HoaDon();
 		try {
 			ConnectDB.getInstance().connect();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		//Dua sql len bang
+		DocDuLieuDatabaseSach();
+		DocDuLieuDatabaseVPP();
+		//hien thi ma 
+		hienThiThongTin();
 		
 		btnTaoDonMoi.addActionListener(this);
 		btnThanhToan.addActionListener(this);
 		btnTimKiemKH.addActionListener(this);
 		btnHangCho.addActionListener(this);
+		tblSPHD.addMouseListener(this);
+		tblSP.addMouseListener(this);
+	
+		txtTimMaSP.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (txtTimMaSP.getText().equals("Nhập thông tin cần tìm")) {
+                	txtTimMaSP.setText("");
+                	txtTimMaSP.setForeground(Color.BLACK); // Đổi màu chữ khi có focus
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (txtTimMaSP.getText().isEmpty()) {
+                	txtTimMaSP.setText("Nhập thông tin cần tìm");
+                	txtTimMaSP.setForeground(Color.GRAY); // Đổi màu chữ gợi ý khi mất focus
+                }
+            }
+        });
 		
-		khachhang_dao = new DAO_KhachHang();
+		txtTimMaSP.addKeyListener((KeyListener) new KeyAdapter() {
+		    @Override
+		    public void keyReleased(KeyEvent e) {
+		        String tuKhoa = txtTimMaSP.getText().trim();
+		        timKiemTheoMaSP(tuKhoa);
+		    }
+		}); 
+		//
+		//rows = new ArrayList<>();
+		tblSP.addMouseListener((MouseListener) new MouseAdapter() {
+		    @Override
+		    public void mouseClicked(MouseEvent e) {
+		        int row = tblSP.getSelectedRow();
+		        if (row >= 0) {
+		            chonSP();
+		        }
+		    }
+		});
 	}
 
 	@Override
@@ -460,6 +527,34 @@ public class GuiBanHang extends JFrame implements ActionListener {
 		if(o.equals(btnTimKiemKH)) 
 			timKH();
 		
+	}
+	//
+	private void DocDuLieuDatabaseSach() {
+		sach_dao = new DAO_QuanLySach();
+		for(Sach s : sach_dao.getALLSach()) {
+			modelSP.addRow(new Object[] {s.getMaSanPham(), s.getTenSanPham(), s.getLoaiSach().getTenLoai(), s.getLoaiBia(), s.getSoLuong(), s.getThue(), s.getGiaBan()});
+		}
+	}
+	//
+	private void DocDuLieuDatabaseVPP() {
+		vpp_dao = new DAO_QuanLyVPP();
+		for(VanPhongPham v : vpp_dao.getALLVPP()) {
+			modelSP.addRow(new Object[] {v.getMaSanPham(), v.getTenSanPham(), v.getLoaiVanPhongPham().getTenLoaiVPP(), v.getMaMau().getTenMau(), v.getSoLuong(), v.getThue(), v.getGiaBan()});
+		}
+	}
+	//
+	private void timKiemTheoMaSP(String tuKhoa) {
+	    TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(modelSP);
+	    tblSP.setRowSorter(sorter);
+
+	    if (tuKhoa.isEmpty()) {
+	        sorter.setRowFilter(null);
+	    } else {
+	        RowFilter<DefaultTableModel, Object> filter = RowFilter.regexFilter("(?i)" + Pattern.quote(tuKhoa), 1, 0);
+	        // 2 corresponds to the column index of "Số điện thoại"
+	        // 1 corresponds to the column index of "Tên khách hàng"
+	        sorter.setRowFilter(filter);
+	    }
 	}
 	//
 	public void timKH() {
@@ -486,6 +581,164 @@ public class GuiBanHang extends JFrame implements ActionListener {
 				txtDiemTL.setText(String.valueOf(""));
 			}
 		}
+		
+	}
+	//
+//	public void chonSP() {
+//		int row = tblSP.getSelectedRow();
+//		//if(row > 0) {
+//			String maSP = (String) tblSP.getValueAt(row, 0);
+//			String tenSP = (String) tblSP.getValueAt(row, 1);
+//			
+//	        double giaGoc = (double) tblSP.getValueAt(row, 6);
+//	        double soluong = 1;
+//	        double thanhTien = giaGoc * soluong;
+//            //tblSPHD.setValueAt(thanhTien, row, 4);
+//            
+//            modelSPHD.addRow(new Object[] {maSP, tenSP, 1, thanhTien});
+//           // tblSPHD.setRowSelectionInterval(row, row);
+//		//}
+//	}
+	//
+	int index;
+
+//	public void chonSP() {
+//	    int row = tblSP.getSelectedRow();
+//
+//	    // Kiểm tra xem hàng được chọn có tồn tại hay không
+//	    if (row < 0) {
+//	        return;
+//	    }
+//
+//	    // Lấy các giá trị của hàng được chọn
+//	    String maSP = (String) tblSP.getValueAt(row, 0);
+//	    String tenSP = (String) tblSP.getValueAt(row, 1);
+//	    double giaGoc = (double) tblSP.getValueAt(row, 6);
+//	    
+//	    //modelSPHD.addRow(new Object[]{maSP, tenSP, 1, giaGoc});
+//	    String maSPHD = (String) tblSPHD.getValueAt(row, 0);
+//	    String tenSPHD = (String) tblSPHD.getValueAt(row, 1);
+//	    
+//	    
+//
+//	    // Nếu hàng đã tồn tại trong bảng tblSPHD thì tăng số lượng của hàng
+//	    if (maSPHD.equalsIgnoreCase(maSP) && tenSPHD.equalsIgnoreCase(tenSP)) {
+//	        // Lấy số lượng hiện tại của hàng
+////	        
+//	    	index++;
+//	    	int soLuongHienTai = (int) tblSPHD.getValueAt(index, 3);
+//	    	//
+////	    		        // Tăng số lượng của hàng
+//	    		        soLuongHienTai++;
+//
+//	        // Cập nhật số lượng của hàng
+//	        tblSPHD.setValueAt(soLuongHienTai, index, 3);
+//	        //modelSPHD.removeRow(row);
+//	        //modelSPHD.addRow(new Object[]{maSP, tenSP, index, giaGoc});
+//	    } else {
+//	        // Hàng chưa tồn tại trong bảng tblSPHD thì thêm hàng vào bảng tblSPHD
+//	        modelSPHD.addRow(new Object[]{maSP, tenSP, 1, giaGoc});
+//	    }
+//	}
+	public void chonSP() {
+	    int row = tblSP.getSelectedRow();
+
+	    // Kiểm tra xem hàng được chọn có tồn tại hay không
+	    if (row < 0) {
+	        return;
+	    }
+
+	    // Lấy các giá trị của hàng được chọn
+	    String maSP = (String) tblSP.getValueAt(row, 0);
+	    String tenSP = (String) tblSP.getValueAt(row, 1);
+	    double giaGoc = (double) tblSP.getValueAt(row, 6);
+
+	    // Tìm kiếm hàng có mã sản phẩm và tên sản phẩm giống hàng được chọn trong bảng tblSPHD
+	    int index = modelSPHD.getRowCount();
+	    System.out.println("so index" + index);
+	    for (int i = 0; i < index; i++) {
+	        if (maSP.equals(modelSPHD.getValueAt(i, 0)) && tenSP.equals(modelSPHD.getValueAt(i, 1))) {
+	        	
+	        	int sl = 1;
+	        
+	        	 modelSPHD.addRow(new Object[]{maSP, tenSP, sl++, giaGoc});
+	        	 System.out.println("có chạy " + sl + "i "+ i);
+	        	break;
+	        }
+	    }
+
+	    // Nếu hàng đã tồn tại thì tăng số lượng, nếu không thì thêm hàng mới
+	    System.out.println(" modelSPHD.getRowCount()" +  modelSPHD.getRowCount());
+	    if (index < modelSPHD.getRowCount()) {
+	        // Tăng số lượng
+	        int soLuong = (int) modelSPHD.getValueAt(index, 3);
+	        soLuong++;
+	        modelSPHD.setValueAt(soLuong, index, 3);
+	        System.out.println("so luong" + soLuong);
+	    } else {
+	        // Thêm hàng mới
+	        modelSPHD.addRow(new Object[]{maSP, tenSP, 1, giaGoc});
+	    }
+	}
+
+	//
+	private String generateMaHD() {
+		try {
+			java.util.Date currentDate = new java.util.Date();
+			SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy");
+	        String formattedDate = dateFormat.format(currentDate);
+	        
+	        int sequenceNumber = hoadon_dao.getCurrentSequenceNumber();
+	        sequenceNumber++;
+	        String sequencePart = String.format("%03d", sequenceNumber);
+	        
+	        return "HD" + formattedDate + sequencePart;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "";
+	}
+	//
+	private void hienThiThongTin() {
+	    String maHD = generateMaHD(); 
+	    txtMaHD.setText(maHD);
+	    
+        
+        
+        
+       
+        
+	}
+	
+
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
 		
 	}
 }
