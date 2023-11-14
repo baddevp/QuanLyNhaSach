@@ -9,12 +9,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -25,6 +29,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableRowSorter;
 
 import com.toedter.calendar.JDateChooser;
 
@@ -39,6 +44,7 @@ import entity.NhanVien;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.RowFilter;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -407,6 +413,14 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener, MouseLi
             // cập nhật mã lên txtMaNV
             hienThiMaKH();
         });
+		
+		txtTimKiem.addKeyListener((KeyListener) new KeyAdapter() {
+		    @Override
+		    public void keyReleased(KeyEvent e) {
+		        String tuKhoa = txtTimKiem.getText().trim();
+		        timKiem(tuKhoa);
+		    }
+		}); 
 
 	}
 
@@ -427,6 +441,18 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener, MouseLi
 		}
 	}
 	
+	private void timKiem(String tuKhoa) {
+	    TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(modelKH);
+	    tblKH.setRowSorter(sorter);
+
+	    if (tuKhoa.isEmpty()) {
+	        sorter.setRowFilter(null);
+	    } else {
+	        RowFilter<DefaultTableModel, Object> filter = RowFilter.regexFilter("(?i)" + Pattern.quote(tuKhoa), 4, 1,6);
+	        
+	        sorter.setRowFilter(filter);
+	    }
+	}
 	private void DocDuLieuDatabase() {
 		nhanvien_dao = new DAO_NhanVien();
 		tblKH.setRowHeight(25);
