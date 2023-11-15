@@ -247,7 +247,6 @@ public class GuiQuanLyChucVu extends JFrame implements ActionListener, MouseList
 		contentPane.add(txtTrangThai);
 		txtTrangThai.setColumns(10);
 		
-		//
 		tblCV.addMouseListener(this);
 		btnDatLai.addActionListener(this);
 		btnLuu.addActionListener(this);

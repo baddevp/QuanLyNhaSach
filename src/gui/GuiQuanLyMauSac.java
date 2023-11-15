@@ -11,6 +11,9 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -129,7 +132,6 @@ public class GuiQuanLyMauSac extends JFrame implements ActionListener, MouseList
 
 		txtMaMauSac = new JTextField();
 		txtMaMauSac.setFont(new Font("Tahoma", Font.PLAIN, 18));
-//		txtMaMauSac.setEditable(false);
 		txtMaMauSac.setBounds(20, 100, 319, 40);
 		pnlThongTinKH.add(txtMaMauSac);
 		txtMaMauSac.setColumns(10);
@@ -292,16 +294,17 @@ public class GuiQuanLyMauSac extends JFrame implements ActionListener, MouseList
 		if (o.equals(btnThem)) {
 			if (btnThem.getText().equals("Thêm")) {
 				moNutThem();
+				taoMaMau();
 			} else {
 				tblMS.addMouseListener(this);
-				dongMoNhapLieu(false);
 				btnThem.setText("Thêm");
 				btnSua.setEnabled(true);
 				btnXoa.setEnabled(true);
-				btnXoaTrang.setEnabled(false);
+				btnDatLai.setEnabled(false);
 				btnLuu.setEnabled(false);
 				txtMaMauSac.setText("");
 				xoaRong();
+				dongMoNhapLieu(false);
 				loadData(dao_mausac.getAllMauSac());
 			}
 		}
@@ -315,7 +318,7 @@ public class GuiQuanLyMauSac extends JFrame implements ActionListener, MouseList
 					btnSua.setText("Hủy");
 					btnThem.setEnabled(false);
 					btnXoa.setEnabled(false);
-					btnXoaTrang.setEnabled(true);
+					btnDatLai.setEnabled(true);
 					btnLuu.setEnabled(true);
 				} else {
 					JOptionPane.showMessageDialog(this,
@@ -326,7 +329,7 @@ public class GuiQuanLyMauSac extends JFrame implements ActionListener, MouseList
 				btnSua.setText("Sửa");
 				btnThem.setEnabled(true);
 				btnXoa.setEnabled(true);
-				btnXoaTrang.setEnabled(false);
+				btnDatLai.setEnabled(false);
 				btnLuu.setEnabled(false);
 				txtMaMauSac.setText("");
 				xoaRong();
@@ -347,7 +350,7 @@ public class GuiQuanLyMauSac extends JFrame implements ActionListener, MouseList
 						btnSua.setText("Sửa");
 						btnThem.setEnabled(true);
 						btnXoa.setEnabled(true);
-						btnXoaTrang.setEnabled(false);
+						btnDatLai.setEnabled(false);
 						btnLuu.setEnabled(false);
 					}
 				}
@@ -356,6 +359,32 @@ public class GuiQuanLyMauSac extends JFrame implements ActionListener, MouseList
 
 	}
 	
+	private void taoMaMau() {
+	        String maMau = "MS001"; // Giá trị mặc định nếu không có dữ liệu trong bảng
+
+	        try {
+	            ConnectDB.getInstance();
+	            Connection con = ConnectDB.getConnection();
+	            String sql = "SELECT MAX(MAMAU) FROM MAUSAC";
+	            Statement stm = con.createStatement();
+	            ResultSet rs = stm.executeQuery(sql);
+
+	            if (rs.next()) {
+	                String lastMaChucVu = rs.getString(1);
+
+	                if (lastMaChucVu != null) {
+	                    int number = Integer.parseInt(lastMaChucVu.substring(2)) + 1;
+	                    String numberStr = String.format("%03d", number);
+	                    maMau = "MS" + numberStr;
+	                }
+	            }
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	        txtMaMauSac.setText(maMau);
+	        txtMaMauSac.setForeground(getForeground());
+	}
+
 	public void moNutThem() {
 		dongMoNhapLieu(true);
 		btnLuu.setEnabled(true);
@@ -386,6 +415,8 @@ public class GuiQuanLyMauSac extends JFrame implements ActionListener, MouseList
 			}
 		}
 	}
+
+
 	private void loadData(ArrayList<MauSac> ms) {
 		modelMS.setRowCount(0);
 		for (int i = 0; i < ms.size(); i++) {
@@ -397,15 +428,14 @@ public class GuiQuanLyMauSac extends JFrame implements ActionListener, MouseList
 	}
 	private void dongMoNhapLieu(Boolean b) {
 		txtMaMauSac.setEditable(false);
+		txtMaMauSac.setEnabled(false);
 		txtTenMau.setEditable(b);
 	}
 	public void xoaRong() {
-		txtMaMauSac.setText("");
 		txtTimKiem.setText("");
 		txtTenMau.setText("");
 		txtTenMau.setEditable(true);
-		txtMaMauSac.setEditable(true);
-		txtMaMauSac.requestFocus();
+		txtTenMau.requestFocus();
 	}
 	public void xoa() {
 		int row = tblMS.getSelectedRow();
