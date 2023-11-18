@@ -14,6 +14,7 @@ import entity.ChucVu;
 import entity.HinhAnh;
 import entity.NhanVien;
 
+
 public class DAO_NhanVien {
 	private String gt;
 
@@ -52,6 +53,44 @@ public class DAO_NhanVien {
 			// TODO: handle exception
 		}
 		return dsNV; 
+	}
+	
+	public ArrayList<NhanVien> getNhanVienTheoMa(String ma){
+		ArrayList<NhanVien> dsNV = new ArrayList<NhanVien>();
+		
+		try {
+			ConnectDB.getInstance();
+			Connection con = ConnectDB.getConnection();
+			String sql = "select * from NHANVIEN where MANV = ?";
+			PreparedStatement preparedStatement = con.prepareStatement(sql);
+			preparedStatement.setString(1, ma);
+			ResultSet rs = preparedStatement.executeQuery();
+			while (rs.next()) {
+				String maNV = rs.getString(1);
+				String tenNV = rs.getString(2);
+				Date ngaySinh = rs.getDate(3);
+				String diaChi = rs.getString(4);
+				Date NgayvaoLam = rs.getDate(5);
+				String sdt = rs.getString(6);
+				String cccd = rs.getString(7);
+				boolean gioitinh = rs.getBoolean(8);
+				
+				if (gioitinh == true) {
+					gt = "Nữ";
+				}else {
+					gt = "Nam";
+				}
+				ChucVu maCV = new ChucVu(rs.getString(9));
+				HinhAnh maHinhAnh = new HinhAnh(rs.getString(10));
+				
+				NhanVien nv = new NhanVien(maNV, tenNV, ngaySinh, diaChi, NgayvaoLam, sdt, cccd, gioitinh, maCV, maHinhAnh);
+				dsNV.add(nv);
+			}	
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return dsNV;	
 	}
 	
 	public int getCurrentSequenceNumber() {

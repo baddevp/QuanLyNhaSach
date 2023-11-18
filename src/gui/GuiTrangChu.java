@@ -19,6 +19,9 @@ import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
 import javax.swing.border.MatteBorder;
 
+import dao.DAO_NhanVien;
+import entity.NhanVien;
+
 import java.awt.BorderLayout;
 
 
@@ -26,6 +29,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+
 import javax.swing.JLabel;
 
 import java.awt.Cursor;
@@ -36,7 +41,7 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 
 	private JPanel contentPane;
 	private JMenuItem mniTimKiemHDTH;
-	private JTextField txtTenTK;
+	JTextField txtTenTK;
 	private JMenuItem mniKhachHang;
 	private JTabbedPane tabNoiDung;
 	private JMenuItem mniLoaiVPP;
@@ -73,9 +78,11 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 	private JSeparator separator;
 	private JSeparator separator_19;
 	private JSeparator separator_20;
+	private GuiBanHang guiBanHang;
+	private DAO_NhanVien nhanvien_dao;
 	
-	private static JTextField txtusername;
-	private static JPasswordField txtpassword;
+	static JTextField txtusername;
+	static JPasswordField txtpassword;
 
 	/**
 	 * Launch the application.
@@ -321,12 +328,12 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 				
 				
 				txtTenTK = new JTextField();
+				txtTenTK.setFont(new Font("Tahoma", Font.BOLD, 15));
+				txtTenTK.setEditable(false);
 				txtTenTK.setBounds(10, 19, 282, 40);
 				pnlThongTinTaiKhoan.add(txtTenTK);
 				txtTenTK.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 				txtTenTK.setBackground(new Color(255, 255, 255));
-				txtTenTK.setEditable(false);
-				txtTenTK.setEnabled(false);
 				txtTenTK.setColumns(10);
 		
 		JMenu mnTaiKhoan = new JMenu("");
@@ -404,6 +411,8 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 		mniTimKiemTK.addActionListener(this);
 		mniTimKiemHDTH.addActionListener(this);
 		mniTimKiemVPP.addActionListener(this);
+		//
+		
 		
 	}
 
@@ -496,8 +505,18 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 		//Chức năng xử lý
 		else if (o.equals(mniBanHang)) {
 			GuiBanHang guiBanHang = new GuiBanHang();
+			nhanvien_dao = new DAO_NhanVien();
+			String ten = txtusername.getText();
+			System.out.println("ten nv" + ten);
+			ArrayList<NhanVien> listNV = nhanvien_dao.getNhanVienTheoMa(ten);
+			
+			for(NhanVien nv : listNV) {
+				System.out.println("ten nv trong for " + ten);
+				guiBanHang.txtTenNV.setText(nv.getTenNV());
+			}
 			tabNoiDung.remove(tabNoiDung.getSelectedComponent());
 			tabNoiDung.add(guiBanHang.contentPane);
+			
 		}
 //		else if (o.equals(mniTraHang)) {
 //			GuiTraHang traHang = new GuiTraHang();
@@ -507,5 +526,7 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 
 		//Chức năng thống kê
 		//Chức năng hỗ trợ
-}
+		
+	}
+
 }

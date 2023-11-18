@@ -5,6 +5,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -15,6 +18,8 @@ import javax.swing.border.EmptyBorder;
 
 import connectDB.ConnectDB;
 import dao.DAO_DangNhap;
+import dao.DAO_NhanVien;
+import entity.NhanVien;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -32,7 +37,7 @@ public class GuiDangNhap extends JFrame implements ActionListener{
 	 */
 	private static final long serialVersionUID = 5304173256114139897L;
 	private JPanel contentPane;
-	private JTextField txtTenDN;
+	JTextField txtTenDN;
 	private JTextField txtQuenMK;
 	private JTextField txtThongBao;
 	private JPasswordField txtMK;
@@ -53,6 +58,9 @@ public class GuiDangNhap extends JFrame implements ActionListener{
 	private JLabel AnhDoiMK;
 	private JLabel lblTenDN;
 	private JRadioButton radHienMK;
+	private GuiTrangChu guiTrangChu;
+	private DAO_NhanVien nhanvien_dao;
+	private GuiBanHang guiBanHang;
 
 
 	/**
@@ -162,7 +170,7 @@ public class GuiDangNhap extends JFrame implements ActionListener{
 		lblTenDN.setBounds(52, 86, 132, 29);
 		pnlLeft.add(lblTenDN);
 		
-		txtTenDN = new JTextField();
+		txtTenDN = new JTextField("NV14112023002");
 		txtTenDN.setForeground(new Color(153, 51, 0));
 		txtTenDN.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		txtTenDN.setBounds(52, 135, 292, 37);
@@ -230,7 +238,7 @@ public class GuiDangNhap extends JFrame implements ActionListener{
 		txtThongBao.setColumns(10);
 		txtThongBao.setBorder(javax.swing.BorderFactory.createEmptyBorder());
 		
-		txtMK = new JPasswordField();
+		txtMK = new JPasswordField("123456");
 		txtMK.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		txtMK.setForeground(new Color(153, 51, 0));
 		txtMK.setBounds(52, 237, 292, 37);
@@ -382,6 +390,15 @@ public class GuiDangNhap extends JFrame implements ActionListener{
 			return;
 		}
 		setVisible(false);
-		new GuiTrangChu(txtTenDN, txtMK).setVisible(true);
+		guiTrangChu = new GuiTrangChu(txtTenDN, txtMK);
+		guiTrangChu.setVisible(true);
+		nhanvien_dao = new DAO_NhanVien();
+		ArrayList<NhanVien> listNV = nhanvien_dao.getNhanVienTheoMa(user);
+		
+		for(NhanVien nv : listNV) {
+			guiTrangChu.txtTenTK.setText(nv.getTenNV());
+		}
+		
+		
 	}
 }
