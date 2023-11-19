@@ -17,6 +17,12 @@ public class NhanVien {
 		super();
 		// TODO Auto-generated constructor stub
 	}
+	
+	public NhanVien(String tenNV) {
+		super();
+		this.tenNV = tenNV;
+	}
+
 	public NhanVien(String maNV, String tenNV, Date ngaySinh, String diaChi, Date ngayVaoLam, String sdt, String cccd,
 			Boolean gioiTinh, ChucVu chucVu, HinhAnh hinhAnh) {
 		super();

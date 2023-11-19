@@ -504,16 +504,14 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 		}
 		//Chức năng xử lý
 		else if (o.equals(mniBanHang)) {
-			GuiBanHang guiBanHang = new GuiBanHang();
+			GuiBanHang guiBanHang = new GuiBanHang(txtusername);
 			nhanvien_dao = new DAO_NhanVien();
 			String ten = txtusername.getText();
-			System.out.println("ten nv" + ten);
-			ArrayList<NhanVien> listNV = nhanvien_dao.getNhanVienTheoMa(ten);
-			
-			for(NhanVien nv : listNV) {
-				System.out.println("ten nv trong for " + ten);
-				guiBanHang.txtTenNV.setText(nv.getTenNV());
-			}
+//			ArrayList<NhanVien> listNV = nhanvien_dao.getNhanVienTheoMa(ten);
+//			
+//			for(NhanVien nv : listNV) {
+//				guiBanHang.txtTenNV.setText(nv.getMaNV());
+//			}
 			tabNoiDung.remove(tabNoiDung.getSelectedComponent());
 			tabNoiDung.add(guiBanHang.contentPane);
 			

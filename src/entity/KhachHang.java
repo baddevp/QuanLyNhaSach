@@ -14,6 +14,12 @@ public class KhachHang {
 		super();
 		// TODO Auto-generated constructor stub
 	}
+	
+	public KhachHang(String maKH) {
+		super();
+		this.maKH = maKH;
+	}
+
 	public KhachHang(String maKH, String tenKH, String diaChi, String sdt, int diemTL, Date ngayLap, String email) {
 		super();
 		this.maKH = maKH;

@@ -20,6 +20,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -42,6 +43,7 @@ import dao.DAO_KhachHang;
 import dao.DAO_NhanVien;
 import dao.DAO_QuanLySach;
 import dao.DAO_QuanLyVPP;
+import entity.HoaDon;
 import entity.KhachHang;
 import entity.NhanVien;
 import entity.Sach;
@@ -77,7 +79,6 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 	private DefaultTableModel modelSP;
 	private JTable tblSP;
 	private JTextField txtMaHD;
-	private JTextField txtNgayLap;
 	JTextField txtTenNV;
 	private JTextField txtTimSP;
 	private Container pnlTimSP;
@@ -110,15 +111,20 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 	private DAO_NhanVien nhanvien_dao;
 	private GuiDangNhap guiDangNhap;
 	private GuiTrangChu GuiTrangChu;
+	private JDateChooser dtmNgayLap;
+	
+	static JTextField tenNV;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
+			
+
 			public void run() {
 				try {
-					GuiBanHang frame = new GuiBanHang();
+					GuiBanHang frame = new GuiBanHang(tenNV);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -130,7 +136,8 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 	/**
 	 * Create the frame.
 	 */
-	public GuiBanHang() {
+	public GuiBanHang(JTextField tenNV) {
+		this.tenNV = tenNV;
 		this.setTitle("Quản lý khách hàng");
 		this.setSize(1930, 1030);
 		this.setExtendedState(JFrame.MAXIMIZED_BOTH); // Toàn màn hình
@@ -232,11 +239,11 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         String formattedDate = dateFormat.format(currentDate);
         
-		txtNgayLap = new JTextField(formattedDate);
-		txtNgayLap.setEditable(false);
-		txtNgayLap.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		txtNgayLap.setBounds(391, 40, 187, 30);
-		pnlThongTinHoaDon.add(txtNgayLap);
+        dtmNgayLap = new JDateChooser(currentDate);
+		dtmNgayLap.setBounds(397, 40, 184, 35);
+		dtmNgayLap.setEnabled(false);
+	
+		pnlThongTinHoaDon.add(dtmNgayLap);
 		
 		txtTenNV = new JTextField();
 		txtTenNV.setEditable(false);
@@ -286,6 +293,8 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		pnlThongTinHoaDon.add(btnTimKiemKH);
 		btnTimKiemKH.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		btnTimKiemKH.setBackground(Color.WHITE);
+		
+		
 		
 		btnXoaDong = new JButton("Xóa dòng");
 		btnXoaDong.setIcon(new ImageIcon(GuiBanHang.class.getResource("/image/TacVu_Xoa.png")));
@@ -434,6 +443,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		// ket noi sql
 		khachhang_dao = new DAO_KhachHang();
 		hoadon_dao = new DAO_HoaDon();
+		nhanvien_dao = new DAO_NhanVien();
 		try {
 			ConnectDB.getInstance().connect();
 		} catch (Exception e) {
@@ -509,6 +519,8 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 			timKH();
 		if(o.equals(btnXoaDong)) 
 			xoaDong();
+		if(o.equals(btnThanhToan)) 
+			themHD();
 		
 	}
 	//
@@ -663,7 +675,14 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 	        sequenceNumber++;
 	        String sequencePart = String.format("%03d", sequenceNumber);
 	        
-	        return "HD" + formattedDate + sequencePart;
+	        String maNV = "NV14112023002";
+	        int index1 = maNV.indexOf("0");
+	        int index2 = maNV.indexOf(" ", index1);
+	        if (index1 == -1) {
+	            return null;
+	          }
+	        String subMaNV = maNV.substring(index1 + 1, index1 + 4);
+	        return "HD" + formattedDate + subMaNV + sequencePart;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -673,6 +692,13 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 	private void hienThiThongTin() {
 	    String maHD = generateMaHD(); 
 	    txtMaHD.setText(maHD);
+	    
+	    //String maNV = tenNV.getText();
+	    String maNV = "NV14112023002";
+	    ArrayList<NhanVien> list = nhanvien_dao.getNhanVienTheoMa(maNV);
+	    for (NhanVien nv : list) {
+	    	txtTenNV.setText(nv.getTenNV());
+	    }
 	}
 	// Xoa dòng
 	public void timDongTrongBang(JTable table, int row) {
@@ -685,10 +711,41 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		tinhTongGiaGoc();
 	}
 	//
-	private static void thayDoiSoLuong(JTable table, int row, Object value) {
-        DefaultTableModel model = (DefaultTableModel) table.getModel();
-        model.setValueAt(value, row, 2);
-    }
+	public void themHD() {
+		String maHD = generateMaHD();
+		java.util.Date ngayLap = dtmNgayLap.getDate();
+		double tienNhan = Double.parseDouble(txtTienKhachDua.getText());
+		double tongTien = Double.parseDouble(txtTienKhachTra.getText());
+		String nv = tenNV.getText();
+		NhanVien maNV = new NhanVien(nv);
+		String sdtkh = txtSDTKH.getText();
+		ArrayList<KhachHang> list = khachhang_dao.getKhachHangTheoSDT(sdtkh);
+		
+		for(KhachHang kh : list) {
+			String k = kh.getMaKH();
+			KhachHang maKH = new KhachHang(k);
+			boolean trangThai = true;
+			
+			HoaDon hd = new HoaDon(maHD, ngayLap, tienNhan, tongTien, maNV, maKH, trangThai);
+			if(hoadon_dao.createHD(hd)) {
+				JOptionPane.showMessageDialog(this, "Bạn đã thanh toán thành công");
+			}
+		}
+		
+	}
+	
+//	String tenKH = kh.getTenKH();
+//	String diaChi = kh.getDiaChi();
+//	int diemTL = kh.getDiemTL();
+//	java.sql.Date ngayLapKH = new java.sql.Date(kh.getNgayLap().getTime());
+//	String email = kh.getEmail();
+//	KhachHang khachhang = new KhachHang(maKH, tenKH, diaChi, sdtkh, diemTL, ngayLapKH, email);
+//	
+//	boolean result = khachhang_dao.updateKH(khachhang);
+//	int diemMoi = (int)tongTien / 100;
+//	if(result) {
+//		diemTL = diemMoi;
+//	}
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
