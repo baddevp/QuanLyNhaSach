@@ -676,12 +676,12 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 	        String sequencePart = String.format("%03d", sequenceNumber);
 	        
 	        String maNV = "NV14112023002";
-	        int index1 = maNV.indexOf("0");
+	        int index1 = maNV.indexOf("23");
 	        int index2 = maNV.indexOf(" ", index1);
 	        if (index1 == -1) {
 	            return null;
 	          }
-	        String subMaNV = maNV.substring(index1 + 1, index1 + 4);
+	        String subMaNV = maNV.substring(index1 + 2, index1 + 5);
 	        return "HD" + formattedDate + subMaNV + sequencePart;
 		} catch (Exception e) {
 			e.printStackTrace();
