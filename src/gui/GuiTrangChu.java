@@ -329,10 +329,12 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 				
 				txtTenTK = new JTextField();
 				txtTenTK.setFont(new Font("Tahoma", Font.BOLD, 15));
+				txtTenTK.setHorizontalAlignment(JTextField.RIGHT);
 				txtTenTK.setEditable(false);
-				txtTenTK.setBounds(10, 19, 282, 40);
+				txtTenTK.setBounds(56, 19, 236, 40);
+				txtTenTK.setBorder(null);
 				pnlThongTinTaiKhoan.add(txtTenTK);
-				txtTenTK.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
+				//txtTenTK.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 				txtTenTK.setBackground(new Color(255, 255, 255));
 				txtTenTK.setColumns(10);
 		

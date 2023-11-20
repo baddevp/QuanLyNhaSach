@@ -37,12 +37,14 @@ import javax.swing.table.JTableHeader;
 import com.toedter.calendar.JDateChooser;
 
 import connectDB.ConnectDB;
+import dao.DAO_CTHD;
 import dao.DAO_ChucVu;
 import dao.DAO_HoaDon;
 import dao.DAO_KhachHang;
 import dao.DAO_NhanVien;
 import dao.DAO_QuanLySach;
 import dao.DAO_QuanLyVPP;
+import entity.ChiTietHoaDon;
 import entity.HoaDon;
 import entity.KhachHang;
 import entity.NhanVien;
@@ -112,6 +114,8 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 	private GuiDangNhap guiDangNhap;
 	private GuiTrangChu GuiTrangChu;
 	private JDateChooser dtmNgayLap;
+	private DAO_CTHD chitiethoadon_dao;
+	private JButton btnSuaSL;
 	
 	static JTextField tenNV;
 
@@ -214,7 +218,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		
 		JLabel lblNgayLap = new JLabel("Ngày lập :");
 		lblNgayLap.setFont(new Font("Times New Roman", Font.PLAIN, 24));
-		lblNgayLap.setBounds(278, 40, 102, 30);
+		lblNgayLap.setBounds(325, 40, 102, 30);
 		pnlThongTinHoaDon.add(lblNgayLap);
 		
 		JLabel lblMaHD = new JLabel("Mã HD:");
@@ -230,7 +234,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		txtMaHD = new JTextField();
 		txtMaHD.setEditable(false);
 		txtMaHD.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		txtMaHD.setBounds(100, 41, 156, 30);
+		txtMaHD.setBounds(100, 41, 195, 30);
 		pnlThongTinHoaDon.add(txtMaHD);
 		txtMaHD.setColumns(10);
 		
@@ -240,7 +244,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
         String formattedDate = dateFormat.format(currentDate);
         
         dtmNgayLap = new JDateChooser(currentDate);
-		dtmNgayLap.setBounds(397, 40, 184, 35);
+		dtmNgayLap.setBounds(437, 40, 144, 35);
 		dtmNgayLap.setEnabled(false);
 	
 		pnlThongTinHoaDon.add(dtmNgayLap);
@@ -328,6 +332,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		modelSPHD = new DefaultTableModel();
 		modelSPHD.addColumn("Mã SP");
 		modelSPHD.addColumn("Tên SP");
+		modelSPHD.addColumn("Giá bán");
 		modelSPHD.addColumn("Số lượng");
 		modelSPHD.addColumn("Thành tiền");
 		tblSPHD = new JTable(modelSPHD);
@@ -402,6 +407,14 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		btnTaoDonMoi.setBounds(659, 718, 216, 52);
 		pnlHoaDon.add(btnTaoDonMoi);
 		
+		btnSuaSL = new JButton("Sửa số lượng");
+		btnSuaSL.setIcon(new ImageIcon(GuiBanHang.class.getResource("/image/TacVu_Sua.png")));
+		
+		btnSuaSL.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		btnSuaSL.setBackground(Color.WHITE);
+		btnSuaSL.setBounds(549, 250, 170, 36);
+		pnlHoaDon.add(btnSuaSL);
+		
 		JPanel pnlSanPhamChon = new JPanel();
 		pnlSanPhamChon.setBackground(new Color(255, 255, 255));
 		pnlSanPhamChon.setBounds(0, 260, 963, 633);
@@ -444,6 +457,8 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		khachhang_dao = new DAO_KhachHang();
 		hoadon_dao = new DAO_HoaDon();
 		nhanvien_dao = new DAO_NhanVien();
+		chitiethoadon_dao = new DAO_CTHD();
+		
 		try {
 			ConnectDB.getInstance().connect();
 		} catch (Exception e) {
@@ -460,28 +475,10 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		btnTimKiemKH.addActionListener(this);
 		btnHangCho.addActionListener(this);
 		btnXoaDong.addActionListener(this);
+		btnSuaSL.addActionListener(this);
 		tblSPHD.addMouseListener(this);
 		tblSP.addMouseListener(this);
 	
-//		txtTimMaSP.addFocusListener(new FocusListener() {
-//            @Override
-//            public void focusGained(FocusEvent e) {
-//                if (txtTimMaSP.getText().equals("Nhập thông tin cần tìm")) {
-//                	txtTimMaSP.setText("");
-//                	txtTimMaSP.setForeground(Color.BLACK); // Đổi màu chữ khi có focus
-//                }
-//            }
-//
-//            @Override
-//            public void focusLost(FocusEvent e) {
-//                if (txtTimMaSP.getText().isEmpty()) {
-//                	txtTimMaSP.setText("Nhập thông tin cần tìm");
-//                	txtTimMaSP.setForeground(Color.GRAY); // Đổi màu chữ gợi ý khi mất focus
-//                }
-//            }
-//            
-//        });
-		
 		txtTimMaSP.addKeyListener((KeyListener) new KeyAdapter() {
 		    @Override
 		    public void keyReleased(KeyEvent e) {
@@ -519,8 +516,11 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 			timKH();
 		if(o.equals(btnXoaDong)) 
 			xoaDong();
-		if(o.equals(btnThanhToan)) 
+		if(o.equals(btnThanhToan)) {
 			themHD();
+		}
+		if(o.equals(btnSuaSL)) 
+			thayDoiSoLuong();
 		
 	}
 	//
@@ -597,47 +597,22 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 
 	    if (index != -1) {
 	        // Nếu hàng đã tồn tại thì tăng số lượng
-	        int soLuong = (int) modelSPHD.getValueAt(index, 2);
+	        int soLuong = (int) modelSPHD.getValueAt(index, 3);
 	        soLuong++;
-	        modelSPHD.setValueAt(soLuong, index, 2);
-	        modelSPHD.setValueAt(giaGoc * soLuong, index, 3);
+	        modelSPHD.setValueAt(soLuong, index, 3);
+	        modelSPHD.setValueAt(giaGoc * soLuong, index, 4);
 	    } else {
 	        // Nếu hàng chưa tồn tại, thêm hàng mới
-	        modelSPHD.addRow(new Object[]{maSP, tenSP, 1, giaGoc});
+	        modelSPHD.addRow(new Object[]{maSP, tenSP, giaGoc, 1, giaGoc});
 	    }
 	    
 	    tinhTongGiaGoc();
 	}
 	//
-	public void tinhTongGiaGoc() {
-	    double tongGiaGoc = 0;
-	    for (int i = 0; i < modelSPHD.getRowCount(); i++) {
-	        tongGiaGoc += (double) modelSPHD.getValueAt(i, 3);
-	    }
-	    int tongSoSanPham = 0;
-	    for (int i = 0; i < modelSPHD.getRowCount(); i++) {
-	    	tongSoSanPham += (int) modelSPHD.getValueAt(i, 2);
-	    }
-	    txtTongSP.setText(String.valueOf(tongSoSanPham));
-	    txtTienKhachTra.setText(String.valueOf(tongGiaGoc));
-	    
-//	    String tienKhachDuastr = txtTienKhachDua.getText();
-//	    txtTienThua.setText(tienKhachDuastr);
-//	    double tienKhachDua = Double.parseDouble(tienKhachDuastr);
-//	    double tienThoi;
-//	    if(tienKhachDua > tongGiaGoc) {
-//	    	tienThoi = tienKhachDua - tongGiaGoc;
-//	    	txtTienThua.setText(String.valueOf(tienThoi));
-//	    }
-//	    else
-//	    	JOptionPane.showMessageDialog(this, "Tiền khách đưa ít hơn thành tiền");
-	    	
-	    
-	}
 	public void tinhTienThua(double tienKhachDua) {
 		double tongGiaGoc = 0;
 	    for (int i = 0; i < modelSPHD.getRowCount(); i++) {
-	        tongGiaGoc += (double) modelSPHD.getValueAt(i, 3);
+	        tongGiaGoc += (double) modelSPHD.getValueAt(i, 2);
 	    }
 	    double tienThoi = 0;
 	    if(tienKhachDua < tongGiaGoc)
@@ -675,12 +650,13 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 	        sequenceNumber++;
 	        String sequencePart = String.format("%03d", sequenceNumber);
 	        
-	        String maNV = "NV14112023002";
+	        String maNV = tenNV.getText();
 	        int index1 = maNV.indexOf("23");
 	        int index2 = maNV.indexOf(" ", index1);
 	        if (index1 == -1) {
 	            return null;
 	          }
+			//HD20112023002001
 	        String subMaNV = maNV.substring(index1 + 2, index1 + 5);
 	        return "HD" + formattedDate + subMaNV + sequencePart;
 		} catch (Exception e) {
@@ -689,12 +665,46 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		return "";
 	}
 	//
+//	private String generateMaHD() {
+//        
+//		String newMaHD = "HD20112023002001";  	 
+//       	try {        		
+//       		java.util.Date currentDate = new java.util.Date();
+//    		SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy");
+//            String formattedDate = dateFormat.format(currentDate);
+//            
+//       		int nextInvoiceNumbber = hoadon_dao.getNextInvoiceNumber(formattedDate);
+//       		
+//            String loaiMa = "HD";
+////            int num = hoadon_dao.getmaHDtudong(loaiMa);
+////            num++;        
+////            String numString = String.format("%04d", num).trim();
+//            
+//            String maNV = "NV14112023002";
+//	        int index1 = maNV.indexOf("23");
+//	        int index2 = maNV.indexOf(" ", index1);
+//	        if (index1 == -1) {
+//	            return null;
+//	          }
+//			//HD20112023002001
+//	        String subMaNV = maNV.substring(index1 + 2, index1 + 5);
+//            
+//            newMaHD = loaiMa + formattedDate + subMaNV + nextInvoiceNumbber;
+//
+//           } catch (Exception e) {
+//               e.printStackTrace();
+//           }
+//		
+//       return newMaHD;
+//   }
+	//
+	//
 	private void hienThiThongTin() {
 	    String maHD = generateMaHD(); 
 	    txtMaHD.setText(maHD);
 	    
-	    //String maNV = tenNV.getText();
-	    String maNV = "NV14112023002";
+	    String maNV = tenNV.getText();
+	    //String maNV = "NV14112023002";
 	    ArrayList<NhanVien> list = nhanvien_dao.getNhanVienTheoMa(maNV);
 	    for (NhanVien nv : list) {
 	    	txtTenNV.setText(nv.getTenNV());
@@ -707,6 +717,10 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 	}
 	public void xoaDong() {
 		int row = tblSPHD.getSelectedRow();
+		if (row == -1) {
+	        JOptionPane.showMessageDialog(this, "Vui lòng chọn một dòng để xóa.", "Thông báo", JOptionPane.WARNING_MESSAGE);
+	        return;
+	    }
 		timDongTrongBang(tblSPHD, row);
 		tinhTongGiaGoc();
 	}
@@ -725,27 +739,116 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 			String k = kh.getMaKH();
 			KhachHang maKH = new KhachHang(k);
 			boolean trangThai = true;
-			
+			//
+			int diemCu = kh.getDiemTL();
+			int diemMoi = (int)tongTien / 100;
+			int diemCongMoi = diemCu + diemMoi;
+			khachhang_dao.updateDiemTL(diemCongMoi, sdtkh);
+			//
 			HoaDon hd = new HoaDon(maHD, ngayLap, tienNhan, tongTien, maNV, maKH, trangThai);
 			if(hoadon_dao.createHD(hd)) {
 				JOptionPane.showMessageDialog(this, "Bạn đã thanh toán thành công");
+				themCTHD(hd);
+				
 			}
 		}
 		
 	}
-	
-//	String tenKH = kh.getTenKH();
-//	String diaChi = kh.getDiaChi();
-//	int diemTL = kh.getDiemTL();
-//	java.sql.Date ngayLapKH = new java.sql.Date(kh.getNgayLap().getTime());
-//	String email = kh.getEmail();
-//	KhachHang khachhang = new KhachHang(maKH, tenKH, diaChi, sdtkh, diemTL, ngayLapKH, email);
-//	
-//	boolean result = khachhang_dao.updateKH(khachhang);
-//	int diemMoi = (int)tongTien / 100;
-//	if(result) {
-//		diemTL = diemMoi;
-//	}
+	//
+	public void themCTHD(HoaDon hd) {
+	    int soLuongDong = modelSPHD.getRowCount();
+
+	    for (int i = 0; i < soLuongDong; i++) {
+	        // Kiểm tra xem chỉ số i có hợp lệ không
+	        if (i < tblSPHD.getRowCount()) {
+	            String maSP = (String) tblSPHD.getValueAt(i, 0);
+	            System.out.println("ma SP " + maSP);
+	            SanPham sanPham = new SanPham(maSP);
+
+	            if (isSach(maSP)) {
+	                // Nếu là Sách, thì tạo đối tượng Sach từ SanPham
+	                if (sanPham instanceof Sach) {
+	                    Sach sach = (Sach) sanPham;
+	                    int soLuong = (int) tblSPHD.getValueAt(i, 2);
+	                    ChiTietHoaDon cthd = new ChiTietHoaDon(hd, sach, soLuong);
+	                    chitiethoadon_dao.createCTHD(cthd);
+	                } else {
+	                    // Xử lý khi không thể chuyển đổi thành Sách
+	                    System.out.println("Không thể chuyển đổi thành đối tượng Sach.");
+	                }
+	            } else {
+	                // Nếu là Văn phòng phẩm, thì tạo đối tượng VanPhongPham từ SanPham
+	                if (sanPham instanceof VanPhongPham) {
+	                    VanPhongPham vpp = (VanPhongPham) sanPham;
+	                    int soLuong = (int) tblSPHD.getValueAt(i, 2);
+	                    ChiTietHoaDon cthd = new ChiTietHoaDon(hd, vpp, soLuong);
+	                    chitiethoadon_dao.createCTHD(cthd);
+	                } else {
+	                    // Xử lý khi không thể chuyển đổi thành Văn phòng phẩm
+	                    System.out.println("Không thể chuyển đổi thành đối tượng VanPhongPham.");
+	                }
+	            }
+	        }
+	    }
+	}
+	//
+	public boolean isVanPhongPham(String maSP) {
+	    return maSP.startsWith("VPP");
+	}
+	//
+	public boolean isSach(String maSP) {
+	    return maSP.startsWith("SAH");
+	}
+	//
+	public void thayDoiSoLuong() {
+	    int selectedRow = tblSPHD.getSelectedRow();
+	    if (selectedRow == -1) {
+	        JOptionPane.showMessageDialog(this, "Vui lòng chọn một dòng để thay đổi số lượng.", "Thông báo", JOptionPane.WARNING_MESSAGE);
+	        return;
+	    }
+	    String maSP = (String) tblSPHD.getValueAt(selectedRow, 0);
+	    String tenSP = (String) tblSPHD.getValueAt(selectedRow, 1);
+	    int soLuongHienTai = (int) tblSPHD.getValueAt(selectedRow, 3);
+	    double giaGoc = (double) tblSPHD.getValueAt(selectedRow, 2);
+	  
+
+	    String input = JOptionPane.showInputDialog(this, "Nhập số lượng mới cho " + tenSP + ":", soLuongHienTai);
+	    try {
+	        if (input != null) {
+	            int newQuantity = Integer.parseInt(input);
+	            if (newQuantity > 0) {
+	                tblSPHD.setValueAt(newQuantity, selectedRow, 3);
+	                tblSPHD.setValueAt(newQuantity * giaGoc, selectedRow, 4);
+	                JOptionPane.showMessageDialog(this, "Đã cập nhật số lượng thành công.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+	                tinhTongGiaGoc();
+	            } else if (newQuantity == 0) {
+	            	xoaDong();
+	            } else {
+	                JOptionPane.showMessageDialog(this, "Số lượng phải là một số không âm.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+	            }
+	        }
+	    } catch (NumberFormatException ex) {
+	        JOptionPane.showMessageDialog(this, "Vui lòng nhập một số nguyên hợp lệ.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+	    }
+	}
+	//
+	public void tinhTongGiaGoc() {
+	    double tongGiaGoc = 0;
+	    int tongSoSanPham = 0;
+
+	    for (int i = 0; i < modelSPHD.getRowCount(); i++) {
+	        int soLuong = (int) modelSPHD.getValueAt(i, 3);
+	        double giaGoc = (double) modelSPHD.getValueAt(i, 2);
+
+	        tongGiaGoc += soLuong * giaGoc;
+	        tongSoSanPham += soLuong;
+	    }
+
+	    txtTongSP.setText(String.valueOf(tongSoSanPham));
+	    txtTienKhachTra.setText(String.valueOf(tongGiaGoc));
+	}
+
+	//
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub

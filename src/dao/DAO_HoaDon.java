@@ -86,9 +86,9 @@ public class DAO_HoaDon {
 	            String lastMaHD = rs.getString(1);
 
 	            // Check if lastMaKH is not null and has the expected format
-	            if (lastMaHD != null && lastMaHD.startsWith("HD") && lastMaHD.length() >= 15) {
-	                // Extract the sequence number part from MAKH
-	                String sequenceNumberPart = lastMaHD.substring(14);
+	            if (lastMaHD != null && lastMaHD.startsWith("HD") && lastMaHD.length() >= 14) {
+	                // HD 15 11 20 23 00 1 001
+	                String sequenceNumberPart = lastMaHD.substring(13);
 
 	                // Convert the extracted part to an integer
 	                newMaHD = Integer.parseInt(sequenceNumberPart);
@@ -98,5 +98,58 @@ public class DAO_HoaDon {
 	        e.printStackTrace();
 	    }
 	    return newMaHD;
+	}
+	
+	//
+	public int getmaHDtudong(String loaiMa) {
+		 int newMaAnh = 0; // Giá trị mặc định nếu không có dữ liệu trong bảng
+
+		    try {
+		        ConnectDB.getInstance();
+		        Connection con = ConnectDB.getConnection();
+		        
+		        // Loại mã cụ thể (SAH, NV, ...)
+		        // Thay đổi loại mã tùy theo yêu cầu
+
+		        String sql = "SELECT MAX(MAHOADON) FROM HOADON WHERE MAHOADON LIKE '" + loaiMa + "%'";
+		        Statement stm = con.createStatement();
+		        ResultSet rs = stm.executeQuery(sql);
+
+		        if (rs.next()) {
+		            String lastMaHD = rs.getString(1);
+
+		            if (lastMaHD != null) {                        // VD: Mã là SAHyyyxxxx
+		                String prefix = lastMaHD.substring(0, 3); // Lấy phần prefix (VD: "SAH")
+		                String middlePart = lastMaHD.substring(3, 6); // Lấy phần giữa (VD: "yyy")
+		                
+		                String number = lastMaHD.substring(6).trim(); // Lấy phần cuối "xxxx"
+		                
+		                //newMaAnh = prefix + middlePart + numberStr
+		                newMaAnh = Integer.parseInt(number);
+		            }
+		        }
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    }
+		    return newMaAnh;
+	} 
+	//
+	public int getNextInvoiceNumber(String currentDate) throws SQLException {
+		
+		ConnectDB.getInstance();
+        Connection con = ConnectDB.getConnection();
+		String sql = "SELECT MAX(RIGHT(MAHOADON, 3)) FROM HOADON WHERE LEFT(MAHOADON, 8) = ?";
+		 try (PreparedStatement preparedStatement = con.prepareStatement(sql)) {
+			 preparedStatement.setString(1, "HD" + currentDate);
+			 
+			 try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				 if(resultSet.next()) {
+					 int currentMaxNumber = resultSet.getInt(1);
+					 return currentMaxNumber +1;
+				 } else {
+					 return 1;
+				 }
+			 }
+		 }
 	}
 }

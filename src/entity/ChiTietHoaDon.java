@@ -4,16 +4,16 @@ import java.util.Objects;
 
 public class ChiTietHoaDon {
 	HoaDon hoaDon;
-	Sach sach;
+	SanPham sanPham;
 	int soLuong;
 	public ChiTietHoaDon() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public ChiTietHoaDon(HoaDon hoaDon, Sach sach, int soLuong) {
+	public ChiTietHoaDon(HoaDon hoaDon, SanPham sanPham, int soLuong) {
 		super();
 		this.hoaDon = hoaDon;
-		this.sach = sach;
+		this.sanPham = sanPham;
 		this.soLuong = soLuong;
 	}
 	public HoaDon getHoaDon() {
@@ -22,11 +22,11 @@ public class ChiTietHoaDon {
 	public void setHoaDon(HoaDon hoaDon) {
 		this.hoaDon = hoaDon;
 	}
-	public Sach getSach() {
-		return sach;
+	public SanPham getSanPham() {
+		return sanPham;
 	}
-	public void setSach(Sach sach) {
-		this.sach = sach;
+	public void setSanPham(SanPham sanPham) {
+		this.sanPham = sanPham;
 	}
 	public int getSoLuong() {
 		return soLuong;
@@ -36,7 +36,7 @@ public class ChiTietHoaDon {
 	}
 	@Override
 	public int hashCode() {
-		return Objects.hash(hoaDon, sach, soLuong);
+		return Objects.hash(hoaDon, sanPham, soLuong);
 	}
 	@Override
 	public boolean equals(Object obj) {
@@ -47,11 +47,12 @@ public class ChiTietHoaDon {
 		if (getClass() != obj.getClass())
 			return false;
 		ChiTietHoaDon other = (ChiTietHoaDon) obj;
-		return Objects.equals(hoaDon, other.hoaDon) && Objects.equals(sach, other.sach) && soLuong == other.soLuong;
+		return Objects.equals(hoaDon, other.hoaDon) && Objects.equals(sanPham, other.sanPham)
+				&& soLuong == other.soLuong;
 	}
 	@Override
 	public String toString() {
-		return "ChiTietHoaDon [hoaDon=" + hoaDon + ", sach=" + sach + ", soLuong=" + soLuong + "]";
+		return "ChiTietHoaDon [hoaDon=" + hoaDon + ", sanPham=" + sanPham + ", soLuong=" + soLuong + "]";
 	}
 	
 	

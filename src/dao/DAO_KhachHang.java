@@ -118,7 +118,7 @@ public class DAO_KhachHang {
 
 	            // Check if lastMaKH is not null and has the expected format
 	            if (lastMaKH != null && lastMaKH.startsWith("KH") && lastMaKH.length() >= 11) {
-	                // Extract the sequence number part from MAKH
+	                // KH 15 11 20 23 002
 	                String sequenceNumberPart = lastMaKH.substring(10);
 
 	                // Convert the extracted part to an integer
@@ -172,6 +172,22 @@ public class DAO_KhachHang {
 		}
 		
 		return k>0; 
+	}
+	
+	public void updateDiemTL(int diemTichLuyMoi, String sdt) {
+		ConnectDB.getInstance();
+		Connection con =  ConnectDB.getConnection();
+		try {
+            // Cập nhật điểm tích lũy trong cơ sở dữ liệu
+            String updateQuery = "UPDATE KHACHHANG SET DIEMTL = ? WHERE SDT = ?";
+            try (PreparedStatement preparedStatement = con.prepareStatement(updateQuery)) {
+                preparedStatement.setInt(1, diemTichLuyMoi);
+                preparedStatement.setString(2, sdt);
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 	}
 	
 }
