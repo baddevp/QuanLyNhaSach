@@ -80,6 +80,10 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 	private JSeparator separator_20;
 	private GuiBanHang guiBanHang;
 	private DAO_NhanVien nhanvien_dao;
+	private JMenu mnTaiKhoan;
+	private JMenuItem mniThongTinTaiKhoan;
+	private JMenuItem mniDoiMatKhau;
+	private JMenuItem mniDangXuat;
 	
 	static JTextField txtusername;
 	static JPasswordField txtpassword;
@@ -338,7 +342,7 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 				txtTenTK.setBackground(new Color(255, 255, 255));
 				txtTenTK.setColumns(10);
 		
-		JMenu mnTaiKhoan = new JMenu("");
+		mnTaiKhoan = new JMenu("");
 		mnTaiKhoan.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		mnTaiKhoan.setMargin(new Insets(2, 2, 2, 30));
 		mnTaiKhoan.setHorizontalAlignment(SwingConstants.TRAILING);
@@ -347,21 +351,21 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 		mnTaiKhoan.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		mnTaiKhoan.setIcon(new ImageIcon(GuiTrangChu.class.getResource("/image/TaiKhoan.png")));
 		
-		JMenuItem mniThongTinTaiKhoan = new JMenuItem("Thông tin tài khoản");
+		mniThongTinTaiKhoan = new JMenuItem("Thông tin tài khoản");
 		mniThongTinTaiKhoan.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		mnTaiKhoan.add(mniThongTinTaiKhoan);
 		
 		separator_19 = new JSeparator();
 		mnTaiKhoan.add(separator_19);
 		
-		JMenuItem mniDoiMatKhau = new JMenuItem("Đổi mật khẩu");
+		mniDoiMatKhau = new JMenuItem("Đổi mật khẩu");
 		mniDoiMatKhau.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		mnTaiKhoan.add(mniDoiMatKhau);
 		
 		separator_20 = new JSeparator();
 		mnTaiKhoan.add(separator_20);
 		
-		JMenuItem mniDangXuat = new JMenuItem("Đăng xuất");
+		mniDangXuat = new JMenuItem("Đăng xuất");
 		mniDangXuat.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		mnTaiKhoan.add(mniDangXuat);
 		
@@ -375,9 +379,10 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 		tabNoiDung.add(pnlTrangChu,BorderLayout.CENTER);
 		pnlTrangChu.setLayout(null);
 		
-		JLabel lblTieuDe = new JLabel("Trang Chủ");
+		JLabel lblTieuDe = new JLabel("");
+		lblTieuDe.setIcon(new ImageIcon(GuiTrangChu.class.getResource("/image/thumnail.png")));
 		lblTieuDe.setFont(new Font("Tahoma", Font.PLAIN, 28));
-		lblTieuDe.setBounds(700, 89, 210, 69);
+		lblTieuDe.setBounds(0, 0, 1915, 914);
 		pnlTrangChu.add(lblTieuDe);
 		
 		//Xử lý sự kiện
@@ -402,6 +407,7 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 		mniChucVu.addActionListener(this);
 		mniNSX.addActionListener(this);
 		mniMauSac.addActionListener(this);
+		mniDangXuat.addActionListener(this);
 		//Xu ly
 		mniBanHang.addActionListener(this);
 		mniTraHang.addActionListener(this);
@@ -516,6 +522,12 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 //			}
 			tabNoiDung.remove(tabNoiDung.getSelectedComponent());
 			tabNoiDung.add(guiBanHang.contentPane);
+			
+		}
+		else if (o.equals(mniDangXuat)) {
+			this.setVisible(false);
+			GuiDangNhap guidangnhap = new GuiDangNhap();
+			guidangnhap.setVisible(true);
 			
 		}
 //		else if (o.equals(mniTraHang)) {

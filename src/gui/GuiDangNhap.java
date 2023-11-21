@@ -312,7 +312,7 @@ public class GuiDangNhap extends JFrame implements ActionListener{
 		thietLapGiaoDien(true);
 		
 		btnDangNhap.addActionListener(this);
-		btnDangNhap.addActionListener(this);
+		btnThoat.addActionListener(this);
 		
 	}
 
