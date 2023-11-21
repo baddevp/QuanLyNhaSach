@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.FlowLayout;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -16,10 +17,13 @@ import java.awt.Font;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.SwingConstants;
 import javax.swing.border.MatteBorder;
 
+import dao.DAO_ChucVu;
 import dao.DAO_NhanVien;
+import entity.ChucVu;
 import entity.NhanVien;
 
 import java.awt.BorderLayout;
@@ -84,6 +88,7 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 	private JMenuItem mniThongTinTaiKhoan;
 	private JMenuItem mniDoiMatKhau;
 	private JMenuItem mniDangXuat;
+	private DAO_ChucVu chucvu_dao;
 	
 	static JTextField txtusername;
 	static JPasswordField txtpassword;
@@ -397,6 +402,8 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 				}
 			}
 		});
+		nhanvien_dao = new DAO_NhanVien();
+		chucvu_dao = new DAO_ChucVu();
 		//Quan ly
 		mniSanPham.addActionListener(this);
 		mniKhachHang.addActionListener(this);
@@ -419,7 +426,9 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 		mniTimKiemTK.addActionListener(this);
 		mniTimKiemHDTH.addActionListener(this);
 		mniTimKiemVPP.addActionListener(this);
+		mniThongTinTaiKhoan.addActionListener(this);
 		//
+		
 		
 		
 	}
@@ -530,6 +539,11 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 			guidangnhap.setVisible(true);
 			
 		}
+		else if (o.equals(mniThongTinTaiKhoan)) {
+			showTTTaiKhoan();
+			tabNoiDung.remove(tabNoiDung.getSelectedComponent());
+			tabNoiDung.add(pnlTrangChu);
+		}
 //		else if (o.equals(mniTraHang)) {
 //			GuiTraHang traHang = new GuiTraHang();
 //			tabNoiDung.remove(tabNoiDung.getSelectedComponent());
@@ -538,6 +552,49 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 
 		//Chức năng thống kê
 		//Chức năng hỗ trợ
+		
+	}
+	
+	public void showTTTaiKhoan() {
+		JFrame frameThongTin = new JFrame("Thông Tin Tài Khoản");
+		
+		String maTK = txtusername.getText().trim();
+		
+		ArrayList<NhanVien> listNV = nhanvien_dao.getNhanVienTheoMa(maTK);
+		for(NhanVien nv : listNV) {
+			String tenTK = nv.getTenNV();
+			//ChucVu chucVu = nv.getChucVu();
+			String maCV = nv.getChucVu().getMaChucVu();
+			System.out.println("fg " + maCV);
+			chucvu_dao = new DAO_ChucVu();
+			ArrayList<ChucVu> listCV = chucvu_dao.getChuVuTheoMa(maCV);
+			for(ChucVu c : listCV) {
+				String tenCV = c.getTenChucVu();
+				JLabel lblMaTaiKhoan = new JLabel("Mã Tài Khoản: " + maTK);
+		        JLabel lblTenTaiKhoan = new JLabel("Tên Tài Khoản: " + tenTK);
+		        JLabel lblChucVu = new JLabel("Chức Vụ: " + tenCV);
+				
+		        JButton btnDong = new JButton("Đóng");
+		        btnDong.addActionListener(new ActionListener() {
+		            @Override
+		            public void actionPerformed(ActionEvent e) {
+		                frameThongTin.dispose();
+		            }
+		        });
+
+		        frameThongTin.getContentPane().setLayout(new FlowLayout());
+		        frameThongTin.getContentPane().add(lblMaTaiKhoan);
+		        frameThongTin.getContentPane().add(lblTenTaiKhoan);
+		        frameThongTin.getContentPane().add(lblChucVu);
+		        frameThongTin.getContentPane().add(btnDong);
+
+		        frameThongTin.setSize(400, 300);
+		        frameThongTin.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		        frameThongTin.setLocationRelativeTo(this);
+		        frameThongTin.setVisible(true);
+			}
+			
+		}
 		
 	}
 

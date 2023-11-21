@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import connectDB.ConnectDB;
 import entity.ChucVu;
+import entity.KhachHang;
 
 public class DAO_ChucVu {
 	public ArrayList<ChucVu> getAllCV(){
@@ -121,6 +122,29 @@ public class DAO_ChucVu {
 	        e.printStackTrace();
 	    }
 	    return k > 0;
+	}
+	
+	public ArrayList<ChucVu> getChuVuTheoMa(String ma){
+		ArrayList<ChucVu> list = new ArrayList<ChucVu>();
+		try {
+			ConnectDB.getInstance();
+			Connection con = ConnectDB.getConnection();
+			String sql = "select * from CHUCVU where MACHUCVU = ?";
+			PreparedStatement preparedStatement = con.prepareStatement(sql);
+			preparedStatement.setString(1, ma);
+			ResultSet rs = preparedStatement.executeQuery();
+			while(rs.next()) {
+				String maCV = rs.getString(1);
+				String tenCV = rs.getString(2);
+				
+				
+				ChucVu cv = new ChucVu(maCV, tenCV);
+				list.add(cv);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return list;
 	}
 
 }
