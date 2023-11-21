@@ -19,6 +19,10 @@ public class NhaSanXuat {
 		this.sdt = sdt;
 	}
 	
+	public NhaSanXuat(String maNSX) {
+		super();
+		this.maNSX = maNSX;
+	}
 	public String getMaNSX() {
 		return maNSX;
 	}

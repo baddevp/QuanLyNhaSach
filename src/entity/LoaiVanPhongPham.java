@@ -17,6 +17,10 @@ public class LoaiVanPhongPham {
 		this.vat = vat;
 	}
 	
+	public LoaiVanPhongPham(String maLoaiVPP) {
+		super();
+		this.maLoaiVPP = maLoaiVPP;
+	}
 	public String getMaLoaiVPP() {
 		return maLoaiVPP;
 	}

@@ -17,6 +17,11 @@ public class LoaiSach {
 		this.vat = vat;
 	}
 	
+	
+	public LoaiSach(String maLoaiSach) {
+		super();
+		this.maLoaiSach = maLoaiSach;
+	}
 	public String getMaLoaiSach() {
 		return maLoaiSach;
 	}

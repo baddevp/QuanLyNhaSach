@@ -93,7 +93,7 @@ public class DAO_QuanLyLoaiVPP {
 		int n = 0;
 		try {
 			pstm = con.prepareStatement(
-					"update LOAIVANPHONGPHAM set TENLOAIVANPP = ?, VAT = ?, MOTA = ? where MALOAIVPP = ?");
+					"update LOAIVANPHONGPHAM set TENLOAIVPP = ?, VAT = ?, MOTA = ? where MALOAIVPP = ?");
 			pstm.setString(1, loaiVPP.getTenLoaiVPP());
 			pstm.setDouble(2, loaiVPP.getVat());
 			pstm.setString(3, loaiVPP.getMoTa());
@@ -131,4 +131,29 @@ public class DAO_QuanLyLoaiVPP {
 		}
 		return n > 0;
 	}
+	
+	public String TuPhatSinhMaLoaiVPP() {
+        String newMaLoaiSach = "LV001"; // Giá trị mặc định nếu không có dữ liệu trong bảng
+
+        try {
+            ConnectDB.getInstance();
+            Connection con = ConnectDB.getConnection();
+            String sql = "SELECT MAX(MALOAIVPP) FROM LOAIVANPHONGPHAM";
+            Statement stm = con.createStatement();
+            ResultSet rs = stm.executeQuery(sql);
+
+            if (rs.next()) {
+                String lastMaChucVu = rs.getString(1);
+
+                if (lastMaChucVu != null) {
+                    int number = Integer.parseInt(lastMaChucVu.substring(2).trim()) + 1;
+                    String numberStr = String.format("%03d", number);
+                    newMaLoaiSach = "LV" + numberStr;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return newMaLoaiSach;
+    }
 }

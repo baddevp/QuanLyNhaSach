@@ -13,6 +13,10 @@ public class MauSac {
 		this.tenMau = tenMau;
 	}
 	
+	public MauSac(String maMau) {
+		super();
+		this.maMau = maMau;
+	}
 	public String getMaMau() {
 		return maMau;
 	}

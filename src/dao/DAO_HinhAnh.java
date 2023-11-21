@@ -190,6 +190,101 @@ public class DAO_HinhAnh {
 		return ha;
 	}
 	
+	
+	public int MaSach_VPP(String loaiMa) {
+		 int newMaAnh = 0; // Giá trị mặc định nếu không có dữ liệu trong bảng
+
+		    try {
+		        ConnectDB.getInstance();
+		        Connection con = ConnectDB.getConnection();
+		        
+		        // Loại mã cụ thể (SAH, NV, ...)
+		        // Thay đổi loại mã tùy theo yêu cầu
+
+		        String sql = "SELECT MAX(MAANH) FROM HINHANH WHERE MAANH LIKE '" + loaiMa + "%'";
+		        Statement stm = con.createStatement();
+		        ResultSet rs = stm.executeQuery(sql);
+
+		        if (rs.next()) {
+		            String lastMaAnh = rs.getString(1);
+
+		            if (lastMaAnh != null) {                        // VD: Mã là SAHyyyxxxx
+		                String prefix = lastMaAnh.substring(0, 3); // Lấy phần prefix (VD: "SAH")
+		                String middlePart = lastMaAnh.substring(3, 6); // Lấy phần giữa (VD: "yyy")
+		                
+		                String number = lastMaAnh.substring(6).trim(); // Lấy phần cuối "xxxx"
+		                
+		                //newMaAnh = prefix + middlePart + numberStr
+		                newMaAnh = Integer.parseInt(number);
+		            }
+		        }
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    }
+		    return newMaAnh;
+	}
+	
+	public int MaAnhNV(String loaiMa) {
+		 int newMaAnh = 0; // Giá trị mặc định nếu không có dữ liệu trong bảng
+		    try {
+		        ConnectDB.getInstance();
+		        Connection con = ConnectDB.getConnection();
+		        
+		        // Loại mã cụ thể (SAH, NV, ...)
+		        // Thay đổi loại mã tùy theo yêu cầu
+
+		        String sql = "SELECT MAX(MAANH) FROM HINHANH WHERE MAANH LIKE '" + loaiMa + "%'";
+		        Statement stm = con.createStatement();
+		        ResultSet rs = stm.executeQuery(sql);
+
+		        if (rs.next()) {
+		            String lastMaAnh = rs.getString(1);
+
+		            if (lastMaAnh != null) {                        // VD: Mã là NV-12102023-001
+		                String prefix = lastMaAnh.substring(0, 2); // Lấy phần prefix (VD: "SAH")
+		                String middlePart = lastMaAnh.substring(2, 10); // Lấy phần giữa (VD: "yyy")		                
+		                String number = lastMaAnh.substring(10).trim(); // Lấy phần cuối "xxx"
+		                
+		                //newMaAnh = prefix + middlePart + numberStr;
+		                newMaAnh =  Integer.parseInt(number);
+		            }
+		        }
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    }
+		    return newMaAnh;
+	}
+	
+	
+	
+	 public HinhAnh getHinhAnhByMaAnh(String maAnh) {
+	        HinhAnh hinhAnh = null;
+
+	        try {
+	            ConnectDB.getInstance();
+	            Connection con = ConnectDB.getConnection();
+	            String sql = "SELECT * FROM HINHANH WHERE MAANH = ?";
+	            try (PreparedStatement preparedStatement = con.prepareStatement(sql)) {
+	                preparedStatement.setString(1, maAnh);
+	                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+	                    if (resultSet.next()) {
+	                        // Giả sử HinhAnh có các thuộc tính MAANH, TENANH, URL
+	                        String maAnhResult = resultSet.getString("MAANH");
+	                        String tenAnh = resultSet.getString("TENANH");
+	                        String url = resultSet.getString("URL");
+
+	                        // Tạo đối tượng HinhAnh từ dữ liệu lấy từ cơ sở dữ liệu
+	                        hinhAnh = new HinhAnh(maAnhResult, tenAnh, url);
+	                    }
+	                }
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+
+	        return hinhAnh;
+	    }
+
 //	public boolean updateIMG(String maIMG, String url) {
 //	    int k = 0;
 //	    try {

@@ -99,19 +99,19 @@ public class DAO_QuanLyVPP {
 			pstm.setString(1, vpp.getMaSanPham());
 			pstm.setString(2, vpp.getTenSanPham());
 			pstm.setDouble(3, vpp.getGiaGoc());
-			pstm.setString(4, vpp.getNhaSanXuat().getMaNSX());
+			pstm.setString(4, vpp.getHinhAnh().getMaAnh());
 			pstm.setString(5, vpp.getMoTa());
-			pstm.setDate(6, (Date) vpp.getNgayNhap());
+			pstm.setDate(6,  new java.sql.Date(vpp.getNgayNhap().getTime()));
 			pstm.setBoolean(7, vpp.isTrangThai());
 			pstm.setInt(8, vpp.getSoLuong());
 			pstm.setDouble(9, vpp.getThue());
 			pstm.setDouble(10, vpp.getGiaBan());
 			pstm.setString(11, vpp.getNhaSanXuat().getMaNSX());
 			pstm.setString(12, vpp.getKhuyenMai());
-			pstm.setString(12, vpp.getThuongHieu());
-			pstm.setString(13, vpp.getXuatXu());
-			pstm.setString(14, vpp.getMaMau().getMaMau());
-			pstm.setString(15, vpp.getLoaiVanPhongPham().getMaLoaiVPP());
+			pstm.setString(13, vpp.getThuongHieu());
+			pstm.setString(14, vpp.getXuatXu());
+			pstm.setString(15, vpp.getMaMau().getMaMau());
+			pstm.setString(16, vpp.getLoaiVanPhongPham().getMaLoaiVPP());
 			n = pstm.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -182,4 +182,112 @@ public class DAO_QuanLyVPP {
 		}
 		return n > 0;
 	}
+	
+	
+	public String getMaAnhByMa_VPP(String maVPP) {
+        String maAnh = null;
+
+        try {
+            ConnectDB.getInstance();
+            Connection con = ConnectDB.getConnection();
+            String sql = "SELECT MAANH FROM VANPHONGPHAM WHERE MAVPP = ?";
+            try (PreparedStatement preparedStatement = con.prepareStatement(sql)) {
+                preparedStatement.setString(1, maVPP);
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        maAnh = resultSet.getString("MAANH");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return maAnh;
+    }
+	
+	public String getMaLoaiVPPByMa_VPP(String maVPP) {
+        String loaiVPP = null;
+        try {
+            ConnectDB.getInstance();
+            Connection con = ConnectDB.getConnection();
+            String sql = "SELECT MALOAIVPP FROM VANPHONGPHAM WHERE MAVPP = ?";
+            try (PreparedStatement preparedStatement = con.prepareStatement(sql)) {
+                preparedStatement.setString(1, maVPP);
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        loaiVPP = resultSet.getString(1);              
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return loaiVPP;
+    }
+	
+	public String getMaNSXByMa_VPP(String maVPP) {
+        String nsx = null;
+        try {
+            ConnectDB.getInstance();
+            Connection con = ConnectDB.getConnection();
+            String sql = "SELECT MANSX FROM VANPHONGPHAM WHERE MAVPP = ?";
+            try (PreparedStatement preparedStatement = con.prepareStatement(sql)) {
+                preparedStatement.setString(1, maVPP);
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        nsx = resultSet.getString(1);              
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return nsx;
+    }
+	
+	public String getTrangThaiByMa_VPP(String maVPP) { 
+        String trangThai = null;
+        try {
+            ConnectDB.getInstance();
+            Connection con = ConnectDB.getConnection();
+            String sql = "SELECT TRANGTHAI FROM VANPHONGPHAM WHERE MAVPP = ?";
+            try (PreparedStatement preparedStatement = con.prepareStatement(sql)) {
+                preparedStatement.setString(1, maVPP);
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        boolean trangThaiBoolean = resultSet.getBoolean(1);
+                        trangThai = trangThaiBoolean ? "Còn hàng" : "Hết hàng";
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return trangThai;
+    }
+	
+	public String getMaLoaiVPPByMaMauSac_VPP(String maVPP) {
+        String maMau = null;
+        try {
+            ConnectDB.getInstance();
+            Connection con = ConnectDB.getConnection();
+            String sql = "SELECT MAMAU FROM VANPHONGPHAM WHERE MAVPP = ?";
+            try (PreparedStatement preparedStatement = con.prepareStatement(sql)) {
+                preparedStatement.setString(1, maVPP);
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        maMau = resultSet.getString(1);              
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return maMau;
+    }
 }

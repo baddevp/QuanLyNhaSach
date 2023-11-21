@@ -7,6 +7,8 @@ public class Sach extends SanPham {
 	String loaiBia;
 	String tacGia;
 	LoaiSach loaiSach;
+	
+	
 
 	public Sach() {
 		super();
@@ -41,7 +43,7 @@ public class Sach extends SanPham {
 		this.tacGia = tacGia;
 		this.loaiSach = loaiSach;
 	}
-	
+
 	public int getSotrang() {
 		return sotrang;
 	}
