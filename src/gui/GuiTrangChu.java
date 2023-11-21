@@ -565,7 +565,6 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 			String tenTK = nv.getTenNV();
 			//ChucVu chucVu = nv.getChucVu();
 			String maCV = nv.getChucVu().getMaChucVu();
-			System.out.println("fg " + maCV);
 			chucvu_dao = new DAO_ChucVu();
 			ArrayList<ChucVu> listCV = chucvu_dao.getChuVuTheoMa(maCV);
 			for(ChucVu c : listCV) {

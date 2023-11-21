@@ -649,14 +649,13 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener, MouseLi
 		// TODO Auto-generated method stub
 		int row = tblKH.getSelectedRow();
 	    if (row >= 0) {
-	        // Lấy thông tin nhân viên
+	       
 	        String maNV = modelKH.getValueAt(row, 0).toString();
 
-	        // Lấy thông tin ảnh từ cơ sở dữ liệu dựa trên mã nhân viên
+	        
 	        String maAnh = nhanvien_dao.getMaAnhByMaNV(maNV); // Hàm này cần được thêm vào DAO_NhanVien
 
-	        // Lấy thông tin ảnh từ cơ sở dữ liệu dựa trên mã ảnh
-	        HinhAnh hinhAnh = nhanvien_dao.getHinhAnhByMaAnh(maAnh); // Hàm này cần được thêm vào DAO_NhanVien
+	        HinhAnh hinhAnh = nhanvien_dao.getHinhAnhByMaAnh(maAnh); 
 
 	        // Hiển thị ảnh lên lblShowAnh
 	        if (hinhAnh != null) {

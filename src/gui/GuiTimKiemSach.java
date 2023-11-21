@@ -25,6 +25,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JComboBox;
+import javax.swing.JList;
 
 public class GuiTimKiemSach extends JFrame implements ActionListener {
 
@@ -134,6 +135,10 @@ public class GuiTimKiemSach extends JFrame implements ActionListener {
 		contentPane.add(pnlBangSach);
 		pnlBangSach.setBorder(BorderFactory.createTitledBorder("Danh sách thông tin sách"));
 		pnlBangSach.setLayout(null);
+		
+		JList list = new JList();
+		list.setBounds(132, 91, 50, 50);
+		pnlBangSach.add(list);
 
 		
 

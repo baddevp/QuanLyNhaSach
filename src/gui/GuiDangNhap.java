@@ -386,9 +386,15 @@ public class GuiDangNhap extends JFrame implements ActionListener{
 		String pass = txtMK.getText().trim();
 		boolean checkLogin = new DAO_DangNhap().checkLogin(user, pass);
 		if(!checkLogin) {
-			JOptionPane.showMessageDialog(this, "Tên đăng nhập hoặc mật khẩu không chính xác!");
+			txtThongBao.setText("Tên đăng nhập hoặc mật khẩu không chính xác!");
 			return;
-		}
+		} else if(pass.isEmpty()) {
+			txtThongBao.setText("Vui lòng nhập mật khẩu");
+			return;
+		} else if(user.isEmpty()) {
+			txtThongBao.setText("Vui lòng nhập mã tài khoản");
+			return;
+		} 
 		setVisible(false);
 		guiTrangChu = new GuiTrangChu(txtTenDN, txtMK);
 		guiTrangChu.setVisible(true);

@@ -295,7 +295,7 @@ public class GuiQuanLyKhachHang extends JFrame implements ActionListener, MouseL
 		
 		
 
-		pnlBangKH.setBackground(Color.white);;
+		pnlBangKH.setBackground(Color.white);
 		modelKH = new DefaultTableModel();
 		modelKH.addColumn("Mã khách hàng");
 		modelKH.addColumn("Tên khách hàng");
@@ -314,11 +314,10 @@ public class GuiQuanLyKhachHang extends JFrame implements ActionListener, MouseL
 		pnlBangKH.setLayout(null);
 		tblKH.setFont(font2);
 		tblKH.setRowHeight(35);
-		// String row[] = {"KH001","Nguyễn Văn B","0123456789","0","Thường"," "};
-		// modelKH.addRow(row);
 		pnlBangKH.add(jScrollPane);
 		
 		txtTrangThai = new JTextField("Không có hoạt động nào gần nhất");
+		txtTrangThai.setEditable(false);
 		txtTrangThai.setForeground(Color.red);
 		txtTrangThai.setHorizontalAlignment(SwingConstants.CENTER);
 		txtTrangThai.setBounds(10, 950, 1894, 20);
@@ -391,7 +390,7 @@ public class GuiQuanLyKhachHang extends JFrame implements ActionListener, MouseL
 	public void xoaRong() {
 		txtDiaChi.setText("");
 		txtDTL.setText("");
-		txtTrangThai.setText("");
+		//txtTrangThai.setText("");
 		txtEmail.setText("");
 		txtNgayLap.setText("");
 		txtTenKH.setText("");
@@ -471,9 +470,11 @@ public class GuiQuanLyKhachHang extends JFrame implements ActionListener, MouseL
 	        modelKH.addRow(new Object[]{kh.getMaKH(), kh.getTenKH(), kh.getSdt(), kh.getDiaChi(), kh.getEmail(),
 	                kh.getNgayLap(), kh.getDiemTL()});
 	        JOptionPane.showMessageDialog(this, "Thêm khách hàng thành công");
+	        txtTrangThai.setText("Thêm khách hàng " + tenKH + " thành công");
 	        xoaRong();
 	    } else {
 	        JOptionPane.showMessageDialog(this, "Không thành công");
+	        txtTrangThai.setText("Thêm khách hàng không thành công");
 	    }
 	}
 	
@@ -490,6 +491,7 @@ public class GuiQuanLyKhachHang extends JFrame implements ActionListener, MouseL
 				int index = tblKH.getSelectedRow();
 				khachhang_dao.xoaKH(modelKH.getValueAt(tblKH.getSelectedRow(), 0).toString());
 				modelKH.removeRow(index);
+				txtTrangThai.setText("Xóa khách hàng thành công");
 				xoaRong();
 			}
 		}
@@ -547,6 +549,7 @@ public class GuiQuanLyKhachHang extends JFrame implements ActionListener, MouseL
 	        btnLuu.setEnabled(false);
 	    } else {
 	        JOptionPane.showMessageDialog(this, "Cập nhật thông tin khách hàng không thành công");
+	        txtTrangThai.setText("Cập nhật thông tin khách hàng không thành công");
 	    }
 	}
 	
