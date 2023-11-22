@@ -116,6 +116,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 	private JDateChooser dtmNgayLap;
 	private DAO_CTHD chitiethoadon_dao;
 	private JButton btnSuaSL;
+	private GuiQuanLyKhachHang guiKhachHang;
 	
 	static JTextField tenNV;
 
@@ -458,6 +459,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		hoadon_dao = new DAO_HoaDon();
 		nhanvien_dao = new DAO_NhanVien();
 		chitiethoadon_dao = new DAO_CTHD();
+		guiKhachHang = new GuiQuanLyKhachHang();
 		
 		try {
 			ConnectDB.getInstance().connect();
@@ -612,7 +614,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 	public void tinhTienThua(double tienKhachDua) {
 		double tongGiaGoc = 0;
 	    for (int i = 0; i < modelSPHD.getRowCount(); i++) {
-	        tongGiaGoc += (double) modelSPHD.getValueAt(i, 2);
+	        tongGiaGoc += (double) modelSPHD.getValueAt(i, 4);
 	    }
 	    double tienThoi = 0;
 	    if(tienKhachDua < tongGiaGoc)
@@ -733,12 +735,41 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		String nv = tenNV.getText();
 		NhanVien maNV = new NhanVien(nv);
 		String sdtkh = txtSDTKH.getText();
+		boolean trangThai = true;
+		
+		//
+		if(sdtkh.isEmpty()) {
+			guiKhachHang = new GuiQuanLyKhachHang();
+			String maKL = guiKhachHang.txtMaKH.getText();
+			String tenKL = "Khách lẻ";
+			String diaChi = "Không";
+			String sdtKL = "Không";
+		    int diemTLKL = 0;
+		    String emailKL = "Không";
+		    
+		    java.util.Date ngayLapUtil = new java.util.Date();
+		    java.sql.Date ngayLapKL = new java.sql.Date(ngayLapUtil.getTime());
+			
+		    KhachHang khle = new KhachHang(maKL, tenKL, diaChi, sdtKL, diemTLKL, ngayLapKL, emailKL);
+		    KhachHang kle = new KhachHang(maKL);
+		    if (khachhang_dao.createKH(khle)) {
+		    	HoaDon hd = new HoaDon(maHD, ngayLap, tienNhan, tongTien, maNV, kle, trangThai);
+				if(hoadon_dao.createHD(hd)) {
+					JOptionPane.showMessageDialog(this, "Bạn đã thanh toán thành công");
+					themCTHD(hd);
+					
+				}
+		    }
+			
+		}
+		//
 		ArrayList<KhachHang> list = khachhang_dao.getKhachHangTheoSDT(sdtkh);
 		
 		for(KhachHang kh : list) {
 			String k = kh.getMaKH();
 			KhachHang maKH = new KhachHang(k);
-			boolean trangThai = true;
+			
+			
 			//
 			int diemCu = kh.getDiemTL();
 			int diemMoi = (int)tongTien / 100;
@@ -758,35 +789,22 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 	public void themCTHD(HoaDon hd) {
 	    int soLuongDong = modelSPHD.getRowCount();
 
-	    for (int i = 0; i < soLuongDong; i++) {
+	    for (int i = 0; i <= soLuongDong; i++) {
 	        // Kiểm tra xem chỉ số i có hợp lệ không
 	        if (i < tblSPHD.getRowCount()) {
 	            String maSP = (String) tblSPHD.getValueAt(i, 0);
-	            System.out.println("ma SP " + maSP);
 	            SanPham sanPham = new SanPham(maSP);
 
 	            if (isSach(maSP)) {
-	                // Nếu là Sách, thì tạo đối tượng Sach từ SanPham
-	                if (sanPham instanceof Sach) {
-	                    Sach sach = (Sach) sanPham;
-	                    int soLuong = (int) tblSPHD.getValueAt(i, 2);
-	                    ChiTietHoaDon cthd = new ChiTietHoaDon(hd, sach, soLuong);
+	           
+	                    int soLuong = (int) tblSPHD.getValueAt(i, 3);
+	                    ChiTietHoaDon cthd = new ChiTietHoaDon(hd, sanPham, soLuong);
 	                    chitiethoadon_dao.createCTHD(cthd);
-	                } else {
-	                    // Xử lý khi không thể chuyển đổi thành Sách
-	                    System.out.println("Không thể chuyển đổi thành đối tượng Sach.");
-	                }
+
 	            } else {
-	                // Nếu là Văn phòng phẩm, thì tạo đối tượng VanPhongPham từ SanPham
-	                if (sanPham instanceof VanPhongPham) {
-	                    VanPhongPham vpp = (VanPhongPham) sanPham;
-	                    int soLuong = (int) tblSPHD.getValueAt(i, 2);
-	                    ChiTietHoaDon cthd = new ChiTietHoaDon(hd, vpp, soLuong);
+	                    int soLuong = (int) tblSPHD.getValueAt(i, 3);
+	                    ChiTietHoaDon cthd = new ChiTietHoaDon(hd, sanPham, soLuong);
 	                    chitiethoadon_dao.createCTHD(cthd);
-	                } else {
-	                    // Xử lý khi không thể chuyển đổi thành Văn phòng phẩm
-	                    System.out.println("Không thể chuyển đổi thành đối tượng VanPhongPham.");
-	                }
 	            }
 	        }
 	    }

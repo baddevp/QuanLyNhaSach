@@ -28,7 +28,7 @@ public class DAO_QuanLySach {
 			while (rs.next()) {
 				NhaSanXuat nsx = new NhaSanXuat(rs.getString("MANSX"));
 				HinhAnh ha = new HinhAnh(rs.getString("MAANH"));
-				LoaiSach ls = new LoaiSach(rs.getString("MALOAISACH"));
+				LoaiSach ls = dao_LoaiSach.getLoaiTheoMa(rs.getString("MALOAISACH"));
 				
 				ds.add(new Sach(rs.getString("MASACH"), rs.getString("TENSACH"),rs.getDouble("GIAGOC"), ha, rs.getString("MOTA"), rs.getDate("NGAYNHAP"), rs.getBoolean("TRANGTHAI"),rs.getInt("SOLUONG"),
 						rs.getDouble("THUE"), rs.getDouble("GIABAN"), nsx ,rs.getString("MAKHUYENMAI"),rs.getInt("SOTRANG"),rs.getString("LOAIBIA"),rs.getString("TACGIA"),ls));
@@ -42,6 +42,7 @@ public class DAO_QuanLySach {
 	public Sach getSachTheoMa(String ma) {
 		ConnectDB.getInstance();
 		Connection con = ConnectDB.getConnection();
+		
 		Sach sach = null;
 		try {
 			PreparedStatement pstm = con.prepareStatement("select * from SACH where MASACH = ?");

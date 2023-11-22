@@ -43,7 +43,7 @@ import javax.swing.JTable;
 public class GuiQuanLyKhachHang extends JFrame implements ActionListener, MouseListener{
 
 	public static JPanel contentPane;
-	private JTextField txtMaKH;
+	JTextField txtMaKH;
 	private JTextField txtTenKH;
 	JTextField txtSDT;
 	private JTextField txtNgayLap;

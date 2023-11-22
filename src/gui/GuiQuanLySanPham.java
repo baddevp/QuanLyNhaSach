@@ -1013,8 +1013,8 @@ public class GuiQuanLySanPham extends JFrame implements ActionListener, MouseLis
 		DocDuLieuDatabaseSACH();
 		DocDuLieuDatabaseVPP();
 		
-		txtThue.setText("0.8");
-		txtThueVPP.setText("0.8");
+		txtThue.setText("0.08");
+		txtThueVPP.setText("0.08");
 		
 		// Sách
 		txtGiaGoc.getDocument().addDocumentListener((DocumentListener) new DocumentListener() {
@@ -1038,7 +1038,7 @@ public class GuiQuanLySanPham extends JFrame implements ActionListener, MouseLis
                     double tS = Double.parseDouble(txtThueVPP.getText());
 
                     // Cập nhật giá bán (Ví dụ: giả sử giá bán là một phần của giá gốc)
-                    double giaBan = giaGoc * tS;
+                    double giaBan = giaGoc + (giaGoc * tS);
                     txtGiaBan.setText(String.valueOf(giaBan));
                     
                 } catch (NumberFormatException ex) {
@@ -1069,7 +1069,7 @@ public class GuiQuanLySanPham extends JFrame implements ActionListener, MouseLis
                     double tS = Double.parseDouble(txtThueVPP.getText());
 
                     // Cập nhật giá bán (Ví dụ: giả sử giá bán là một phần của giá gốc)
-                    double giaBan = giaGoc * tS;
+                    double giaBan = giaGoc + (giaGoc * tS);
                     txtGiaBanVPP.setText(String.valueOf(giaBan));
                     
                 } catch (NumberFormatException ex) {
