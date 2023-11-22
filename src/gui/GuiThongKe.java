@@ -73,7 +73,7 @@ import java.awt.Component;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
-public class GuiBanHang extends JFrame implements ActionListener, MouseListener {
+public class GuiThongKe extends JFrame implements ActionListener, MouseListener {
 
 	public static JPanel contentPane;
 	private DefaultTableModel modelKH;
@@ -117,7 +117,6 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 	private DAO_CTHD chitiethoadon_dao;
 	private JButton btnSuaSL;
 	private GuiQuanLyKhachHang guiKhachHang;
-	private DAO_QuanLyVPP vanphongpham_dao;
 	
 	static JTextField tenNV;
 
@@ -130,7 +129,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 
 			public void run() {
 				try {
-					GuiBanHang frame = new GuiBanHang(tenNV);
+					GuiThongKe frame = new GuiThongKe();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -142,7 +141,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 	/**
 	 * Create the frame.
 	 */
-	public GuiBanHang(JTextField tenNV) {
+	public GuiThongKe() {
 		this.tenNV = tenNV;
 		this.setTitle("Quản lý khách hàng");
 		this.setSize(1930, 1030);
@@ -294,7 +293,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		pnlThongTinHoaDon.add(txtDiemTL);
 		
 		btnTimKiemKH = new JButton("");
-		btnTimKiemKH.setIcon(new ImageIcon(GuiBanHang.class.getResource("/image/TimKiem.png")));
+		btnTimKiemKH.setIcon(new ImageIcon(GuiThongKe.class.getResource("/image/TimKiem.png")));
 		btnTimKiemKH.setBounds(275, 109, 40, 30);
 		pnlThongTinHoaDon.add(btnTimKiemKH);
 		btnTimKiemKH.setFont(new Font("Tahoma", Font.PLAIN, 18));
@@ -303,14 +302,14 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		
 		
 		btnXoaDong = new JButton("Xóa dòng");
-		btnXoaDong.setIcon(new ImageIcon(GuiBanHang.class.getResource("/image/TacVu_Xoa.png")));
+		btnXoaDong.setIcon(new ImageIcon(GuiThongKe.class.getResource("/image/TacVu_Xoa.png")));
 		btnXoaDong.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		btnXoaDong.setBackground(Color.WHITE);
 		btnXoaDong.setBounds(729, 250, 159, 36);
 		pnlHoaDon.add(btnXoaDong);
 		
 		btnHangCho = new JButton("Hàng chờ");
-		btnHangCho.setIcon(new ImageIcon(GuiBanHang.class.getResource("/image/TacVu_HangCho.png")));
+		btnHangCho.setIcon(new ImageIcon(GuiThongKe.class.getResource("/image/TacVu_HangCho.png")));
 		btnHangCho.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		btnHangCho.setBackground(Color.WHITE);
 		btnHangCho.setBounds(729, 11, 159, 36);
@@ -410,7 +409,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		pnlHoaDon.add(btnTaoDonMoi);
 		
 		btnSuaSL = new JButton("Sửa số lượng");
-		btnSuaSL.setIcon(new ImageIcon(GuiBanHang.class.getResource("/image/TacVu_Sua.png")));
+		btnSuaSL.setIcon(new ImageIcon(GuiThongKe.class.getResource("/image/TacVu_Sua.png")));
 		
 		btnSuaSL.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		btnSuaSL.setBackground(Color.WHITE);
@@ -460,7 +459,6 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		hoadon_dao = new DAO_HoaDon();
 		nhanvien_dao = new DAO_NhanVien();
 		chitiethoadon_dao = new DAO_CTHD();
-		vanphongpham_dao = new DAO_QuanLyVPP();
 		guiKhachHang = new GuiQuanLyKhachHang();
 		
 		try {
@@ -495,10 +493,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		    @Override
 		    public void keyReleased(KeyEvent e) {
 		    	String tienKhachDua = txtTienKhachDua.getText().trim();
-		    	if(tienKhachDua.isEmpty())
-		    		return;
-		    	else
-		    		tinhTienThua(Double.valueOf(tienKhachDua));
+		        tinhTienThua(Double.valueOf(tienKhachDua));
 		    }
 		    
 		}); 
@@ -598,7 +593,6 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 	    String maSP = (String) tblSP.getValueAt(row, 0);
 	    String tenSP = (String) tblSP.getValueAt(row, 1);
 	    double giaGoc = (double) tblSP.getValueAt(row, 6);
-	    int slSP = (int) tblSP.getValueAt(row, 4);
 
 	    // Tìm kiếm hàng có mã sản phẩm và tên sản phẩm giống hàng được chọn trong bảng tblSPHD
 	    int index = timSPTrongHD(maSP, tenSP);
@@ -607,27 +601,15 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 	        // Nếu hàng đã tồn tại thì tăng số lượng
 	        int soLuong = (int) modelSPHD.getValueAt(index, 3);
 	        soLuong++;
-	        slSP--;
 	        modelSPHD.setValueAt(soLuong, index, 3);
 	        modelSPHD.setValueAt(giaGoc * soLuong, index, 4);
-
-	        // Giảm số lượng trong bảng tblSP
-	        if (slSP > 0) {
-	            modelSP.setValueAt(slSP, row, 4);
-	        }
 	    } else {
 	        // Nếu hàng chưa tồn tại, thêm hàng mới
 	        modelSPHD.addRow(new Object[]{maSP, tenSP, giaGoc, 1, giaGoc});
-
-	        // Giảm số lượng trong bảng tblSP
-	        if (slSP > 0) {
-	            modelSP.setValueAt(slSP - 1, row, 4);
-	        }
 	    }
-
+	    
 	    tinhTongGiaGoc();
 	}
-
 	//
 	public void tinhTienThua(double tienKhachDua) {
 		double tongGiaGoc = 0;
@@ -774,9 +756,8 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		    	HoaDon hd = new HoaDon(maHD, ngayLap, tienNhan, tongTien, maNV, kle, trangThai);
 				if(hoadon_dao.createHD(hd)) {
 					JOptionPane.showMessageDialog(this, "Bạn đã thanh toán thành công");
-					capNhatSoLuongTon(hd);
 					themCTHD(hd);
-					xoaRong();
+					
 				}
 		    }
 			
@@ -798,9 +779,8 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 			HoaDon hd = new HoaDon(maHD, ngayLap, tienNhan, tongTien, maNV, maKH, trangThai);
 			if(hoadon_dao.createHD(hd)) {
 				JOptionPane.showMessageDialog(this, "Bạn đã thanh toán thành công");
-				capNhatSoLuongTon(hd);
 				themCTHD(hd);
-				xoaRong();
+				
 			}
 		}
 		
@@ -816,10 +796,10 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 	            SanPham sanPham = new SanPham(maSP);
 
 	            if (isSach(maSP)) {
+	           
 	                    int soLuong = (int) tblSPHD.getValueAt(i, 3);
 	                    ChiTietHoaDon cthd = new ChiTietHoaDon(hd, sanPham, soLuong);
 	                    chitiethoadon_dao.createCTHD(cthd);
-	                    
 
 	            } else {
 	                    int soLuong = (int) tblSPHD.getValueAt(i, 3);
@@ -885,49 +865,8 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 	    txtTongSP.setText(String.valueOf(tongSoSanPham));
 	    txtTienKhachTra.setText(String.valueOf(tongGiaGoc));
 	}
+
 	//
-	public void capNhatSoLuongTon(HoaDon hd) {
-	    DefaultTableModel modelSPHD = (DefaultTableModel) tblSPHD.getModel();
-
-	    for (int i = 0; i < modelSPHD.getRowCount(); i++) {
-	        String maSP = (String) modelSPHD.getValueAt(i, 0);
-	        int soLuong = (int) modelSPHD.getValueAt(i, 3);
-
-	        if (isSach(maSP)) {
-	        	sach_dao.capNhatSoLuongTonTrongCSDL(maSP, soLuong);
-	        } else {
-	        vanphongpham_dao.capNhatSoLuongTonTrongCSDL(maSP, soLuong);
-	        }
-	        //capNhatSoLuongTonTrongBangSanPham(maSP, soLuong);
-	    }
-	}
-	//
-	public void capNhatSoLuongTonTrongBangSanPham(String maSP, int soLuong) {
-	    DefaultTableModel modelSP = (DefaultTableModel) tblSP.getModel();
-
-	    // Tìm dòng chứa sản phẩm có mã maSP trong bảng sản phẩm
-	    for (int i = 0; i < modelSP.getRowCount(); i++) {
-	        if (maSP.equals((String) modelSP.getValueAt(i, 0))) {
-	            int soLuongTonHienTai = (int) modelSP.getValueAt(i, 4);
-	            int soLuongTonMoi = soLuongTonHienTai - soLuong;
-
-	            // Cập nhật số lượng tồn trong bảng sản phẩm hiển thị
-	            modelSP.setValueAt(soLuongTonMoi, i, 4);
-	            break;
-	        }
-	    }
-	}
-	//
-	public void xoaRong() {
-		txtDiemTL.setText("");
-		txtSDTKH.setText("");
-		txtTimMaSP.setText("");
-		txtTongSP.setText("");
-		txtTienKhachDua.setText("");
-		txtTienKhachTra.setText("");
-		txtTienThua.setText("");
-		modelSPHD.setRowCount(0);
-	}
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub

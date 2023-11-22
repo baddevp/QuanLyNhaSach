@@ -290,4 +290,25 @@ public class DAO_QuanLyVPP {
 
         return maMau;
     }
+	//
+	public void capNhatSoLuongTonTrongCSDL(String maSP, int soLuong) {
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		PreparedStatement pstm = null;
+	    try {
+	        String sql = "UPDATE VANPHONGPHAM SET SOLUONG = SOLUONG - ? WHERE MAVPP = ?";
+
+	        // Tạo đối tượng PreparedStatement
+	        pstm = con.prepareStatement(sql);
+
+	        // Thiết lập tham số cho câu SQL
+	        pstm.setInt(1, soLuong);
+	        pstm.setString(2, maSP);
+
+	        // Thực hiện câu SQL để cập nhật số lượng tồn trong CSDL
+	        pstm.executeUpdate();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } 
+	}
 }
