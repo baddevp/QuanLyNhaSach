@@ -121,7 +121,7 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener{
 		pnlChonHDTH = new JPanel();
 		pnlChonHDTH.setBackground(new Color(255, 255, 255));
 
-		pnlChonHDTH.setBounds(10, 79, 1891, 855);
+		pnlChonHDTH.setBounds(10, 79, 1891, 890);
 		contentPane.add(pnlChonHDTH);
 		pnlChonHDTH.setLayout(null);
 		
@@ -136,7 +136,7 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener{
 						tblMS = new JTable(modelMS);
 						tblMS.setBackground(new Color(153, 204, 255));
 						JScrollPane jScrollPane = new JScrollPane(tblMS);
-						jScrollPane.setBounds(20, 81, 1850, 750);
+						jScrollPane.setBounds(20, 81, 1850, 796);
 						pnlChonHDTH.add(jScrollPane);
 						JTableHeader tbHeaderMS = tblMS.getTableHeader();
 						tblMS.setFont(font2);
@@ -193,8 +193,9 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener{
 
 		//Form tra hang
 		pnlLapHoaDonTH = new JPanel();
+		pnlLapHoaDonTH.setBackground(new Color(51, 204, 204));
 		pnlLapHoaDonTH.setLayout(null);
-		pnlLapHoaDonTH.setBounds(10, 80, 1890, 903);
+		pnlLapHoaDonTH.setBounds(10, 80, 1890, 894);
 		contentPane.add(pnlLapHoaDonTH);
 		
 		JPanel pnlChonKhachHang = new JPanel();
@@ -282,7 +283,7 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener{
 		JPanel pnlHoaDon = new JPanel();
 		pnlHoaDon.setLayout(null);
 		pnlHoaDon.setBackground(Color.WHITE);
-		pnlHoaDon.setBounds(973, 0, 917, 893);
+		pnlHoaDon.setBounds(973, 0, 917, 883);
 		pnlLapHoaDonTH.add(pnlHoaDon);
 		
 		JPanel pnlThongTinHoaDon = new JPanel();
@@ -431,16 +432,16 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener{
 		JPanel pnlSanPhamChon = new JPanel();
 		pnlSanPhamChon.setLayout(null);
 		pnlSanPhamChon.setBackground(Color.WHITE);
-		pnlSanPhamChon.setBounds(0, 260, 963, 633);
+		pnlSanPhamChon.setBounds(0, 260, 963, 623);
 		pnlLapHoaDonTH.add(pnlSanPhamChon);
 		
 		JPanel pnlSanPham = new JPanel();
 		pnlSanPham.setLayout(null);
-		pnlSanPham.setBounds(10, 46, 945, 576);
+		pnlSanPham.setBounds(10, 46, 945, 567);
 		pnlSanPhamChon.add(pnlSanPham);
 		
 		JScrollPane jScrollPaneSP = new JScrollPane((Component) null);
-		jScrollPaneSP.setBounds(10, 11, 925, 554);
+		jScrollPaneSP.setBounds(10, 11, 925, 546);
 		pnlSanPham.add(jScrollPaneSP);
 		
 		JLabel lblChonSP = new JLabel("Sản phẩm đã mua :");

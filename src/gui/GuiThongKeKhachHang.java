@@ -102,7 +102,7 @@ public class GuiThongKeKhachHang extends JFrame implements ActionListener {
 		color3 = new Color(255, 153, 51);
 
 		pnlBorder = new JPanel();
-		pnlBorder.setBackground(Color.cyan);
+		pnlBorder.setBackground(new Color(204, 204, 204));
 		pnlBorder.setLayout(null);
 
 		// Lựa chọn thời gian thống kê
@@ -568,7 +568,7 @@ public class GuiThongKeKhachHang extends JFrame implements ActionListener {
 
 	private void setDataChartSoGioDenQuan() {
 		chartPanel.setChart(createChart(createDatasetSoGioDenQuan(getTKKhachHangTheoSoLuongSPDaMua(dsHoaDonDaThanhToan)),
-				"BIỂU ĐỒ TOP 10 KHÁCH HÀNG CÓ ĐÃ MUA NHIỀU NHẤT", "Khách hàng", "Số lượng sản phẩm"));
+				"BIỂU ĐỒ TOP 10 KHÁCH HÀNG CÓ SỐ LƯỢNG MUA NHIỀU NHẤT", "Khách hàng", "Số lượng sản phẩm"));
 	}
 
 	private void setDataChartTongTienHoaDon() throws NumberFormatException, ParseException {

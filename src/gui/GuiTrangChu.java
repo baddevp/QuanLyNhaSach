@@ -102,7 +102,7 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 			public void run() {
 				try {
 					GuiTrangChu frame = new GuiTrangChu( txtusername,txtpassword);
-					frame.setVisible(true);
+//					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -524,9 +524,10 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 		}
 		//Chức năng xử lý
 		else if (o.equals(mniBanHang)) {
-			GuiBanHang guiBanHang = new GuiBanHang(txtusername);
 			nhanvien_dao = new DAO_NhanVien();
 			String ten = txtusername.getText();
+			GuiBanHang guiBanHang = new GuiBanHang(txtusername);
+			
 //			ArrayList<NhanVien> listNV = nhanvien_dao.getNhanVienTheoMa(ten);
 //			
 //			for(NhanVien nv : listNV) {
@@ -536,7 +537,7 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 			tabNoiDung.add(guiBanHang.contentPane);
 			
 		}
-		else if (o.equals(mniBanHang)) {
+		else if (o.equals(mniTraHang)) {
 			GuiTraHang traHang = new GuiTraHang();
 			tabNoiDung.remove(tabNoiDung.getSelectedComponent());
 			tabNoiDung.add(traHang.contentPane);
@@ -553,11 +554,11 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 			tabNoiDung.remove(tabNoiDung.getSelectedComponent());
 			tabNoiDung.add(pnlTrangChu);
 		}
-//		else if (o.equals(mniTraHang)) {
-//			GuiTraHang traHang = new GuiTraHang();
-//			tabNoiDung.remove(tabNoiDung.getSelectedComponent());
-//			tabNoiDung.add(traHang.contentPane);
-//		}	
+		else if (o.equals(mniTraHang)) {
+			GuiTraHang traHang = new GuiTraHang();
+			tabNoiDung.remove(tabNoiDung.getSelectedComponent());
+			tabNoiDung.add(traHang.contentPane);
+		}	
 
 		//Chức năng thống kê
 				else if (o.equals(mniThongKeDT)) {

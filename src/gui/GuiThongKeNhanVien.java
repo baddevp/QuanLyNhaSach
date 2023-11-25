@@ -99,12 +99,12 @@ public class GuiThongKeNhanVien extends JFrame implements ActionListener {
 		Font font3 = new Font("Times New Roman", Font.BOLD, 24);
 
 		// Màu chữ
-		color1 = new Color(138, 43, 226); // BlueViolet
-		Color color2 = new Color(233, 221, 244);
+		color1 = new Color(51,204,204);
+		Color color2 = Color.white;
 		color3 = new Color(255, 153, 51);
 
 		pnlBorder = new JPanel();
-		pnlBorder.setBackground(color2);
+		pnlBorder.setBackground(new Color(204, 204, 204));
 		pnlBorder.setLayout(null);
 
 		// Lựa chọn thời gian thống kê
@@ -114,7 +114,7 @@ public class GuiThongKeNhanVien extends JFrame implements ActionListener {
 		pnlThoiGian.setBounds(20, 20, 350, 560);
 
 		JPanel pnlTittleThoiGian = new JPanel();
-		pnlTittleThoiGian.setBackground(color1);
+		pnlTittleThoiGian.setBackground(new Color(0, 204, 204));
 		pnlTittleThoiGian.setBorder(new EmptyBorder(10, 0, 0, 0));
 		pnlTittleThoiGian.setBounds(0, 0, 350, 60);
 		JLabel lblTittleThoiGian = new JLabel("THỜI GIAN THỐNG KÊ");
@@ -148,7 +148,7 @@ public class GuiThongKeNhanVien extends JFrame implements ActionListener {
 		btnXacNhan = new JButton("Xác nhận");
 		btnXacNhan.setBounds(100, 365, 150, 45);
 		btnXacNhan.setFont(font3);
-		btnXacNhan.setBackground(color1);
+		btnXacNhan.setBackground(new Color(51, 204, 204));
 		btnXacNhan.setForeground(Color.WHITE);
 
 		pnlLuaChonThoiGian.add(lblLuaChon);
@@ -167,7 +167,7 @@ public class GuiThongKeNhanVien extends JFrame implements ActionListener {
 		pnlMucThonKe.setBounds(20, 600, 350, 318);
 
 		JPanel pnlTittleMucThongKe = new JPanel();
-		pnlTittleMucThongKe.setBackground(color1);
+		pnlTittleMucThongKe.setBackground(new Color(51, 204, 204));
 		pnlTittleMucThongKe.setBorder(new EmptyBorder(10, 0, 0, 0));
 		pnlTittleMucThongKe.setBounds(0, 0, 350, 60);
 		JLabel lblTittleMucThongKe = new JLabel("MỤC THỐNG KÊ");
@@ -179,7 +179,7 @@ public class GuiThongKeNhanVien extends JFrame implements ActionListener {
 		pnlChonMucThongKe.setBounds(0, 60, 350, 255);
 		pnlChonMucThongKe.setBackground(Color.WHITE);
 		pnlChonMucThongKe.setLayout(null);
-		btnPhieuDatPhong = new JButton("Phiếu đặt phòng");
+		btnPhieuDatPhong = new JButton("Hóa đơn");
 		btnPhieuDatPhong.setBounds(50, 60, 250, 50);
 		btnPhieuDatPhong.setFont(font3);
 		btnPhieuDatPhong.setBackground(color3);
@@ -204,7 +204,7 @@ public class GuiThongKeNhanVien extends JFrame implements ActionListener {
 		JPanel pnlTable = new JPanel();
 		pnlTable.setLayout(new BorderLayout());
 		pnlTable.setBounds(390, 600, 1510, 318);
-		pnlTable.setBackground(Color.WHITE);
+		pnlTable.setBackground(Color.WHITE);  
 		pnlTable.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(color1), "BẢNG THỐNG KÊ",
 				TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION, font3, color1));
 		tblThongKe = new JTable();
@@ -314,7 +314,7 @@ public class GuiThongKeNhanVien extends JFrame implements ActionListener {
 		pnlBorder.add(chartPanel);
 		pnlBorder.add(pnlThongKeTongQuat);
 		pnlBorder.add(pnlTable);
-		this.add(pnlBorder);
+		getContentPane().add(pnlBorder);
 
 		showData();
 
