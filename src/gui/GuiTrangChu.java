@@ -75,7 +75,7 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 	private JMenu mnThongKe;
 	private JMenuItem mniThongKeNV;
 	private JMenuItem mniThongKeDT;
-	private JMenuItem mniThongKeSP;
+	private JMenuItem mniThongKeKH;
 	private JMenuItem mniBaoCaoThuChi;
 	private JMenu mnHoTro;
 	private JPanel pnlMenu;
@@ -297,9 +297,9 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 		JSeparator separator_15 = new JSeparator();
 		mnThongKe.add(separator_15);
 		
-		 mniThongKeSP = new JMenuItem("Sản phẩm bán chạy");
-		mniThongKeSP.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-		mnThongKe.add(mniThongKeSP);
+		 mniThongKeKH = new JMenuItem("Khách hàng");
+		mniThongKeKH.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		mnThongKe.add(mniThongKeKH);
 		
 		JSeparator separator_16 = new JSeparator();
 		mnThongKe.add(separator_16);
@@ -427,7 +427,10 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 		mniTimKiemHDTH.addActionListener(this);
 		mniTimKiemVPP.addActionListener(this);
 		mniThongTinTaiKhoan.addActionListener(this);
-		//
+		//Thống kê
+		mniThongKeDT.addActionListener(this);
+		mniThongKeKH.addActionListener(this);
+		mniThongKeNV.addActionListener(this);
 		
 		
 		
@@ -533,6 +536,12 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 			tabNoiDung.add(guiBanHang.contentPane);
 			
 		}
+		else if (o.equals(mniBanHang)) {
+			GuiTraHang traHang = new GuiTraHang();
+			tabNoiDung.remove(tabNoiDung.getSelectedComponent());
+			tabNoiDung.add(traHang.contentPane);
+			
+		}
 		else if (o.equals(mniDangXuat)) {
 			this.setVisible(false);
 			GuiDangNhap guidangnhap = new GuiDangNhap();
@@ -551,6 +560,19 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 //		}	
 
 		//Chức năng thống kê
+				else if (o.equals(mniThongKeDT)) {
+					GuiThongKeDoanhThu frmThongKeDoanhThu = new GuiThongKeDoanhThu();
+					tabNoiDung.remove(tabNoiDung.getSelectedComponent());
+					tabNoiDung.add(frmThongKeDoanhThu.pnlBorder);
+				} else if (o.equals(mniThongKeKH)) {
+					GuiThongKeKhachHang frmThongKeKH = new GuiThongKeKhachHang();
+					tabNoiDung.remove(tabNoiDung.getSelectedComponent());
+					tabNoiDung.add(frmThongKeKH.pnlBorder);
+				} else if (o.equals(mniThongKeNV)) {
+					GuiThongKeNhanVien frmTKNhanVien = new GuiThongKeNhanVien();
+					tabNoiDung.remove(tabNoiDung.getSelectedComponent());
+					tabNoiDung.add(frmTKNhanVien.pnlBorder);
+				}
 		//Chức năng hỗ trợ
 		
 	}

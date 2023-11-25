@@ -54,7 +54,47 @@ public class DAO_NhanVien {
 		}
 		return dsNV; 
 	}
-	
+	//Lấy nhân viên theo mã
+	public NhanVien getNhanVienTheoMa2(String ma) {
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		NhanVien nhanVien = null;
+		PreparedStatement pstm = null;
+		try {
+			pstm = con.prepareStatement("select * from NHANVIEN where MANV = ?");
+			pstm.setString(1, ma);
+			ResultSet rs = pstm.executeQuery();
+			while (rs.next()) {
+				String maNV = rs.getString(1);
+				String tenNV = rs.getString(2);
+				Date ngaySinh = rs.getDate(3);
+				String diaChi = rs.getString(4);
+				Date NgayvaoLam = rs.getDate(5);
+				String sdt = rs.getString(6);
+				String cccd = rs.getString(7);
+				boolean gioitinh = rs.getBoolean(8);
+				
+				if (gioitinh == true) {
+					gt = "Nữ";
+				}else {
+					gt = "Nam";
+				}
+				ChucVu maCV = new ChucVu(rs.getString(9));
+				HinhAnh maHinhAnh = new HinhAnh(rs.getString(10));
+				
+				nhanVien = new NhanVien(maNV, tenNV, ngaySinh, diaChi, NgayvaoLam, sdt, cccd, gioitinh, maCV, maHinhAnh);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				pstm.close();
+			} catch (SQLException e2) {
+				e2.printStackTrace();
+			}
+		}
+		return nhanVien;
+	}
 	public ArrayList<NhanVien> getNhanVienTheoMa(String ma){
 		ArrayList<NhanVien> dsNV = new ArrayList<NhanVien>();
 		

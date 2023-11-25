@@ -14,6 +14,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
@@ -453,8 +454,9 @@ public class GuiQuanLyKhachHang extends JFrame implements ActionListener, MouseL
 	    String email = txtEmail.getText();
 
 	    // Lấy ngày hiện tại
-	    java.util.Date ngayLapUtil = new java.util.Date();
-	    java.sql.Date ngayLap = new java.sql.Date(ngayLapUtil.getTime());
+//	    java.util.Date ngayLapUtil = new java.util.Date();
+//	    java.sql.Date ngayLap = new java.sql.Date(ngayLapUtil.getTime());
+	    LocalDateTime ngayLap = LocalDateTime.now();
 
 	    // Kiểm tra các trường dữ liệu không được để trống
 	    if (tenKH.isEmpty() || sdt.isEmpty() || diaChi.isEmpty() || email.isEmpty()) {
@@ -522,8 +524,9 @@ public class GuiQuanLyKhachHang extends JFrame implements ActionListener, MouseL
 	    int diemTL = Integer.parseInt(txtDTL.getText());
 	    String email = txtEmail.getText();
 	    
-	    java.util.Date ngayLapUtil = new java.util.Date();
-	    java.sql.Date ngayLap = new java.sql.Date(ngayLapUtil.getTime());
+//	    java.util.Date ngayLapUtil = new java.util.Date();
+//	    java.sql.Date ngayLap = new java.sql.Date(ngayLapUtil.getTime());
+	    LocalDateTime ngayLap = LocalDateTime.now();
 
 	    // Create a new KhachHang object with the updated information
 	    KhachHang kh = new KhachHang(maKH, tenKH, diaChi, sdt, diemTL, ngayLap, email); 

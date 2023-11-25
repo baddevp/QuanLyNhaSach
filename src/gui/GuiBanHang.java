@@ -19,6 +19,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -747,7 +748,9 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 	//
 	public void themHD() {
 		String maHD = generateMaHD();
-		java.util.Date ngayLap = dtmNgayLap.getDate();
+//		java.util.Date ngayLap = dtmNgayLap.getDate();
+		LocalDateTime ngayLap = LocalDateTime.now();
+		LocalDateTime ngayLapKL = LocalDateTime.now();;
 		double tienNhan = Double.parseDouble(txtTienKhachDua.getText());
 		double tongTien = Double.parseDouble(txtTienKhachTra.getText());
 		String nv = tenNV.getText();
@@ -765,8 +768,8 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		    int diemTLKL = 0;
 		    String emailKL = "Không";
 		    
-		    java.util.Date ngayLapUtil = new java.util.Date();
-		    java.sql.Date ngayLapKL = new java.sql.Date(ngayLapUtil.getTime());
+//		    java.util.Date ngayLapUtil = new java.util.Date();
+//		    java.sql.Date ngayLapKL = new java.sql.Date(ngayLapUtil.getTime());
 			
 		    KhachHang khle = new KhachHang(maKL, tenKL, diaChi, sdtKL, diemTLKL, ngayLapKL, emailKL);
 		    KhachHang kle = new KhachHang(maKL);

@@ -1,10 +1,11 @@
 package entity;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class HoaDon {
 	String maHoaDon;
-	Date ngayLapHoaDon;
+	LocalDateTime ngayLapHoaDon;
 	double tienNhan;
 	double tongTien;
 	NhanVien nhanVien;
@@ -16,7 +17,7 @@ public class HoaDon {
 		// TODO Auto-generated constructor stub
 	}
 
-	public HoaDon(String maHoaDon, Date ngayLapHoaDon, double tienNhan, double tongTien, NhanVien nhanVien,
+	public HoaDon(String maHoaDon, LocalDateTime ngayLapHoaDon, double tienNhan, double tongTien, NhanVien nhanVien,
 			KhachHang khachHang, boolean trangThai) {
 		super();
 		this.maHoaDon = maHoaDon;
@@ -41,11 +42,11 @@ public class HoaDon {
 		this.maHoaDon = maHoaDon;
 	}
 
-	public Date getNgayLapHoaDon() {
+	public LocalDateTime getNgayLapHoaDon() {
 		return ngayLapHoaDon;
 	}
 
-	public void setNgayLapHoaDon(Date ngayLapHoaDon) {
+	public void setNgayLapHoaDon(LocalDateTime ngayLapHoaDon) {
 		this.ngayLapHoaDon = ngayLapHoaDon;
 	}
 

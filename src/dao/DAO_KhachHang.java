@@ -5,6 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -16,7 +19,24 @@ import entity.MauSac;
 import entity.NhanVien;
 
 public class DAO_KhachHang {
-	
+	// hàm chuyển đổi từ sql vào java ngày giờ
+	public static LocalDateTime chuyenDateTimeSangLocal(String chuoiSQL) {
+		if (chuoiSQL == null)
+			return null;
+		String dateSQL = chuoiSQL.substring(0, 10);
+		String timeSQL = chuoiSQL.substring(11, 19);
+		LocalDate date = LocalDate.parse(dateSQL);
+		LocalTime time = LocalTime.parse(timeSQL);
+		return LocalDateTime.of(date, time);
+	}
+
+	// hàm chuyển đổi từ java vào sql ngày giờ
+	public static String chuyenLocalSangDateTime(LocalDateTime chuoiJava) {
+		if (chuoiJava == null)
+			return null;
+		String str = chuoiJava.toString();
+		return str.substring(0, 10) + " " + str.substring(11, 19);
+	}
 	public ArrayList<KhachHang> getAllKH(){
 		ArrayList<KhachHang> dsKH = new ArrayList<KhachHang>();
 		try {
@@ -31,7 +51,7 @@ public class DAO_KhachHang {
 				String diaChi = rs.getString(3);
 				String sdt = rs.getString(4);
 				int diemTL = rs.getInt(5);
-				java.util.Date ngayLap = rs.getDate(6);
+				LocalDateTime ngayLap = chuyenDateTimeSangLocal(rs.getString(6) );
 				String email = rs.getString(7);
 				
 				KhachHang kh = new KhachHang(maKH, tenKH, diaChi, sdt, diemTL, ngayLap, email);
@@ -60,7 +80,7 @@ public class DAO_KhachHang {
 				String diaChi = rs.getString(3);
 				String sdt = rs.getString(4);
 				int diemTL = rs.getInt(5);
-				java.util.Date ngayLap = rs.getDate(6);
+				LocalDateTime ngayLap = chuyenDateTimeSangLocal(rs.getString(6) );
 				String email = rs.getString(7);
 				
 				KhachHang kh = new KhachHang(ma, tenKH, diaChi, sdt, diemTL, ngayLap, email);
@@ -71,6 +91,34 @@ public class DAO_KhachHang {
 		}
 		return list;
 	}
+	
+	public KhachHang getKhachHangTheoMa(String maKH){
+		KhachHang kh = new KhachHang();
+		try {
+			ConnectDB.getInstance();
+			Connection con = ConnectDB.getConnection();
+			String sql = "select * from KHACHHANG where MAKH = ?";
+			PreparedStatement preparedStatement = con.prepareStatement(sql);
+			preparedStatement.setString(1, maKH);
+			ResultSet rs = preparedStatement.executeQuery();
+			while(rs.next()) {
+				String ma = rs.getString(1);
+				String tenKH = rs.getString(2);
+				String diaChi = rs.getString(3);
+				String sdt = rs.getString(4);
+				int diemTL = rs.getInt(5);
+				LocalDateTime ngayLap = chuyenDateTimeSangLocal(rs.getString(6) );
+				String email = rs.getString(7);
+				
+				kh = new KhachHang(ma, tenKH, diaChi, sdt, diemTL, ngayLap, email);
+				
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return kh;
+	}
+	
 	
 	public boolean createKH(KhachHang kh) {
 		ConnectDB.getInstance();
@@ -85,7 +133,7 @@ public class DAO_KhachHang {
 			st.setString(3, kh.getDiaChi());
 			st.setString(4, kh.getSdt());
 			st.setInt(5, kh.getDiemTL());
-			st.setDate(6, new java.sql.Date(kh.getNgayLap().getTime()));
+			st.setString(6, chuyenLocalSangDateTime(kh.getNgayLap()));
 			st.setString(7, kh.getEmail());
 			
 			

@@ -1,5 +1,6 @@
 package entity;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class KhachHang {
@@ -8,7 +9,7 @@ public class KhachHang {
 	String diaChi;
 	String sdt;
 	int diemTL;
-	Date ngayLap;
+	LocalDateTime ngayLap;
 	String email;
 	public KhachHang() {
 		super();
@@ -20,7 +21,7 @@ public class KhachHang {
 		this.maKH = maKH;
 	}
 
-	public KhachHang(String maKH, String tenKH, String diaChi, String sdt, int diemTL, Date ngayLap, String email) {
+	public KhachHang(String maKH, String tenKH, String diaChi, String sdt, int diemTL, LocalDateTime ngayLap, String email) {
 		super();
 		this.maKH = maKH;
 		this.tenKH = tenKH;
@@ -61,10 +62,10 @@ public class KhachHang {
 	public void setDiemTL(int diemTL) {
 		this.diemTL = diemTL;
 	}
-	public Date getNgayLap() {
+	public LocalDateTime getNgayLap() {
 		return ngayLap;
 	}
-	public void setNgayLap(Date ngayLap) {
+	public void setNgayLap(LocalDateTime ngayLap) {
 		this.ngayLap = ngayLap;
 	}
 	public String getEmail() {
