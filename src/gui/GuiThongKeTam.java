@@ -21,7 +21,9 @@ import java.awt.event.MouseListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
@@ -77,22 +79,13 @@ import com.toedter.calendar.IDateEditor;
 public class GuiThongKeTam extends JFrame implements ActionListener, MouseListener {
 
 	public static JPanel contentPane;
-	private DefaultTableModel modelKH;
 	private DefaultTableModel modelSP;
 	private JTable tblTopSP;
-	private JTextField txtTimSP;
-	private Container pnlTimSP;
-	private JButton btntim;
-	private DefaultTableModel modelChonSP;
-	private JTable tblChonSP;
 	private Font font1;
 	private Font font2;
-	private JTable table;
-	private DefaultTableModel modelSPHD;
 	private JTable tblTopNV;
 	private DAO_KhachHang khachhang_dao;
 	private JButton btnThongKe;
-	//private List<Object[]> rows;
 	private GuiQuanLyKhachHang guiQLKH;
 	private DAO_QuanLySach sach_dao;
 	private DAO_QuanLyVPP vpp_dao;
@@ -113,6 +106,8 @@ public class GuiThongKeTam extends JFrame implements ActionListener, MouseListen
 	private JPanel pnlTopNV;
 	private DefaultTableModel modelTopNV;
 	private DefaultTableModel modelTopSP;
+	private List<SanPham> danhSachSP;
+    private List<ChiTietHoaDon> danhSachCTHD;
 
 	/**
 	 * Launch the application.
@@ -264,11 +259,7 @@ public class GuiThongKeTam extends JFrame implements ActionListener, MouseListen
 		pnlTopNV.setLayout(null);
 		pnlTopNV.setBounds(10, 561, 803, 321);
 		pnlBangTop.add(pnlTopNV);
-		
-//		JScrollPane jScrollPane_TTHD = new JScrollPane((Component) null);
-//		jScrollPane_TTHD.setBounds(10, 10, 875, 299);
-//		pnlTbTTHoaDon.add(jScrollPane_TTHD);
-		
+
 		//Table San Pham trong hóa đơn
 		modelTopNV = new DefaultTableModel();
 		modelTopNV.addColumn("STT");
@@ -279,9 +270,9 @@ public class GuiThongKeTam extends JFrame implements ActionListener, MouseListen
 		tblTopNV.setBackground(new Color(153, 204, 255));
 		JScrollPane jScrollPaneNV = new JScrollPane(tblTopNV);
 		jScrollPaneNV.setBounds(10, 11 , 783, 300);
-		JTableHeader tbHeaderSPHD = tblTopNV.getTableHeader();
-		tbHeaderSPHD.setFont(font2);
-		tbHeaderSPHD.setBackground(new Color(51, 204, 204));
+		JTableHeader tbHeaderTopNV = tblTopNV.getTableHeader();
+		tbHeaderTopNV.setFont(font2);
+		tbHeaderTopNV.setBackground(new Color(51, 204, 204));
 		pnlTopNV.setLayout(null);
 		tblTopNV.setFont(font2);
 		tblTopNV.setRowHeight(35);
@@ -302,7 +293,9 @@ public class GuiThongKeTam extends JFrame implements ActionListener, MouseListen
 		tblTopSP.setBackground(new Color(153, 204, 255));
 		JScrollPane jScrollPaneTopSP = new JScrollPane(tblTopSP);
 		jScrollPaneTopSP.setBounds(10, 11 , 783, 460);
-		JTableHeader tbHeaderKH = tblTopSP.getTableHeader();
+		JTableHeader tbHeaderTopSP = tblTopSP.getTableHeader();
+		tbHeaderTopSP.setFont(font2);
+		tbHeaderTopSP.setBackground(new Color(51, 204, 204));
 		pnlTopSP.setLayout(null);
 		tblTopSP.setFont(font2);
 		tblTopSP.setRowHeight(35);
@@ -315,8 +308,6 @@ public class GuiThongKeTam extends JFrame implements ActionListener, MouseListen
 		
 		
 		tblTopSP.addMouseListener(this);
-		//
-		//rows = new ArrayList<>();
 		
 		
 		JPanel pnlThongKe = new JPanel();
@@ -350,6 +341,7 @@ public class GuiThongKeTam extends JFrame implements ActionListener, MouseListen
 		pnlThongKe.add(lblTongSLHD);
 		
 		txtTongDoanhThu = new JTextField();
+		txtTongDoanhThu.setEditable(false);
 		txtTongDoanhThu.setBackground(new Color(240, 230, 140));
 		txtTongDoanhThu.setHorizontalAlignment(SwingConstants.CENTER);
 		txtTongDoanhThu.setFont(new Font("Tahoma", Font.BOLD, 25));
@@ -358,6 +350,7 @@ public class GuiThongKeTam extends JFrame implements ActionListener, MouseListen
 		pnlThongKe.add(txtTongDoanhThu);
 		
 		txtTongSLHD = new JTextField();
+		txtTongSLHD.setEditable(false);
 		txtTongSLHD.setBackground(new Color(255, 160, 122));
 		txtTongSLHD.setHorizontalAlignment(SwingConstants.CENTER);
 		txtTongSLHD.setFont(new Font("Tahoma", Font.BOLD, 25));
@@ -366,6 +359,7 @@ public class GuiThongKeTam extends JFrame implements ActionListener, MouseListen
 		txtTongSLHD.setColumns(10);
 		
 		txtSLSPChuaBan = new JTextField();
+		txtSLSPChuaBan.setEditable(false);
 		txtSLSPChuaBan.setBackground(new Color(152, 251, 152));
 		txtSLSPChuaBan.setFont(new Font("Tahoma", Font.BOLD, 25));
 		txtSLSPChuaBan.setHorizontalAlignment(SwingConstants.CENTER);
@@ -374,25 +368,13 @@ public class GuiThongKeTam extends JFrame implements ActionListener, MouseListen
 		pnlThongKe.add(txtSLSPChuaBan);
 		
 		txtTongSLSPDaBan = new JTextField();
+		txtTongSLSPDaBan.setEditable(false);
 		txtTongSLSPDaBan.setBackground(new Color(64, 224, 208));
 		txtTongSLSPDaBan.setFont(new Font("Tahoma", Font.BOLD, 25));
 		txtTongSLSPDaBan.setHorizontalAlignment(SwingConstants.CENTER);
 		txtTongSLSPDaBan.setColumns(10);
 		txtTongSLSPDaBan.setBounds(573, 333, 393, 252);
 		pnlThongKe.add(txtTongSLSPDaBan);
-		
-		//table San Pham chọn
-		modelSP = new DefaultTableModel();
-		modelSP.addColumn("Mã SP");
-		modelSP.addColumn("Tên SP");
-		modelSP.addColumn("Loại SP");
-		modelSP.addColumn("Loại bìa");
-//		modelSP.addColumn("Màu sắc");
-		modelSP.addColumn("Số lượng tồn");
-		modelSP.addColumn("Thuế");
-		modelSP.addColumn("Giá bán");
-		tbHeaderKH.setFont(font2);
-		tbHeaderKH.setBackground(new Color(51, 204, 204));
 		
 		// ket noi sql
 		khachhang_dao = new DAO_KhachHang();
@@ -407,9 +389,7 @@ public class GuiThongKeTam extends JFrame implements ActionListener, MouseListen
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		//Dua sql len bang
-		DocDuLieuDatabaseSach();
-		DocDuLieuDatabaseVPP();
+	
 		//hien thi ma 
 		tblTopNV.addMouseListener(this);
 	}
@@ -418,24 +398,18 @@ public class GuiThongKeTam extends JFrame implements ActionListener, MouseListen
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		
-		
 	}
 	//
-	private void DocDuLieuDatabaseSach() {
-		sach_dao = new DAO_QuanLySach();
-		for(Sach s : sach_dao.getALLSach()) {
-			modelSP.addRow(new Object[] {s.getMaSanPham(), s.getTenSanPham(), s.getLoaiSach().getTenLoai(), s.getLoaiBia(), s.getSoLuong(), s.getThue(), s.getGiaBan()});
-		}
-	}
-	//
-	private void DocDuLieuDatabaseVPP() {
-		vpp_dao = new DAO_QuanLyVPP();
-		for(VanPhongPham v : vpp_dao.getALLVPP()) {
-			modelSP.addRow(new Object[] {v.getMaSanPham(), v.getTenSanPham(), v.getLoaiVanPhongPham().getTenLoaiVPP(), v.getMaMau().getTenMau(), v.getSoLuong(), v.getThue(), v.getGiaBan()});
-		}
-	}
-	//
-	
+//	public int thongKeSanPhamChuaBan() {
+//		Set<String> sanPhamDaBan = new HashSet<>();
+//		for(ChiTietHoaDon cthd : danhSachCTHD) {
+//			String[] sanPhamTrongCTHD = cthd.getSanPham().getMaSanPham().split(",");
+//			for(String maSP : sanPhamTrongCTHD) {
+//				sanPhamDaBan.add(Integer.parseInt(maSP.trim()));
+//			}
+//			
+//		}
+//	}
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
