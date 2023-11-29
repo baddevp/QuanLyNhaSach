@@ -191,7 +191,7 @@ public class DAO_HinhAnh {
 	}
 	
 	
-	public int MaSach_VPP(String loaiMa) {
+	public int MaSach_VPP(String loaiMa, String maLoaiSP) {
 		 int newMaAnh = 0; // Giá trị mặc định nếu không có dữ liệu trong bảng
 
 		    try {
@@ -201,7 +201,7 @@ public class DAO_HinhAnh {
 		        // Loại mã cụ thể (SAH, NV, ...)
 		        // Thay đổi loại mã tùy theo yêu cầu
 
-		        String sql = "SELECT MAX(MAANH) FROM HINHANH WHERE MAANH LIKE '" + loaiMa + "%'";
+		        String sql = "SELECT MAX(MAANH) FROM HINHANH WHERE MAANH LIKE '" + loaiMa + maLoaiSP + "%'";
 		        Statement stm = con.createStatement();
 		        ResultSet rs = stm.executeQuery(sql);
 
