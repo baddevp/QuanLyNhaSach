@@ -119,6 +119,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 	private JButton btnSuaSL;
 	private GuiQuanLyKhachHang guiKhachHang;
 	private DAO_QuanLyVPP vanphongpham_dao;
+	DAO_NhanVien dao_nhanVien = new DAO_NhanVien();
 	
 	static JTextField tenNV;
 
@@ -754,59 +755,57 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		double tienNhan = Double.parseDouble(txtTienKhachDua.getText());
 		double tongTien = Double.parseDouble(txtTienKhachTra.getText());
 		String nv = tenNV.getText();
-		NhanVien maNV = new NhanVien(nv);
+		NhanVien maNV = dao_nhanVien.getNhanVienTheoMa2(nv);
 		String sdtkh = txtSDTKH.getText();
 		boolean trangThai = true;
 		
 		//
 		if(sdtkh.isEmpty()) {
-			guiKhachHang = new GuiQuanLyKhachHang();
-			String maKL = guiKhachHang.txtMaKH.getText();
-			String tenKL = "Khách lẻ";
-			String diaChi = "Không";
-			String sdtKL = "Không";
-		    int diemTLKL = 0;
-		    String emailKL = "Không";
-		    
-//		    java.util.Date ngayLapUtil = new java.util.Date();
-//		    java.sql.Date ngayLapKL = new java.sql.Date(ngayLapUtil.getTime());
+//			guiKhachHang = new GuiQuanLyKhachHang();
+//			String maKL = guiKhachHang.txtMaKH.getText();
+//			String tenKL = "Khách lẻ";
+//			String diaChi = "Không";
+//			String sdtKL = "Không";
+//		    int diemTLKL = 0;
+//		    String emailKL = "Không";
+//		    
+////		    java.util.Date ngayLapUtil = new java.util.Date();
+////		    java.sql.Date ngayLapKL = new java.sql.Date(ngayLapUtil.getTime());
 			
-		    KhachHang khle = new KhachHang(maKL, tenKL, diaChi, sdtKL, diemTLKL, ngayLapKL, emailKL);
-		    KhachHang kle = new KhachHang(maKL);
-		    if (khachhang_dao.createKH(khle)) {
-		    	HoaDon hd = new HoaDon(maHD, ngayLap, tienNhan, tongTien, maNV, kle, trangThai);
+		    KhachHang khle = khachhang_dao.getKhachHangTheoMa("KH22112023003");
+		   
+		    	HoaDon hd = new HoaDon(maHD, ngayLap, tienNhan, tongTien, maNV, khle, trangThai);
 				if(hoadon_dao.createHD(hd)) {
 					JOptionPane.showMessageDialog(this, "Bạn đã thanh toán thành công");
 					capNhatSoLuongTon(hd);
 					themCTHD(hd);
 					xoaRong();
 				}
-		    }
+		    
 			
-		}
-		//
-		ArrayList<KhachHang> list = khachhang_dao.getKhachHangTheoSDT(sdtkh);
-		
-		for(KhachHang kh : list) {
-			String k = kh.getMaKH();
-			KhachHang maKH = new KhachHang(k);
+		} else {
+			ArrayList<KhachHang> list = khachhang_dao.getKhachHangTheoSDT(sdtkh);
 			
-			
-			//
-			int diemCu = kh.getDiemTL();
-			int diemMoi = (int)tongTien / 100;
-			int diemCongMoi = diemCu + diemMoi;
-			khachhang_dao.updateDiemTL(diemCongMoi, sdtkh);
-			//
-			HoaDon hd = new HoaDon(maHD, ngayLap, tienNhan, tongTien, maNV, maKH, trangThai);
-			if(hoadon_dao.createHD(hd)) {
-				JOptionPane.showMessageDialog(this, "Bạn đã thanh toán thành công");
-				capNhatSoLuongTon(hd);
-				themCTHD(hd);
-				xoaRong();
+			for(KhachHang kh : list) {
+				String k = kh.getMaKH();
+				KhachHang maKH = khachhang_dao.getKhachHangTheoMa(k);
+				
+				
+				//
+				int diemCu = kh.getDiemTL();
+				int diemMoi = (int)tongTien / 100;
+				int diemCongMoi = diemCu + diemMoi;
+				khachhang_dao.updateDiemTL(diemCongMoi, sdtkh);
+				//
+				HoaDon hd = new HoaDon(maHD, ngayLap, tienNhan, tongTien, maNV, maKH, trangThai);
+				if(hoadon_dao.createHD(hd)) {
+					JOptionPane.showMessageDialog(this, "Bạn đã thanh toán thành công");
+					capNhatSoLuongTon(hd);
+					themCTHD(hd);
+					xoaRong();
+				}
 			}
 		}
-		
 	}
 	//
 	public void themCTHD(HoaDon hd) {

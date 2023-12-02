@@ -619,7 +619,7 @@ public class GuiThongKeDoanhThu extends JFrame implements ActionListener {
 			double tongDoanhThuNgay = 0;
 			for (int i = 0; i < dsTKDoanhThuHoaDon.size(); i++) {
 				if (dtf.format(temp).equals(dsTKDoanhThuHoaDon.get(i).get(1))) {
-					tongDoanhThuNgay += Double.parseDouble(df.parse(dsTKDoanhThuHoaDon.get(i).get(6)).toString());
+					tongDoanhThuNgay += Double.parseDouble(df.parse(dsTKDoanhThuHoaDon.get(i).get(5)).toString());
 				}
 			}
 			dataset.addValue(tongDoanhThuNgay, "Doanh thu hóa đơn", temp.getDayOfMonth() + "");

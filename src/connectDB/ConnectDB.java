@@ -15,7 +15,7 @@ public class ConnectDB {
 	public void connect()  {
 		String url = "jdbc:sqlserver://localhost:1433 ;DatabaseName=QLNS";
 		String user = "sa";
-		String password = "123";
+		String password = "12345";
 		try {
 			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 			con = DriverManager.getConnection(url, user, password);
