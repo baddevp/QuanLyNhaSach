@@ -1357,7 +1357,7 @@ public class GuiQuanLySanPham extends JFrame implements ActionListener, MouseLis
        		String maLoaiSach = cboLoaiSach.getSelectedItem().toString();  		
        		String maLS = maLoaiSach.substring(2).trim();
             String loaiMa = "SAH";
-            int num = hinhanh_dao.MaSach_VPP(loaiMa);
+            int num = hinhanh_dao.MaSach_VPP(loaiMa,maLS);
             num++;        
             String numString = String.format("%04d", num).trim();
             newMaAnh = loaiMa + maLS + numString;
@@ -1538,7 +1538,7 @@ public class GuiQuanLySanPham extends JFrame implements ActionListener, MouseLis
        		String maLoaiVPP = cboLoai_VPP.getSelectedItem().toString();    		
        		String maLS = maLoaiVPP.substring(2).trim();
             String loaiMa = "VPP";
-            int num = hinhanh_dao.MaSach_VPP(loaiMa);
+            int num = hinhanh_dao.MaSach_VPP(loaiMa, maLS);
             num++;        
             String numString = String.format("%04d", num).trim();
             newMaAnh = loaiMa + maLS + numString;
