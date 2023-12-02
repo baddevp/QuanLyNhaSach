@@ -15,7 +15,7 @@ import entity.HoaDon;
 import entity.KhachHang;
 import entity.NhanVien;
 
-public class DAO_HoaDon {
+public class DAO_HoaDonHoanTra {
 	DAO_NhanVien dao_NhanVien = new DAO_NhanVien();
 	DAO_KhachHang  dao_KhachHang = new DAO_KhachHang();
 	
@@ -79,7 +79,7 @@ public class DAO_HoaDon {
 			st.setString(2, chuyenLocalSangDateTime(hd.getNgayLapHoaDon()));
 			st.setDouble(3, hd.getTienNhan());
 			st.setDouble(4, hd.getTongTien());
-			st.setString(5, hd.getNhanVien().getMaNV());
+			st.setString(5, hd.getNhanVien().getTenNV());
 			st.setString(6, hd.getKhachHang().getMaKH());
 			st.setBoolean(7, hd.isTrangThai());
 			
