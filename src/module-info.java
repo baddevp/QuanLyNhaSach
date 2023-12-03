@@ -11,4 +11,5 @@ module nhom14_PTUD_QLNS {
 	requires jcalendar;
 	requires jfreechart;
 	requires jasperreports;
+	requires itextpdf;
 }

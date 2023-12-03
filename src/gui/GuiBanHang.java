@@ -78,6 +78,8 @@ import java.awt.Component;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
+import org.w3c.dom.UserDataHandler;
+
 public class GuiBanHang extends JFrame implements ActionListener, MouseListener {
 
 	public static JPanel contentPane;
@@ -126,7 +128,10 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 	private JButton btnThanhToanLai;
 	
 	static JTextField tenNV;
-
+	private JTextField txtThongBao;
+	private JButton btnSuDungDiemTL;
+	private boolean isMode = true;
+	private int diemBanDau;
 	/**
 	 * Launch the application.
 	 */
@@ -399,14 +404,14 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		btnThanhToan.setForeground(Color.WHITE);
 		btnThanhToan.setFont(new Font("Tahoma", Font.BOLD, 18));
 		btnThanhToan.setBackground(new Color(51, 204, 204));
-		btnThanhToan.setBounds(659, 797, 216, 52);
+		btnThanhToan.setBounds(691, 797, 216, 52);
 		pnlHoaDon.add(btnThanhToan);
 		
 		btnThanhToanLai = new JButton("THANH TOÁN LẠI");
 		btnThanhToanLai.setForeground(Color.WHITE);
 		btnThanhToanLai.setFont(new Font("Tahoma", Font.BOLD, 18));
 		btnThanhToanLai.setBackground(new Color(51, 204, 204));
-		btnThanhToanLai.setBounds(659, 797, 216, 52);
+		btnThanhToanLai.setBounds(691, 797, 216, 52);
 		pnlHoaDon.add(btnThanhToanLai);
 		btnThanhToanLai.setVisible(false);
 		
@@ -420,7 +425,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		btnTaoDonMoi = new JButton("Tạo Đơn Mới");
 		btnTaoDonMoi.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		btnTaoDonMoi.setBackground(Color.WHITE);
-		btnTaoDonMoi.setBounds(659, 718, 216, 52);
+		btnTaoDonMoi.setBounds(691, 718, 216, 52);
 		pnlHoaDon.add(btnTaoDonMoi);
 		
 		btnSuaSL = new JButton("Sửa số lượng");
@@ -430,6 +435,22 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		btnSuaSL.setBackground(Color.WHITE);
 		btnSuaSL.setBounds(549, 250, 170, 36);
 		pnlHoaDon.add(btnSuaSL);
+		
+		btnSuDungDiemTL = new JButton("Sử dụng điểm");
+		btnSuDungDiemTL.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		btnSuDungDiemTL.setBackground(Color.WHITE);
+		btnSuDungDiemTL.setBounds(466, 667, 146, 30);
+		pnlHoaDon.add(btnSuDungDiemTL);
+		
+		txtThongBao = new JTextField("");
+		txtThongBao.setEditable(false);
+		txtThongBao.setHorizontalAlignment(SwingConstants.LEFT);
+		txtThongBao.setForeground(Color.RED);
+		txtThongBao.setColumns(10);
+		txtThongBao.setBounds(466, 727, 215, 20);
+		txtThongBao.setBorder(null);
+		txtThongBao.setBackground(new Color(255, 255, 255));
+		pnlHoaDon.add(txtThongBao);
 		
 		JPanel pnlSanPhamChon = new JPanel();
 		pnlSanPhamChon.setBackground(new Color(255, 255, 255));
@@ -494,6 +515,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		btnHangCho.addActionListener(this);
 		btnXoaDong.addActionListener(this);
 		btnSuaSL.addActionListener(this);
+		btnSuDungDiemTL.addActionListener(this);
 		btnThanhToanLai.addActionListener(this);
 		tblSPHD.addMouseListener(this);
 		tblSP.addMouseListener(this);
@@ -557,6 +579,9 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 //			boolean trangThai = true;
 //			updateHD(trangThai);
 			updateHD();
+		}
+		if(o.equals(btnSuDungDiemTL)) {
+			suDungDiemTL();
 		}
 	}
 	//
@@ -659,11 +684,12 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 
 	//
 	public void tinhTienThua(double tienKhachDua) {
-		double tongGiaGoc = 0;
-	    for (int i = 0; i < modelSPHD.getRowCount(); i++) {
-	        tongGiaGoc += (double) modelSPHD.getValueAt(i, 4);
-	    }
+		double tongGiaGoc = Double.parseDouble(txtTienKhachTra.getText());
 	    double tienThoi = 0;
+	    String tienKhach = txtTienKhachDua.getText();
+	    if(tienKhach.isEmpty()) {
+	    	txtTienThua.setText(String.valueOf("0"));
+	    }
 	    if(tienKhachDua < tongGiaGoc)
 	    	txtTienThua.setText("Phải nhập lớn hơn tổng tiền");
 	    else {
@@ -707,10 +733,10 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 	        String subMaNV = maNV.substring(index1 + 2, index1 + 5);
 	        
 	        int sequenceNumber = hoadon_dao.getCurrentSequenceNumber();
-	        System.out.println(sequenceNumber);
+	      
 	        sequenceNumber++;
 	        String sequencePart = String.format("%03d", sequenceNumber).trim();
-	        System.out.println(sequenceNumber);
+	       
 	        
 	        return "HD" + formattedDate + subMaNV + sequencePart;
 		} catch (Exception e) {
@@ -729,6 +755,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 	    for (NhanVien nv : list) {
 	    	txtTenNV.setText(nv.getTenNV());
 	    }
+	   
 	}
 	// Xoa dòng
 	public void timDongTrongBang(JTable table, int row) {
@@ -775,7 +802,6 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		    if (khachhang_dao.createKH(khle)) {
 		    	HoaDon hd = new HoaDon(maHD, ngayLap, tienNhan, tongTien, maNV, kle, trangThai);
 				if(hoadon_dao.createHD(hd)) {
-					JOptionPane.showMessageDialog(this, "Bạn đã thanh toán KL thành công");
 					capNhatSoLuongTon(hd);
 					themCTHD(hd);
 					xoaRong();
@@ -790,16 +816,18 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 			String k = kh.getMaKH();
 			KhachHang maKH = new KhachHang(k);
 			
+			//neu su dung diem tich luy 
 			
 			//
-			int diemCu = kh.getDiemTL();
+			int diemCu = Integer.parseInt(txtDiemTL.getText());
 			int diemMoi = (int)tongTien / 100;
 			int diemCongMoi = diemCu + diemMoi;
 			khachhang_dao.updateDiemTL(diemCongMoi, sdtkh);
+			
+			double tongTienMoi = Double.parseDouble(txtTienKhachTra.getText());
 			//
-			HoaDon hd = new HoaDon(maHD, ngayLap, tienNhan, tongTien, maNV, maKH, trangThai);
+			HoaDon hd = new HoaDon(maHD, ngayLap, tienNhan, tongTienMoi, maNV, maKH, trangThai);
 			if(hoadon_dao.createHD(hd)) {
-				JOptionPane.showMessageDialog(this, "Bạn đã thanh toán thành công");
 				capNhatSoLuongTon(hd);
 				themCTHD(hd);
 				xoaRong();
@@ -931,6 +959,8 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		txtTienKhachTra.setText("");
 		txtTienThua.setText("");
 		modelSPHD.setRowCount(0);
+		txtThongBao.setText("");
+		
 		hienThiThongTin();
 	}
 	//
@@ -1031,45 +1061,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 	    txtTienKhachTra.setText(String.valueOf(tongTien));
 	}
 
-//	public void updateHD(boolean trangThai) {
-//		String maHD = txtMaHD.getText();
-//		LocalDateTime ngayLap = LocalDateTime.now();
-//		LocalDateTime ngayLapKL = LocalDateTime.now();
-//		String tienKhachDuaText = txtTienKhachDua.getText().trim();
-//		double tienNhan = Double.parseDouble(tienKhachDuaText);
-//		double tongTien = Double.parseDouble(txtTienKhachTra.getText());
-//		String nv = tenNV.getText();
-//		NhanVien maNV = new NhanVien(nv);
-//		String sdtkh = txtSDTKH.getText();
-//		
-//		List<KhachHang> listKH = khachhang_dao.getKhachHangTheoSDT(sdtkh);
-//				
-//		
-//		for(KhachHang kh : listKH) {
-//			String maKH = kh.getMaKH();
-//			String tenKH = kh.getTenKH();
-//			String diaChi = kh.getDiaChi();
-//			String email = kh.getEmail();
-//			KhachHang k = new KhachHang(maKH);
-//			
-//			
-//			//
-//			int diemCu = kh.getDiemTL();
-//			int diemMoi = (int)tongTien / 100;
-//			int diemCongMoi = diemCu + diemMoi;
-//			khachhang_dao.updateDiemTL(diemCongMoi, sdtkh);
-//			//
-//			HoaDon hd = new HoaDon(maHD, ngayLap, tienNhan, tongTien, maNV, k, trangThai);
-//			KhachHang khachhang = new KhachHang(maKH, tenKH, diaChi, sdtkh, diemCongMoi, ngayLapKL, email);
-//			boolean result = hoadon_dao.updateHD(hd);
-//			boolean rssKH = khachhang_dao.updateKH(khachhang);
-//			
-//			if(result && rssKH) {
-//				xoaRong();
-//				JOptionPane.showMessageDialog(this, "Thanh toán lai thành công");
-//			}
-//		}
-//	}
+
 	
 	public void themHDCho(String maHD) {
 		LocalDateTime ngayLap = LocalDateTime.now();
@@ -1101,7 +1093,6 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		    if (khachhang_dao.createKH(khle)) {
 		    	HoaDon hd = new HoaDon(maHD, ngayLap, tienNhan, tongTien, maNV, kle, trangThai);
 				if(hoadon_dao.createHD(hd)) {
-					JOptionPane.showMessageDialog(this, "Bạn đã thanh toán KL thành công");
 					capNhatSoLuongTon(hd);
 					themCTHD(hd);
 					xoaRong();
@@ -1123,7 +1114,6 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 			//
 			HoaDon hd = new HoaDon(maHD, ngayLap, tienNhan, tongTien, maNV, maKH, trangThai);
 			if(hoadon_dao.createHD(hd)) {
-				JOptionPane.showMessageDialog(this, "Bạn đã thanh toán thành công");
 				capNhatSoLuongTon(hd);
 				themCTHD(hd);
 				xoaRong();
@@ -1139,6 +1129,70 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		themHDCho(maHD);
 	}
 	
+	public void suDungDiemTL() {
+		
+		String sdtkh = txtSDTKH.getText();
+		String tongTienStr = txtTienKhachTra.getText();
+		double tongTien = Double.parseDouble(txtTienKhachTra.getText());
+		ArrayList<KhachHang> list = khachhang_dao.getKhachHangTheoSDT(sdtkh);
+		
+		if(sdtkh.isEmpty()) {
+			txtThongBao.setText("*Phải chọn khách hàng để sử dụng");
+		}
+		
+		if(tongTienStr.isEmpty()) {
+			txtThongBao.setText("*Vui lòng chọn sản phẩm");
+		}
+		for(KhachHang kh : list) {
+			String k = kh.getMaKH();
+			
+			//neu su dung diem tich luy 
+					int diemCu = kh.getDiemTL();
+					if(diemCu == 0) {
+						txtThongBao.setText("*Điểm tích lũy bằng 0 nên không thể sử dụng");
+					}
+	                diemBanDau = diemCu;
+	                if (isMode) {
+	                	
+	        			
+	                	double tongTienMoi;
+	                	tongTienMoi = tongTien - diemCu;
+	                	txtTienKhachTra.setText(String.valueOf(tongTienMoi));
+	                	txtThongBao.setText("*Đã sử dụng điểm tích lũy");
+	                	txtDiemTL.setText("0");
+	                	diemBanDau = 0;
+	                	//khachhang_dao.updateDiemTL(0, sdtkh);
+	                } else {
+	                	
+	                	double tongGiaGoc = 0;
+	            	    int tongSoSanPham = 0;
+
+	            	    for (int i = 0; i < modelSPHD.getRowCount(); i++) {
+	            	        int soLuong = (int) modelSPHD.getValueAt(i, 3);
+	            	        double giaGoc = (double) modelSPHD.getValueAt(i, 2);
+
+	            	        tongGiaGoc += soLuong * giaGoc;
+	            	        tongSoSanPham += soLuong;
+	            	        diemBanDau = diemCu;
+	            	        
+	            	    }
+
+	            	    
+	                	txtTienKhachTra.setText(String.valueOf(tongGiaGoc));
+	                	txtThongBao.setText("");
+	                	txtDiemTL.setText(String.valueOf(diemBanDau));
+	                	txtTienKhachDua.setText("");
+	                	//khachhang_dao.updateDiemTL(diemBanDau, sdtkh);
+	                }
+	                
+	                isMode = !isMode;
+	                updateButtonText();
+	            }
+	}
+	
+	public void updateButtonText() {
+        btnSuDungDiemTL.setText(isMode ? "Sử dụng điểm" : "Trở lại");
+    }
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
