@@ -68,14 +68,12 @@ public class DAO_CTHD {
 	    return n>0;
     }
 	
-	//Lấy danh sách chi tiết hóa đơn theo mã
 	public ArrayList<ChiTietHoaDon> getDSTheoMaHD(String maHD) {
+		ArrayList<ChiTietHoaDon> ds = new ArrayList<ChiTietHoaDon>();
 		ConnectDB.getInstance();
 		Connection con = ConnectDB.getConnection();
-		ArrayList<ChiTietHoaDon> ds = new ArrayList<ChiTietHoaDon>();
-		PreparedStatement pstm = null;
 		try {
-			pstm = con.prepareStatement("select * from CHITIETHOADON where MAHD = ?");
+			PreparedStatement pstm = con.prepareStatement("select * from CHITIETHOADON where MAHD = ?");
 			pstm.setString(1, maHD);
 			ResultSet rs = pstm.executeQuery();
 			while (rs.next()) {
@@ -87,8 +85,23 @@ public class DAO_CTHD {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-		}
+		} 
 		return ds;
+	}
+	
+	public boolean xoaSPTrongCTHD(String maHD) {
+		int k = 0;
+		try {
+			ConnectDB.getInstance();
+			Connection con = ConnectDB.getConnection();
+			String sql = "delete from CHITIETHOADON where MAHD = ?";
+			PreparedStatement preparedStatement = con.prepareStatement(sql);
+			preparedStatement.setString(1, maHD);
+			k = preparedStatement.executeUpdate();
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return k>0;
 	}
 }

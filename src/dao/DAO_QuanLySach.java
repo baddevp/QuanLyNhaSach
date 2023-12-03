@@ -60,7 +60,30 @@ public class DAO_QuanLySach {
 		}
 		return sach;
 	}
-
+	//
+	public ArrayList<Sach> getArrSachTheoMa(String ma) {
+		ArrayList<Sach> list = new ArrayList<>();
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		
+		try {
+			PreparedStatement pstm = con.prepareStatement("select * from SACH where MASACH = ?");
+			pstm.setString(1, ma);
+			ResultSet rs = pstm.executeQuery();
+			while (rs.next()) {
+				NhaSanXuat nsx = dao_NSX.getNSXTheoMa(rs.getString("MANSX"));
+				HinhAnh ha = dao_HA.getHinhAnhTheoMa(rs.getString("MAANH"));
+				LoaiSach ls = dao_LoaiSach.getLoaiTheoMa(rs.getString("MALOAISACH"));
+				Sach sach = new Sach(rs.getString("MASACH"), rs.getString("TENSACH"),rs.getDouble("GIAGOC"), ha, rs.getString("MOTA"), rs.getDate("NGAYNHAP"), rs.getBoolean("TRANGTHAI"),rs.getInt("SOLUONG"),
+						rs.getDouble("THUE"), rs.getDouble("GIABAN"), nsx ,rs.getString("MAKHUYENMAI"),rs.getInt("SOTRANG"),rs.getString("LOAIBIA"),rs.getString("TACGIA"),ls);
+				list.add(sach);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+	//
 	public Sach getSachTheoTen(String ten) {
 		ConnectDB.getInstance();
 		Connection con = ConnectDB.getConnection();

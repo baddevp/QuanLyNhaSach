@@ -64,7 +64,30 @@ public class DAO_QuanLyVPP {
 		}
 		return vpp;
 	}
-
+	
+	public ArrayList<VanPhongPham> getArrVPPTheoMa(String ma) {
+		ArrayList<VanPhongPham> list = new ArrayList<>();
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		try {
+			PreparedStatement pstm = con.prepareStatement("select * from VANPHONGPHAM where MAVPP = ?");
+			pstm.setString(1, ma);
+			ResultSet rs = pstm.executeQuery();
+			while (rs.next()) {
+				NhaSanXuat nsx = dao_NSX.getNSXTheoMa(rs.getString("MANSX"));
+				HinhAnh ha = dao_HA.getHinhAnhTheoMa(rs.getString("MAANH"));
+				LoaiVanPhongPham lvpp = dao_LoaiVPP.getLoaiTheoMa(rs.getString("MALOAIVPP"));
+				MauSac ms = dao_ms.getMauSacTheoMa(rs.getString("MAMAU"));
+				VanPhongPham vpp = new VanPhongPham(rs.getString("MAVPP"), rs.getString("TENVPP"),rs.getDouble("GIAGOC"), ha, rs.getString("MOTA"), rs.getDate("NGAYNHAP"), rs.getBoolean("TRANGTHAI"),rs.getInt("SOLUONG"),
+						rs.getDouble("THUE"), rs.getDouble("GIABAN"), nsx ,rs.getString("MAKHUYENMAI"),rs.getString("THUONGHIEU"),rs.getString("XUATXU"),ms,lvpp);
+				list.add(vpp);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+	
 	public VanPhongPham getVPPTheoTen(String ten) {
 		ConnectDB.getInstance();
 		Connection con = ConnectDB.getConnection();

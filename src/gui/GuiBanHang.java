@@ -7,7 +7,9 @@ import java.awt.Dialog;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Frame;
+import java.awt.GridLayout;
 import java.awt.KeyEventDispatcher;
+import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -26,6 +28,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -62,6 +65,7 @@ import javax.swing.JButton;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JTabbedPane;
@@ -119,7 +123,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 	private JButton btnSuaSL;
 	private GuiQuanLyKhachHang guiKhachHang;
 	private DAO_QuanLyVPP vanphongpham_dao;
-	DAO_NhanVien dao_nhanVien = new DAO_NhanVien();
+	private JButton btnThanhToanLai;
 	
 	static JTextField tenNV;
 
@@ -398,6 +402,14 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		btnThanhToan.setBounds(659, 797, 216, 52);
 		pnlHoaDon.add(btnThanhToan);
 		
+		btnThanhToanLai = new JButton("THANH TOÁN LẠI");
+		btnThanhToanLai.setForeground(Color.WHITE);
+		btnThanhToanLai.setFont(new Font("Tahoma", Font.BOLD, 18));
+		btnThanhToanLai.setBackground(new Color(51, 204, 204));
+		btnThanhToanLai.setBounds(659, 797, 216, 52);
+		pnlHoaDon.add(btnThanhToanLai);
+		btnThanhToanLai.setVisible(false);
+		
 		txtTienThua = new JTextField();
 		txtTienThua.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		txtTienThua.setEditable(false);
@@ -482,6 +494,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		btnHangCho.addActionListener(this);
 		btnXoaDong.addActionListener(this);
 		btnSuaSL.addActionListener(this);
+		btnThanhToanLai.addActionListener(this);
 		tblSPHD.addMouseListener(this);
 		tblSP.addMouseListener(this);
 	
@@ -526,11 +539,25 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		if(o.equals(btnXoaDong)) 
 			xoaDong();
 		if(o.equals(btnThanhToan)) {
-			themHD();
+			boolean trangThai = true;
+			themHD(trangThai);
+			JOptionPane.showMessageDialog(this, "Bạn đã thanh toán thành công");
+		}
+		if(o.equals(btnTaoDonMoi)) {
+			boolean trangThai = false;
+			themHD(trangThai);
+			JOptionPane.showMessageDialog(this, "Hóa đơn vẫn chưa được thanh toán xong!");
+			
 		}
 		if(o.equals(btnSuaSL)) 
 			thayDoiSoLuong();
-		
+		if(o.equals(btnHangCho))
+			hienThiDanhSachHangCho();
+		if(o.equals(btnThanhToanLai)) {
+//			boolean trangThai = true;
+//			updateHD(trangThai);
+			updateHD();
+		}
 	}
 	//
 	private void DocDuLieuDatabaseSach() {
@@ -661,16 +688,14 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 	    return -1; // Trả về -1 nếu sản phẩm không tồn tại
 	}
 
-	//
-	private String generateMaHD() {
+	//chính
+	public String generateMaHD() {
 		try {
 			java.util.Date currentDate = new java.util.Date();
 			SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy");
 	        String formattedDate = dateFormat.format(currentDate);
 	        
-	        int sequenceNumber = hoadon_dao.getCurrentSequenceNumber();
-	        sequenceNumber++;
-	        String sequencePart = String.format("%03d", sequenceNumber);
+	        
 	        
 	        String maNV = tenNV.getText();
 	        int index1 = maNV.indexOf("23");
@@ -680,6 +705,13 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 	          }
 			//HD20112023002001
 	        String subMaNV = maNV.substring(index1 + 2, index1 + 5);
+	        
+	        int sequenceNumber = hoadon_dao.getCurrentSequenceNumber();
+	        System.out.println(sequenceNumber);
+	        sequenceNumber++;
+	        String sequencePart = String.format("%03d", sequenceNumber).trim();
+	        System.out.println(sequenceNumber);
+	        
 	        return "HD" + formattedDate + subMaNV + sequencePart;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -687,41 +719,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		return "";
 	}
 	//
-//	private String generateMaHD() {
-//        
-//		String newMaHD = "HD20112023002001";  	 
-//       	try {        		
-//       		java.util.Date currentDate = new java.util.Date();
-//    		SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy");
-//            String formattedDate = dateFormat.format(currentDate);
-//            
-//       		int nextInvoiceNumbber = hoadon_dao.getNextInvoiceNumber(formattedDate);
-//       		
-//            String loaiMa = "HD";
-////            int num = hoadon_dao.getmaHDtudong(loaiMa);
-////            num++;        
-////            String numString = String.format("%04d", num).trim();
-//            
-//            String maNV = "NV14112023002";
-//	        int index1 = maNV.indexOf("23");
-//	        int index2 = maNV.indexOf(" ", index1);
-//	        if (index1 == -1) {
-//	            return null;
-//	          }
-//			//HD20112023002001
-//	        String subMaNV = maNV.substring(index1 + 2, index1 + 5);
-//            
-//            newMaHD = loaiMa + formattedDate + subMaNV + nextInvoiceNumbber;
-//
-//           } catch (Exception e) {
-//               e.printStackTrace();
-//           }
-//		
-//       return newMaHD;
-//   }
-	//
-	//
-	private void hienThiThongTin() {
+	public void hienThiThongTin() {
 	    String maHD = generateMaHD(); 
 	    txtMaHD.setText(maHD);
 	    
@@ -747,65 +745,67 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		tinhTongGiaGoc();
 	}
 	//
-	public void themHD() {
+	public void themHD(boolean trangThai) {
 		String maHD = generateMaHD();
-//		java.util.Date ngayLap = dtmNgayLap.getDate();
 		LocalDateTime ngayLap = LocalDateTime.now();
-		LocalDateTime ngayLapKL = LocalDateTime.now();;
-		double tienNhan = Double.parseDouble(txtTienKhachDua.getText());
+		LocalDateTime ngayLapKL = LocalDateTime.now();
+		String tienKhachDuaText = txtTienKhachDua.getText().trim();
+		double tienNhan = Double.parseDouble(tienKhachDuaText);
 		double tongTien = Double.parseDouble(txtTienKhachTra.getText());
 		String nv = tenNV.getText();
-		NhanVien maNV = dao_nhanVien.getNhanVienTheoMa2(nv);
+		NhanVien maNV = new NhanVien(nv);
 		String sdtkh = txtSDTKH.getText();
-		boolean trangThai = true;
 		
 		//
+		if(tienKhachDuaText.isEmpty()) {
+			JOptionPane.showMessageDialog(this, "Khong dc trong");
+	        return;
+		}
 		if(sdtkh.isEmpty()) {
-//			guiKhachHang = new GuiQuanLyKhachHang();
-//			String maKL = guiKhachHang.txtMaKH.getText();
-//			String tenKL = "Khách lẻ";
-//			String diaChi = "Không";
-//			String sdtKL = "Không";
-//		    int diemTLKL = 0;
-//		    String emailKL = "Không";
-//		    
-////		    java.util.Date ngayLapUtil = new java.util.Date();
-////		    java.sql.Date ngayLapKL = new java.sql.Date(ngayLapUtil.getTime());
-			
-		    KhachHang khle = khachhang_dao.getKhachHangTheoMa("KH22112023003");
-		   
-		    	HoaDon hd = new HoaDon(maHD, ngayLap, tienNhan, tongTien, maNV, khle, trangThai);
-				if(hoadon_dao.createHD(hd)) {
-					JOptionPane.showMessageDialog(this, "Bạn đã thanh toán thành công");
-					capNhatSoLuongTon(hd);
-					themCTHD(hd);
-					xoaRong();
-				}
+			guiKhachHang = new GuiQuanLyKhachHang();
+			String maKL = guiKhachHang.txtMaKH.getText();
+			String tenKL = "Khách lẻ";
+			String diaChi = "Không";
+			String sdtKL = "Không";
+		    int diemTLKL = 0;
+		    String emailKL = "Không";
 		    
-			
-		} else {
-			ArrayList<KhachHang> list = khachhang_dao.getKhachHangTheoSDT(sdtkh);
-			
-			for(KhachHang kh : list) {
-				String k = kh.getMaKH();
-				KhachHang maKH = khachhang_dao.getKhachHangTheoMa(k);
-				
-				
-				//
-				int diemCu = kh.getDiemTL();
-				int diemMoi = (int)tongTien / 100;
-				int diemCongMoi = diemCu + diemMoi;
-				khachhang_dao.updateDiemTL(diemCongMoi, sdtkh);
-				//
-				HoaDon hd = new HoaDon(maHD, ngayLap, tienNhan, tongTien, maNV, maKH, trangThai);
+		    KhachHang khle = new KhachHang(maKL, tenKL, diaChi, sdtKL, diemTLKL, ngayLapKL, emailKL);
+		    KhachHang kle = new KhachHang(maKL);
+		    if (khachhang_dao.createKH(khle)) {
+		    	HoaDon hd = new HoaDon(maHD, ngayLap, tienNhan, tongTien, maNV, kle, trangThai);
 				if(hoadon_dao.createHD(hd)) {
-					JOptionPane.showMessageDialog(this, "Bạn đã thanh toán thành công");
+					JOptionPane.showMessageDialog(this, "Bạn đã thanh toán KL thành công");
 					capNhatSoLuongTon(hd);
 					themCTHD(hd);
 					xoaRong();
 				}
+		    }
+			
+		}
+		//
+		ArrayList<KhachHang> list = khachhang_dao.getKhachHangTheoSDT(sdtkh);
+		
+		for(KhachHang kh : list) {
+			String k = kh.getMaKH();
+			KhachHang maKH = new KhachHang(k);
+			
+			
+			//
+			int diemCu = kh.getDiemTL();
+			int diemMoi = (int)tongTien / 100;
+			int diemCongMoi = diemCu + diemMoi;
+			khachhang_dao.updateDiemTL(diemCongMoi, sdtkh);
+			//
+			HoaDon hd = new HoaDon(maHD, ngayLap, tienNhan, tongTien, maNV, maKH, trangThai);
+			if(hoadon_dao.createHD(hd)) {
+				JOptionPane.showMessageDialog(this, "Bạn đã thanh toán thành công");
+				capNhatSoLuongTon(hd);
+				themCTHD(hd);
+				xoaRong();
 			}
 		}
+		
 	}
 	//
 	public void themCTHD(HoaDon hd) {
@@ -921,7 +921,9 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 	}
 	//
 	public void xoaRong() {
+		txtMaHD.setText(generateMaHD());
 		txtDiemTL.setText("");
+		txtTenKH.setText("");
 		txtSDTKH.setText("");
 		txtTimMaSP.setText("");
 		txtTongSP.setText("");
@@ -929,7 +931,214 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		txtTienKhachTra.setText("");
 		txtTienThua.setText("");
 		modelSPHD.setRowCount(0);
+		hienThiThongTin();
 	}
+	//
+	public void hienThiDanhSachHangCho() {
+        JFrame frameHC = new JFrame("Danh sách hóa đơn đang chờ");
+        frameHC.setBounds(100, 100, 546, 354);
+        frameHC.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frameHC.setVisible(true);
+        frameHC.setLocationRelativeTo(null);
+
+        JPanel contentPane = new JPanel();
+        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+        frameHC.setContentPane(contentPane);
+        contentPane.setLayout(new BorderLayout(0, 0));
+
+        JPanel pnlTieuDe = new JPanel();
+        pnlTieuDe.setBackground(Color.WHITE);
+        contentPane.add(pnlTieuDe, BorderLayout.NORTH);
+
+        JLabel lblHoaDonCho = new JLabel("HÓA ĐƠN CHỜ");
+        lblHoaDonCho.setForeground(new Color(0, 204, 204));
+        lblHoaDonCho.setFont(new Font("Times New Roman", Font.BOLD, 30));
+        lblHoaDonCho.setBackground(new Color(51, 204, 255));
+        pnlTieuDe.add(lblHoaDonCho);
+
+        JPanel pnlHangCho = new JPanel();
+        pnlHangCho.setBackground(Color.WHITE);
+        contentPane.add(pnlHangCho, BorderLayout.CENTER);
+        pnlHangCho.setLayout(new GridLayout(0, 3, 10, 10));
+
+        List<HoaDon> dshd = hoadon_dao.layDanhSachHoaDonCho();
+        for (HoaDon hd : dshd) {
+            JButton btnChonHDCho = new JButton(hd.getMaHoaDon());
+            btnChonHDCho.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    dienTTVaoHoaDon(hd.getMaHoaDon());
+                    dienVaoSPChon(hd.getMaHoaDon());
+                    frameHC.setVisible(false);
+                    btnThanhToan.setVisible(false);
+                    btnThanhToan.setEnabled(false);
+                    btnThanhToanLai.setVisible(true);
+                    
+                }
+            });
+            pnlHangCho.add(btnChonHDCho);
+        }
+
+        JScrollPane scHDC = new JScrollPane(pnlHangCho);
+        contentPane.add(scHDC, BorderLayout.CENTER);
+    }
+	//
+	public void dienTTVaoHoaDon(String maHD) {
+		List<HoaDon> dshd = hoadon_dao.layDanhSachHoaDonCho();
+        for (HoaDon hd : dshd) {
+        	List<HoaDon> dshdtim = hoadon_dao.getTheoMaHD(maHD);
+        	for(HoaDon h : dshdtim) {
+        		txtMaHD.setText(maHD);
+          
+            	txtSDTKH.setText(h.getKhachHang().getSdt());
+            	txtTenKH.setText(h.getKhachHang().getTenKH());
+            	txtDiemTL.setText(String.valueOf(h.getKhachHang().getDiemTL()));
+               	
+        	}
+        }
+	}
+	//
+	public void dienVaoSPChon(String maHD) {
+	    modelSPHD.setRowCount(0);
+
+	    List<ChiTietHoaDon> dshdtim = chitiethoadon_dao.getDSTheoMaHD(maHD);
+	    double tongTien = 0;
+	    int tongSoLuong = 0;
+
+	    for (ChiTietHoaDon cthd : dshdtim) {
+	        List<Sach> dssach = sach_dao.getArrSachTheoMa(cthd.getSanPham().getMaSanPham());
+	        List<VanPhongPham> dsvpp = vpp_dao.getArrVPPTheoMa(cthd.getSanPham().getMaSanPham());
+
+	        int soLuong = cthd.getSoLuong();
+	        double giaBan = 0;
+
+	        if (isSach(cthd.getSanPham().getMaSanPham())) {
+	            for (Sach s : dssach) {
+	                giaBan = s.getGiaBan();
+	                modelSPHD.addRow(new Object[]{cthd.getSanPham().getMaSanPham(), s.getTenSanPham(), giaBan, soLuong, (giaBan * soLuong)});
+	            }
+	        } else {
+	            for (VanPhongPham v : dsvpp) {
+	                giaBan = v.getGiaBan();
+	                modelSPHD.addRow(new Object[]{cthd.getSanPham().getMaSanPham(), v.getTenSanPham(), giaBan, soLuong, (giaBan * soLuong)});
+	            }
+	        }
+
+	        tongSoLuong += soLuong;
+	        tongTien += (giaBan * soLuong);
+	    }
+	    txtTongSP.setText(String.valueOf(tongSoLuong));
+	    txtTienKhachTra.setText(String.valueOf(tongTien));
+	}
+
+//	public void updateHD(boolean trangThai) {
+//		String maHD = txtMaHD.getText();
+//		LocalDateTime ngayLap = LocalDateTime.now();
+//		LocalDateTime ngayLapKL = LocalDateTime.now();
+//		String tienKhachDuaText = txtTienKhachDua.getText().trim();
+//		double tienNhan = Double.parseDouble(tienKhachDuaText);
+//		double tongTien = Double.parseDouble(txtTienKhachTra.getText());
+//		String nv = tenNV.getText();
+//		NhanVien maNV = new NhanVien(nv);
+//		String sdtkh = txtSDTKH.getText();
+//		
+//		List<KhachHang> listKH = khachhang_dao.getKhachHangTheoSDT(sdtkh);
+//				
+//		
+//		for(KhachHang kh : listKH) {
+//			String maKH = kh.getMaKH();
+//			String tenKH = kh.getTenKH();
+//			String diaChi = kh.getDiaChi();
+//			String email = kh.getEmail();
+//			KhachHang k = new KhachHang(maKH);
+//			
+//			
+//			//
+//			int diemCu = kh.getDiemTL();
+//			int diemMoi = (int)tongTien / 100;
+//			int diemCongMoi = diemCu + diemMoi;
+//			khachhang_dao.updateDiemTL(diemCongMoi, sdtkh);
+//			//
+//			HoaDon hd = new HoaDon(maHD, ngayLap, tienNhan, tongTien, maNV, k, trangThai);
+//			KhachHang khachhang = new KhachHang(maKH, tenKH, diaChi, sdtkh, diemCongMoi, ngayLapKL, email);
+//			boolean result = hoadon_dao.updateHD(hd);
+//			boolean rssKH = khachhang_dao.updateKH(khachhang);
+//			
+//			if(result && rssKH) {
+//				xoaRong();
+//				JOptionPane.showMessageDialog(this, "Thanh toán lai thành công");
+//			}
+//		}
+//	}
+	
+	public void themHDCho(String maHD) {
+		LocalDateTime ngayLap = LocalDateTime.now();
+		LocalDateTime ngayLapKL = LocalDateTime.now();
+		String tienKhachDuaText = txtTienKhachDua.getText().trim();
+		double tienNhan = Double.parseDouble(tienKhachDuaText);
+		double tongTien = Double.parseDouble(txtTienKhachTra.getText());
+		String nv = tenNV.getText();
+		NhanVien maNV = new NhanVien(nv);
+		String sdtkh = txtSDTKH.getText();
+		boolean trangThai = true;
+		
+		//
+		if(tienKhachDuaText.isEmpty()) {
+			JOptionPane.showMessageDialog(this, "Khong dc trong");
+	        return;
+		}
+		if(sdtkh.isEmpty()) {
+			guiKhachHang = new GuiQuanLyKhachHang();
+			String maKL = guiKhachHang.txtMaKH.getText();
+			String tenKL = "Khách lẻ";
+			String diaChi = "Không";
+			String sdtKL = "Không";
+		    int diemTLKL = 0;
+		    String emailKL = "Không";
+		    
+		    KhachHang khle = new KhachHang(maKL, tenKL, diaChi, sdtKL, diemTLKL, ngayLapKL, emailKL);
+		    KhachHang kle = new KhachHang(maKL);
+		    if (khachhang_dao.createKH(khle)) {
+		    	HoaDon hd = new HoaDon(maHD, ngayLap, tienNhan, tongTien, maNV, kle, trangThai);
+				if(hoadon_dao.createHD(hd)) {
+					JOptionPane.showMessageDialog(this, "Bạn đã thanh toán KL thành công");
+					capNhatSoLuongTon(hd);
+					themCTHD(hd);
+					xoaRong();
+				}
+		    }	
+		}
+		ArrayList<KhachHang> list = khachhang_dao.getKhachHangTheoSDT(sdtkh);
+		
+		for(KhachHang kh : list) {
+			String k = kh.getMaKH();
+			KhachHang maKH = new KhachHang(k);
+			
+			
+			//
+			int diemCu = kh.getDiemTL();
+			int diemMoi = (int)tongTien / 100;
+			int diemCongMoi = diemCu + diemMoi;
+			khachhang_dao.updateDiemTL(diemCongMoi, sdtkh);
+			//
+			HoaDon hd = new HoaDon(maHD, ngayLap, tienNhan, tongTien, maNV, maKH, trangThai);
+			if(hoadon_dao.createHD(hd)) {
+				JOptionPane.showMessageDialog(this, "Bạn đã thanh toán thành công");
+				capNhatSoLuongTon(hd);
+				themCTHD(hd);
+				xoaRong();
+			}
+		}
+	}
+	
+	public void updateHD() {
+		String maHD = txtMaHD.getText();
+		
+		hoadon_dao.xoaHDCho(maHD);
+		chitiethoadon_dao.xoaSPTrongCTHD(maHD);
+		themHDCho(maHD);
+	}
+	
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
