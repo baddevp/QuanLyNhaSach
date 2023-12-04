@@ -13,6 +13,7 @@ import entity.HinhAnh;
 import entity.LoaiVanPhongPham;
 import entity.MauSac;
 import entity.NhaSanXuat;
+import entity.SanPham;
 import entity.VanPhongPham;
 
 public class DAO_QuanLyVPP {
@@ -333,5 +334,26 @@ public class DAO_QuanLyVPP {
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	    } 
+	}
+	//Lấy thông tin văn phòng phẩm
+	public SanPham getThongTinSanPhamTheoMa(String ma) {
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		
+		SanPham sp = null;
+		try {
+			PreparedStatement pstm = con.prepareStatement("select * from VANPHONGPHAM where MAVPP = ?");
+			pstm.setString(1, ma);
+			ResultSet rs = pstm.executeQuery();
+			while (rs.next()) {
+				NhaSanXuat nsx = dao_NSX.getNSXTheoMa(rs.getString("MANSX"));
+				HinhAnh ha = dao_HA.getHinhAnhTheoMa(rs.getString("MAANH"));
+				sp = new SanPham(rs.getString("MAVPP"), rs.getString("TENVPP"),rs.getDouble("GIAGOC"), ha, rs.getString("MOTA"), rs.getDate("NGAYNHAP"), rs.getBoolean("TRANGTHAI"),rs.getInt("SOLUONG"),
+						rs.getDouble("THUE"), rs.getDouble("GIABAN"), nsx ,rs.getString("MAKHUYENMAI"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return sp;
 	}
 }

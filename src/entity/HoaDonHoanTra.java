@@ -1,12 +1,14 @@
 package entity;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 
 public class HoaDonHoanTra {
 	String maYeuCauTraHang;
-	Date ngayLapHoaDonTH;
+	LocalDateTime ngayLapHoaDonTH;
 	String lyDoTraHang;
+	double tongHoanTra;
 	NhanVien nhanVien;
 	KhachHang khachHang;
 	HoaDon hoaDon;
@@ -14,7 +16,7 @@ public class HoaDonHoanTra {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public HoaDonHoanTra(String maYeuCauTraHang, Date ngayLapHoaDonTH, String lyDoTraHang, NhanVien nhanVien,
+	public HoaDonHoanTra(String maYeuCauTraHang, LocalDateTime ngayLapHoaDonTH, String lyDoTraHang, double tongHoanTra, NhanVien nhanVien,
 			KhachHang khachHang, HoaDon hoaDon) {
 		super();
 		this.maYeuCauTraHang = maYeuCauTraHang;
@@ -24,16 +26,22 @@ public class HoaDonHoanTra {
 		this.khachHang = khachHang;
 		this.hoaDon = hoaDon;
 	}
+	public double getTongHoanTra() {
+		return tongHoanTra;
+	}
+	public void setTongHoanTra(double tongHoanTra) {
+		this.tongHoanTra = tongHoanTra;
+	}
 	public String getMaYeuCauTraHang() {
 		return maYeuCauTraHang;
 	}
 	public void setMaYeuCauTraHang(String maYeuCauTraHang) {
 		this.maYeuCauTraHang = maYeuCauTraHang;
 	}
-	public Date getNgayLapHoaDonTH() {
+	public LocalDateTime getNgayLapHoaDonTH() {
 		return ngayLapHoaDonTH;
 	}
-	public void setNgayLapHoaDonTH(Date ngayLapHoaDonTH) {
+	public void setNgayLapHoaDonTH(LocalDateTime ngayLapHoaDonTH) {
 		this.ngayLapHoaDonTH = ngayLapHoaDonTH;
 	}
 	public String getLyDoTraHang() {
@@ -82,9 +90,8 @@ public class HoaDonHoanTra {
 	@Override
 	public String toString() {
 		return "HoaDonHoanTra [maYeuCauTraHang=" + maYeuCauTraHang + ", ngayLapHoaDonTH=" + ngayLapHoaDonTH
-				+ ", lyDoTraHang=" + lyDoTraHang + ", nhanVien=" + nhanVien + ", khachHang=" + khachHang + ", hoaDon="
-				+ hoaDon + "]";
+				+ ", lyDoTraHang=" + lyDoTraHang + ", tongHoanTra=" + tongHoanTra + ", nhanVien=" + nhanVien
+				+ ", khachHang=" + khachHang + ", hoaDon=" + hoaDon + "]";
 	}
-	
 	
 }

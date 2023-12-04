@@ -538,7 +538,9 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 			
 		}
 		else if (o.equals(mniTraHang)) {
-			GuiTraHang traHang = new GuiTraHang();
+			DAO_NhanVien dao_NhanVien = new DAO_NhanVien();
+			NhanVien nv = dao_NhanVien.getNhanVienTheoMa2(txtusername.getText());
+			GuiTraHang traHang = new GuiTraHang(nv);
 			tabNoiDung.remove(tabNoiDung.getSelectedComponent());
 			tabNoiDung.add(traHang.contentPane);
 			
@@ -554,11 +556,6 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 			tabNoiDung.remove(tabNoiDung.getSelectedComponent());
 			tabNoiDung.add(pnlTrangChu);
 		}
-		else if (o.equals(mniTraHang)) {
-			GuiTraHang traHang = new GuiTraHang();
-			tabNoiDung.remove(tabNoiDung.getSelectedComponent());
-			tabNoiDung.add(traHang.contentPane);
-		}	
 
 		//Chức năng thống kê
 				else if (o.equals(mniThongKeDT)) {

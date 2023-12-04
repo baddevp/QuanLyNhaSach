@@ -16,7 +16,9 @@ import entity.NhanVien;
 import entity.SanPham;
 
 public class DAO_CTHD {
-	
+
+	DAO_QuanLySach dao_quanLySach = new DAO_QuanLySach();
+	DAO_QuanLyVPP dao_quanLyVPP = new DAO_QuanLyVPP();
 	DAO_HoaDon dao_HoaDon = new DAO_HoaDon();
 	public ArrayList<ChiTietHoaDon> getAllCTHD(){
 		ArrayList<ChiTietHoaDon> dsCTHD = new ArrayList<ChiTietHoaDon>();
@@ -78,10 +80,20 @@ public class DAO_CTHD {
 			ResultSet rs = pstm.executeQuery();
 			while (rs.next()) {
 				HoaDon hd = dao_HoaDon.getHDTheoMaHD(rs.getString("MAHD"));
-				SanPham sanpham = new SanPham(rs.getString("MASP"));
-				int soLuong = rs.getInt(3);
-				ChiTietHoaDon cthd = new ChiTietHoaDon(hd, sanpham, soLuong);
-				ds.add(cthd);
+				String maSP = rs.getString("MASP"); 
+				
+				if(isSach(maSP)) {
+					SanPham sanpham = dao_quanLySach.getThongTinSanPhamTheoMa(maSP);
+					int soLuong = rs.getInt(3);
+					ChiTietHoaDon cthd = new ChiTietHoaDon(hd, sanpham, soLuong);
+					ds.add(cthd);
+				}else {
+					SanPham sanpham = dao_quanLyVPP.getThongTinSanPhamTheoMa(maSP);
+					int soLuong = rs.getInt(3);
+					ChiTietHoaDon cthd = new ChiTietHoaDon(hd, sanpham, soLuong);
+					ds.add(cthd);
+				}
+				
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -103,5 +115,13 @@ public class DAO_CTHD {
 			// TODO: handle exception
 		}
 		return k>0;
+	}
+	//Kiểm tra sách
+	public boolean isVanPhongPham(String maSP) {
+	    return maSP.startsWith("VPP");
+	}
+	//Kiểm tra văn phòng phẩm
+	public boolean isSach(String maSP) {
+	    return maSP.startsWith("SAH");
 	}
 }

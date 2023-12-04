@@ -13,6 +13,7 @@ import entity.HinhAnh;
 import entity.LoaiSach;
 import entity.NhaSanXuat;
 import entity.Sach;
+import entity.SanPham;
 
 public class DAO_QuanLySach {
 	private DAO_NSX dao_NSX= new DAO_NSX();
@@ -333,5 +334,26 @@ public class DAO_QuanLySach {
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	    } 
+	}
+	//Lay thong tin san pham
+	public SanPham getThongTinSanPhamTheoMa(String ma) {
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		
+		SanPham sp = null;
+		try {
+			PreparedStatement pstm = con.prepareStatement("select * from SACH where MASACH = ?");
+			pstm.setString(1, ma);
+			ResultSet rs = pstm.executeQuery();
+			while (rs.next()) {
+				NhaSanXuat nsx = dao_NSX.getNSXTheoMa(rs.getString("MANSX"));
+				HinhAnh ha = dao_HA.getHinhAnhTheoMa(rs.getString("MAANH"));
+				sp = new SanPham(rs.getString("MASACH"), rs.getString("TENSACH"),rs.getDouble("GIAGOC"), ha, rs.getString("MOTA"), rs.getDate("NGAYNHAP"), rs.getBoolean("TRANGTHAI"),rs.getInt("SOLUONG"),
+						rs.getDouble("THUE"), rs.getDouble("GIABAN"), nsx ,rs.getString("MAKHUYENMAI"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return sp;
 	}
 }

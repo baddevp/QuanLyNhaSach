@@ -12,12 +12,14 @@ import java.util.ArrayList;
 
 import connectDB.ConnectDB;
 import entity.HoaDon;
+import entity.HoaDonHoanTra;
 import entity.KhachHang;
 import entity.NhanVien;
 
-public class DAO_HoaDonHoanTra {
+public class DAO_HoaDonTraHang {
 	DAO_NhanVien dao_NhanVien = new DAO_NhanVien();
 	DAO_KhachHang  dao_KhachHang = new DAO_KhachHang();
+	DAO_HoaDon dao_HoaDon = new DAO_HoaDon();
 	
 	// hàm chuyển đổi từ sql vào java ngày giờ
 		public static LocalDateTime chuyenDateTimeSangLocal(String chuoiSQL) {
@@ -38,27 +40,28 @@ public class DAO_HoaDonHoanTra {
 			return str.substring(0, 10) + " " + str.substring(11, 19);
 		}
 
-	public ArrayList<HoaDon> getAllHD(){
-		ArrayList<HoaDon> dsHD = new ArrayList<HoaDon>();
+	public ArrayList<HoaDonHoanTra> getAllHD(){
+		ArrayList<HoaDonHoanTra> dsHD = new ArrayList<HoaDonHoanTra>();
 		try {
 			ConnectDB.getInstance();
 			Connection con = ConnectDB.getConnection();
-			String sql = "select * from HOADON";
+			String sql = "select * from HOADONTRAHANG";
 			Statement stm = con.createStatement();
 			ResultSet rs = stm.executeQuery(sql);
 			while (rs.next()) {
-				String maHD = rs.getString(1);
+				String maYCHT = rs.getString("MAYEUCAUTRAHANG");
 //				java.util.Date ngayLapHD = rs.getDate(2);
-				LocalDateTime ngayLapHD = chuyenDateTimeSangLocal(rs.getString("NGAYLAPHOADON"));
-				double tienNhan = rs.getDouble(3);
-				double tongTien = rs.getDouble(4);
-				NhanVien nhanvien = new NhanVien(rs.getString(5));
-				KhachHang khachhang = new KhachHang(rs.getString(6));
-				boolean trangThai = rs.getBoolean(7);
+				LocalDateTime ngayLapHD = chuyenDateTimeSangLocal(rs.getString("NGAYLAPHOADONTH"));
+				String lyDo = rs.getString(3);
 				
-				HoaDon hd = new HoaDon(maHD, ngayLapHD, tienNhan, tongTien, nhanvien, khachhang, trangThai);
-				dsHD.add(hd);
-		
+				double tienHT = rs.getDouble("TIENHOANTRA");
+				NhanVien nv = dao_NhanVien.getNhanVienTheoMa2(rs.getString("MANV"));
+				KhachHang kh = dao_KhachHang.getKhachHangTheoMa(rs.getString("MAKH"));
+				HoaDon hd = dao_HoaDon.getHDTheoMaHD(rs.getString("MAHD"));
+				
+				HoaDonHoanTra hdht = new HoaDonHoanTra(maYCHT, ngayLapHD, lyDo, tienHT, nv, kh, hd);
+				dsHD.add(hdht);
+			
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -67,21 +70,21 @@ public class DAO_HoaDonHoanTra {
 		return dsHD; 
 	}
 	
-	public boolean createHD(HoaDon hd) {
+	public boolean createHD(HoaDonHoanTra hdht) {
 		ConnectDB.getInstance();
 		Connection con = ConnectDB.getConnection();
 		PreparedStatement st = null;
 		int n=0;
 		try {
-			st = con.prepareStatement("insert into " + "HOADON values(?,?,?,?,?,?,?)");
+			st = con.prepareStatement("insert into " + "HOADONTRAHANG values(?,?,?,?,?,?,?)");
 			
-			st.setString(1, hd.getMaHoaDon());
-			st.setString(2, chuyenLocalSangDateTime(hd.getNgayLapHoaDon()));
-			st.setDouble(3, hd.getTienNhan());
-			st.setDouble(4, hd.getTongTien());
-			st.setString(5, hd.getNhanVien().getTenNV());
-			st.setString(6, hd.getKhachHang().getMaKH());
-			st.setBoolean(7, hd.isTrangThai());
+			st.setString(1, hdht.getMaYeuCauTraHang());
+			st.setString(2, chuyenLocalSangDateTime(hdht.getNgayLapHoaDonTH()));
+			st.setString(3, hdht.getLyDoTraHang());
+			st.setDouble(4, hdht.getTongHoanTra());
+			st.setString(5, hdht.getNhanVien().getMaNV());
+			st.setString(6, hdht.getKhachHang().getMaKH());
+			st.setString(7, hdht.getHoaDon().getMaHoaDon());
 			
 			n = st.executeUpdate();
 		    } catch (SQLException e) {
@@ -103,7 +106,7 @@ public class DAO_HoaDonHoanTra {
 		try {
 			ConnectDB.getInstance();
 	        Connection con = ConnectDB.getConnection();
-	        String sql = "SELECT MAX(MAHOADON) FROM HOADON";
+	        String sql = "SELECT MAX(MAYEUCAUTRAHANG) FROM HOADONTRAHANG";
 	        Statement stm = con.createStatement();
 	        ResultSet rs = stm.executeQuery(sql);
 	        
@@ -111,8 +114,8 @@ public class DAO_HoaDonHoanTra {
 	            String lastMaHD = rs.getString(1);
 
 	            // Check if lastMaKH is not null and has the expected format
-	            if (lastMaHD != null && lastMaHD.startsWith("HD") && lastMaHD.length() >= 14) {
-	                // HD 15 11 20 23 00 1 001
+	            if (lastMaHD != null && lastMaHD.startsWith("TH") && lastMaHD.length() >= 14) {
+	                // TH 15 11 20 23 00 1 001
 	                String sequenceNumberPart = lastMaHD.substring(13);
 
 	                // Convert the extracted part to an integer
@@ -136,7 +139,7 @@ public class DAO_HoaDonHoanTra {
 		        // Loại mã cụ thể (SAH, NV, ...)
 		        // Thay đổi loại mã tùy theo yêu cầu
 
-		        String sql = "SELECT MAX(MAHOADON) FROM HOADON WHERE MAHOADON LIKE '" + loaiMa + "%'";
+		        String sql = "SELECT MAX(MAYEUCAUTRAHANG) FROM HOADONTRAHANG WHERE MAYEUCAUTRAHANG LIKE '" + loaiMa + "%'";
 		        Statement stm = con.createStatement();
 		        ResultSet rs = stm.executeQuery(sql);
 
@@ -163,9 +166,9 @@ public class DAO_HoaDonHoanTra {
 		
 		ConnectDB.getInstance();
         Connection con = ConnectDB.getConnection();
-		String sql = "SELECT MAX(RIGHT(MAHOADON, 3)) FROM HOADON WHERE LEFT(MAHOADON, 8) = ?";
+		String sql = "SELECT MAX(RIGHT(MAYEUCAUTRAHANG, 3)) FROM HOADONTRAHANG WHERE LEFT(MAYEUCAUTRAHANG, 8) = ?";
 		 try (PreparedStatement preparedStatement = con.prepareStatement(sql)) {
-			 preparedStatement.setString(1, "HD" + currentDate);
+			 preparedStatement.setString(1, "TH" + currentDate);
 			 
 			 try (ResultSet resultSet = preparedStatement.executeQuery()) {
 				 if(resultSet.next()) {
@@ -178,22 +181,23 @@ public class DAO_HoaDonHoanTra {
 		 }
 	}
 		 //Lấy tất cả hóa đơn đã thanh toán
-		 public ArrayList<HoaDon> getHoaDonDaThanhToan() {
-				ArrayList<HoaDon> dsHoaDon = new ArrayList<HoaDon>();
+		 public ArrayList<HoaDonHoanTra> getHoaDonDaThanhToan() {
+				ArrayList<HoaDonHoanTra> dsHoaDon = new ArrayList<HoaDonHoanTra>();
 				Connection con = ConnectDB.getInstance().getConnection();
 				try {
 					Statement stm = con.createStatement();
-					ResultSet rs = stm.executeQuery("select * from HoaDon where TONGTIEN > 0");
+					ResultSet rs = stm.executeQuery("select * from HOADONTRAHANG where TIENTHOANTRA > 0");
 					while (rs.next()) {
 						NhanVien nv = dao_NhanVien.getNhanVienTheoMa2(rs.getString("MANV"));
 						KhachHang khachHang = dao_KhachHang.getKhachHangTheoMa(rs.getString("MAKH"));
-						String maHD = rs.getString("MAHOADON");
-						LocalDateTime ngayLapHD = chuyenDateTimeSangLocal(rs.getString("NGAYLAPHOADON"));
-						double tienNhan = rs.getDouble("TIENNHAN");
-						double tongTien = rs.getDouble("TONGTIEN");
-						boolean trangThai = rs.getBoolean("TRANGTHAI");
-						HoaDon hd = new HoaDon(maHD, ngayLapHD, tienNhan, tongTien, nv, khachHang, trangThai);
-						dsHoaDon.add(hd);
+						HoaDon hd = dao_HoaDon.getHDTheoMaHD(rs.getString("MAHD"));
+						String maYCHT = rs.getString("MAYEUCAUTRAHANG");
+						String lyDo = rs.getString("LYDOTRAHANG");
+						LocalDateTime ngayLapHD = chuyenDateTimeSangLocal(rs.getString("NGAYLAPHOADONTH"));
+						double tienHoanTra= rs.getDouble("TIENHOANTRA");
+						
+						HoaDonHoanTra hdht = new HoaDonHoanTra(maYCHT, ngayLapHD, lyDo, tienHoanTra, nv, khachHang, hd);
+						dsHoaDon.add(hdht);
 					}
 				} catch (SQLException e) {
 					e.printStackTrace();
@@ -201,27 +205,26 @@ public class DAO_HoaDonHoanTra {
 				return dsHoaDon;
 			}
 		 	//Lấy thông tin hóa đơn theo mã
-			public HoaDon getHDTheoMaHD(String maHDTim) {
-				HoaDon hd = new HoaDon();
+			public HoaDonHoanTra getHDHTTheoMaHDTH(String maHDTim) {
+				HoaDonHoanTra hdht = new HoaDonHoanTra();
 				Connection con = ConnectDB.getInstance().getConnection();
 				try {
-					PreparedStatement pstm = con.prepareStatement("select * from HOADON where MAHOADON =?");
+					PreparedStatement pstm = con.prepareStatement("select * from HOADONTRAHANG where MAYEUCAUTRAHANG =?");
 					pstm.setString(1, maHDTim);
 					ResultSet rs = pstm.executeQuery();
 					while (rs.next()) {
 						NhanVien nv = dao_NhanVien.getNhanVienTheoMa2(rs.getString("MANV"));
 						KhachHang khachHang = dao_KhachHang.getKhachHangTheoMa(rs.getString("MAKH"));
-						String maHD = rs.getString("MAHOADON");
-						LocalDateTime ngayLapHD =  chuyenDateTimeSangLocal(rs.getString("NGAYLAPHOADON"));
-						double tienNhan = rs.getDouble("TIENNHAN");
-						double tongTien = rs.getDouble("TONGTIEN");
-						boolean trangThai = rs.getBoolean("TRANGTHAI");
-						hd = new HoaDon(maHD, ngayLapHD, tienNhan, tongTien, nv, khachHang, trangThai);
+						HoaDon hd = dao_HoaDon.getHDTheoMaHD(rs.getString("MAHD"));
+						LocalDateTime ngayLapHD =  chuyenDateTimeSangLocal(rs.getString("NGAYLAPHOADONTH"));
+						double tongTien = rs.getDouble("TIENHOANTRA");
+						String lyDo = rs.getString("LYDOTRAHANG");
+						hdht = new HoaDonHoanTra(maHDTim, ngayLapHD, lyDo, tongTien, nv, khachHang, hd);
 						
 					}
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
-				return hd;
+				return hdht;
 			}
 }
