@@ -785,8 +785,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 	//
 	public void themHD(boolean trangThai) {
 		// Chưa nhập tiền khách đưa thì set mặc định bằng tổng phải trả
-		String tienKhachDuaText = txtTienKhachDua.getText().trim();
-		if (tienKhachDuaText.isEmpty()) {
+		if (txtTienKhachDua.getText().trim().isEmpty()) {
 			setTienKhachDua();
 		}
 		String maHD = generateMaHD();
@@ -811,34 +810,30 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 			}
 
 		}
-		//
-		ArrayList<KhachHang> list = khachhang_dao.getKhachHangTheoSDT(sdtkh);
+		else {
+			ArrayList<KhachHang> list = khachhang_dao.getKhachHangTheoSDT(sdtkh);
 
-		for (KhachHang kh : list) {
-			String k = kh.getMaKH();
-			KhachHang maKH = new KhachHang(k);
+			for (KhachHang kh : list) {
+				String k = kh.getMaKH();
+				KhachHang maKH = new KhachHang(k);
 
-			// neu su dung diem tich luy
-
-			//
-			int diemCu = Integer.parseInt(txtDiemTL.getText());
-			int diemMoi = (int) tongTien / 100;
-			int diemCongMoi = diemCu + diemMoi;
-			khachhang_dao.updateDiemTL(diemCongMoi, sdtkh);
-
-			double tongTienMoi = Double.parseDouble(txtTienKhachTra.getText());
-			//
-			HoaDon hd = new HoaDon(maHD, ngayLap, tienNhan, tongTienMoi, maNV, maKH, trangThai);
-			if (hoadon_dao.createHD(hd)) {
-				capNhatSoLuongTon(hd);
-				themCTHD(hd);
-				xoaRong();
+				int diemCu = Integer.parseInt(txtDiemTL.getText());
+				int diemMoi = (int) tongTien / 100;
+				int diemCongMoi = diemCu + diemMoi;
+				khachhang_dao.updateDiemTL(diemCongMoi, sdtkh);
+				
+				double tongTienMoi = Double.parseDouble(txtTienKhachTra.getText());
+				HoaDon hd = new HoaDon(maHD, ngayLap, tienNhan, tongTienMoi, maNV, maKH, trangThai);
+				if (hoadon_dao.createHD(hd)) {
+					capNhatSoLuongTon(hd);
+					themCTHD(hd);
+					xoaRong();
+				}
 			}
 		}
+		
 
 	}
-
-	//
 	// Thêm chi tiết hóa đơn
 	public void themCTHD(HoaDon hd) {
 		int soLuongDong = modelSPHD.getRowCount();
