@@ -15,7 +15,7 @@ import entity.KhachHang;
 import entity.NhanVien;
 import entity.SanPham;
 
-public class DAO_CTHD {
+public class DAO_ChiTietHoaDon {
 
 	DAO_QuanLySach dao_quanLySach = new DAO_QuanLySach();
 	DAO_QuanLyVPP dao_quanLyVPP = new DAO_QuanLyVPP();

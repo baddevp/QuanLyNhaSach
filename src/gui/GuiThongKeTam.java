@@ -39,7 +39,7 @@ import javax.swing.table.JTableHeader;
 import com.toedter.calendar.JDateChooser;
 
 import connectDB.ConnectDB;
-import dao.DAO_CTHD;
+import dao.DAO_ChiTietHoaDon;
 import dao.DAO_ChucVu;
 import dao.DAO_HoaDon;
 import dao.DAO_KhachHang;
@@ -94,7 +94,7 @@ public class GuiThongKeTam extends JFrame implements ActionListener, MouseListen
 	private GuiDangNhap guiDangNhap;
 	private GuiTrangChu GuiTrangChu;
 	private JDateChooser dtmNgayKT;
-	private DAO_CTHD chitiethoadon_dao;
+	private DAO_ChiTietHoaDon chitiethoadon_dao;
 	private GuiQuanLyKhachHang guiKhachHang;
 	private DAO_QuanLyVPP vanphongpham_dao;
 	
@@ -380,7 +380,7 @@ public class GuiThongKeTam extends JFrame implements ActionListener, MouseListen
 		khachhang_dao = new DAO_KhachHang();
 		hoadon_dao = new DAO_HoaDon();
 		nhanvien_dao = new DAO_NhanVien();
-		chitiethoadon_dao = new DAO_CTHD();
+		chitiethoadon_dao = new DAO_ChiTietHoaDon();
 		vanphongpham_dao = new DAO_QuanLyVPP();
 		guiKhachHang = new GuiQuanLyKhachHang();
 		

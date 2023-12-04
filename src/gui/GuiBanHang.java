@@ -41,7 +41,7 @@ import javax.swing.table.JTableHeader;
 import com.toedter.calendar.JDateChooser;
 
 import connectDB.ConnectDB;
-import dao.DAO_CTHD;
+import dao.DAO_ChiTietHoaDon;
 import dao.DAO_ChucVu;
 import dao.DAO_HoaDon;
 import dao.DAO_KhachHang;
@@ -123,7 +123,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 	private GuiDangNhap guiDangNhap;
 	private GuiTrangChu GuiTrangChu;
 	private JDateChooser dtmNgayLap;
-	private DAO_CTHD chitiethoadon_dao;
+	private DAO_ChiTietHoaDon chitiethoadon_dao;
 	private JButton btnSuaSL;
 	private GuiQuanLyKhachHang guiKhachHang;
 	private DAO_QuanLyVPP vanphongpham_dao;
@@ -494,7 +494,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		khachhang_dao = new DAO_KhachHang();
 		hoadon_dao = new DAO_HoaDon();
 		nhanvien_dao = new DAO_NhanVien();
-		chitiethoadon_dao = new DAO_CTHD();
+		chitiethoadon_dao = new DAO_ChiTietHoaDon();
 		vanphongpham_dao = new DAO_QuanLyVPP();
 		guiKhachHang = new GuiQuanLyKhachHang();
 
@@ -621,7 +621,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 	//
 	public void timKH() {
 		String sdtKH = txtSDTKH.getText();
-		List<KhachHang> list = khachhang_dao.getKhachHangTheoSDT(sdtKH);
+		List<KhachHang> list = khachhang_dao.getDSKhachHangTheoSDT(sdtKH);
 		if (sdtKH.equals(""))
 			JOptionPane.showMessageDialog(this, "Vui lòng nhập số điện thoại khách hàng cần tìm.");
 		else if (list != null && list.size() > 0) {
@@ -811,7 +811,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 
 		}
 		else {
-			ArrayList<KhachHang> list = khachhang_dao.getKhachHangTheoSDT(sdtkh);
+			ArrayList<KhachHang> list = khachhang_dao.getDSKhachHangTheoSDT(sdtkh);
 
 			for (KhachHang kh : list) {
 				String k = kh.getMaKH();
@@ -1125,7 +1125,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 				}
 			}
 		}
-		ArrayList<KhachHang> list = khachhang_dao.getKhachHangTheoSDT(sdtkh);
+		ArrayList<KhachHang> list = khachhang_dao.getDSKhachHangTheoSDT(sdtkh);
 
 		for (KhachHang kh : list) {
 			String k = kh.getMaKH();
@@ -1159,7 +1159,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		String sdtkh = txtSDTKH.getText();
 		String tongTienStr = txtTienKhachTra.getText();
 		double tongTien = Double.parseDouble(txtTienKhachTra.getText());
-		ArrayList<KhachHang> list = khachhang_dao.getKhachHangTheoSDT(sdtkh);
+		ArrayList<KhachHang> list = khachhang_dao.getDSKhachHangTheoSDT(sdtkh);
 
 		if (sdtkh.isEmpty()) {
 			txtThongBao.setText("*Phải chọn khách hàng để sử dụng");

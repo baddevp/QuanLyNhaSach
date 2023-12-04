@@ -40,7 +40,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 
 import com.toedter.calendar.JDateChooser;
 
-import dao.DAO_CTHD;
+import dao.DAO_ChiTietHoaDon;
 import dao.DAO_HoaDon;
 import entity.ChiTietHoaDon;
 import entity.HoaDon;
@@ -65,7 +65,7 @@ public class GuiThongKeNhanVien extends JFrame implements ActionListener {
 	private DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyy");
 	private DAO_HoaDon dao_HoaDon = new DAO_HoaDon();
 	private ArrayList<HoaDon> dsHoaDonDaThanhToan = dao_HoaDon.getHoaDonDaThanhToan();
-	private DAO_CTHD dao_CTHD = new DAO_CTHD();
+	private DAO_ChiTietHoaDon dao_CTHD = new DAO_ChiTietHoaDon();
 	private LocalDate ngayBatDau = LocalDate.now();
 	private LocalDate ngayKetThuc = LocalDate.now();
 	private JTable tblThongKe;

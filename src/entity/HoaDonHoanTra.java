@@ -22,6 +22,7 @@ public class HoaDonHoanTra {
 		this.maYeuCauTraHang = maYeuCauTraHang;
 		this.ngayLapHoaDonTH = ngayLapHoaDonTH;
 		this.lyDoTraHang = lyDoTraHang;
+		this.tongHoanTra = tongHoanTra;
 		this.nhanVien = nhanVien;
 		this.khachHang = khachHang;
 		this.hoaDon = hoaDon;

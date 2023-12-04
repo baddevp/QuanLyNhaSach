@@ -335,6 +335,27 @@ public class DAO_QuanLySach {
 	        e.printStackTrace();
 	    } 
 	}
+	//Cập số lượng sản phẩm khi trả
+		public void capNhatSoTraTrongCSDL(String maSP, int soLuong) {
+			ConnectDB.getInstance();
+			Connection con = ConnectDB.getConnection();
+			PreparedStatement pstm = null;
+		    try {
+		        String sql = "UPDATE SACH SET SOLUONG = SOLUONG + ? WHERE MASACH = ?";
+
+		        // Tạo đối tượng PreparedStatement
+		        pstm = con.prepareStatement(sql);
+
+		        // Thiết lập tham số cho câu SQL
+		        pstm.setInt(1, soLuong);
+		        pstm.setString(2, maSP);
+
+		        // Thực hiện câu SQL để cập nhật số lượng tồn trong CSDL
+		        pstm.executeUpdate();
+		    } catch (SQLException e) {
+		        e.printStackTrace();
+		    } 
+		}
 	//Lay thong tin san pham
 	public SanPham getThongTinSanPhamTheoMa(String ma) {
 		ConnectDB.getInstance();

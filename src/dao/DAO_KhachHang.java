@@ -65,7 +65,7 @@ public class DAO_KhachHang {
 		return dsKH; 
 	}
 	
-	public ArrayList<KhachHang> getKhachHangTheoSDT(String sdtTim){
+	public ArrayList<KhachHang> getDSKhachHangTheoSDT(String sdtTim){
 		ArrayList<KhachHang> list = new ArrayList<KhachHang>();
 		try {
 			ConnectDB.getInstance();
@@ -90,6 +90,32 @@ public class DAO_KhachHang {
 			e.printStackTrace();
 		}
 		return list;
+	}
+	//Lấy thông tin khách hàng theo số điện thoại
+	public KhachHang getKhachHangTheoSDT(String sdtTim){
+		KhachHang kh = new KhachHang();
+		try {
+			ConnectDB.getInstance();
+			Connection con = ConnectDB.getConnection();
+			String sql = "select * from KHACHHANG where sdt = ?";
+			PreparedStatement preparedStatement = con.prepareStatement(sql);
+			preparedStatement.setString(1, sdtTim);
+			ResultSet rs = preparedStatement.executeQuery();
+			while(rs.next()) {
+				String ma = rs.getString(1);
+				String tenKH = rs.getString(2);
+				String diaChi = rs.getString(3);
+				String sdt = rs.getString(4);
+				int diemTL = rs.getInt(5);
+				LocalDateTime ngayLap = chuyenDateTimeSangLocal(rs.getString(6) );
+				String email = rs.getString(7);
+				
+				kh = new KhachHang(ma, tenKH, diaChi, sdt, diemTL, ngayLap, email);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return kh;
 	}
 	
 	public KhachHang getKhachHangTheoMa(String maKH){

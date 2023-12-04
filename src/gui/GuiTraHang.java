@@ -16,6 +16,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
@@ -29,19 +30,24 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
 import connectDB.ConnectDB;
-import dao.DAO_CTHD;
+import dao.DAO_ChiTietHoaDon;
+import dao.DAO_ChiTietHoanTra;
 import dao.DAO_HoaDon;
 import dao.DAO_HoaDonTraHang;
 import dao.DAO_KhachHang;
 import dao.DAO_MauSac;
 import dao.DAO_NhanVien;
 import dao.DAO_QuanLySach;
+import dao.DAO_QuanLyVPP;
 import entity.ChiTietHoaDon;
+import entity.ChiTietHoanTra;
 import entity.HoaDon;
+import entity.HoaDonHoanTra;
 import entity.KhachHang;
 import entity.MauSac;
 import entity.NhanVien;
 import entity.Sach;
+import entity.SanPham;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -62,7 +68,10 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 	DAO_HoaDonTraHang dao_HoaDonHT = new DAO_HoaDonTraHang();
 	DAO_NhanVien dao_NhanVien = new DAO_NhanVien();
 	DAO_KhachHang dao_KhachHang = new DAO_KhachHang();
-	DAO_CTHD dao_CTHD = new DAO_CTHD();
+	DAO_ChiTietHoaDon dao_CTHD = new DAO_ChiTietHoaDon();
+	DAO_ChiTietHoanTra dao_HoanTra = new DAO_ChiTietHoanTra();
+	DAO_QuanLySach dao_QLSach = new DAO_QuanLySach();
+	DAO_QuanLyVPP dao_QLVPP  = new DAO_QuanLyVPP();
 	private JTextField txtTimKiem;
 	private DefaultTableModel modelHD;
 	private JTable tblHD;
@@ -97,6 +106,8 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 	private JButton btnDoiHD;
 	private JButton btnChonTatCa;
 	private JButton btnXoaDong;
+	private JButton btnTraHang;
+	private JButton btnSuaSL;
 
 	/**
 	 * Launch the application.
@@ -462,14 +473,14 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 		txtTienHoanTra.setBounds(250, 680, 273, 30);
 		pnlHoaDonTraHang.add(txtTienHoanTra);
 
-		JButton btnThanhToan = new JButton("TRẢ HÀNG");
-		btnThanhToan.setForeground(Color.WHITE);
-		btnThanhToan.setFont(new Font("Tahoma", Font.BOLD, 18));
-		btnThanhToan.setBackground(new Color(51, 204, 204));
-		btnThanhToan.setBounds(659, 797, 216, 52);
-		pnlHoaDonTraHang.add(btnThanhToan);
+		btnTraHang = new JButton("TRẢ HÀNG");
+		btnTraHang.setForeground(Color.WHITE);
+		btnTraHang.setFont(new Font("Tahoma", Font.BOLD, 18));
+		btnTraHang.setBackground(new Color(51, 204, 204));
+		btnTraHang.setBounds(659, 797, 216, 52);
+		pnlHoaDonTraHang.add(btnTraHang);
 
-		JButton btnSuaSL = new JButton("Sửa số lượng");
+		btnSuaSL = new JButton("Sửa số lượng");
 		btnSuaSL.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		btnSuaSL.setBackground(Color.WHITE);
 		btnSuaSL.setBounds(549, 250, 170, 36);
@@ -491,6 +502,8 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 		pnlHoaDonTraHang.add(lblLyDo);
 
 		txtLyDo = new JTextField();
+		txtLyDo.setText("Tra hang" + formattedDate);
+
 		txtLyDo.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		txtLyDo.setColumns(10);
 		txtLyDo.setBounds(250, 730, 273, 30);
@@ -529,27 +542,27 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 					int soLuong = (int) tblSPDM.getValueAt(selectedRow, 3);
 					double giaGoc = (double) tblSPDM.getValueAt(selectedRow, 2);
 					int index = timSPTrongBangTra(maSP, tenSP);
-					//Sản phẩm này chưa có trong bảng
-						String input = JOptionPane.showInputDialog(tblSPDM,
-								"Số lượng trả phải bé hơn hoặc bằng " + soLuong + ": ", "Nhập số lượng trả", soLuong);
-						try {
-							int soLuongTra = Integer.parseInt(input);
-							if (soLuongTra > soLuong) {
-								JOptionPane.showMessageDialog(pnlSanPhamDaMua, "Số lượng trả quá số lượng mua");
-							} else if (soLuongTra == 0) {
-								return;
-							} else {
-								chonSPTra(soLuongTra);
-								modelSPDM.removeRow(selectedRow);
-							}
-						} catch (Exception e2) {
-							// TODO: handle exception
-							System.out.println("Số lượng trả rỗng");
+					// Sản phẩm này chưa có trong bảng
+					String input = JOptionPane.showInputDialog(tblSPDM,
+							"Số lượng trả phải bé hơn hoặc bằng " + soLuong + ": ", "Nhập số lượng trả", soLuong);
+					try {
+						int soLuongTra = Integer.parseInt(input);
+						if (soLuongTra > soLuong) {
+							JOptionPane.showMessageDialog(pnlSanPhamDaMua, "Số lượng trả quá số lượng mua");
+						} else if (soLuongTra == 0) {
+							return;
+						} else {
+							chonSPTra(soLuongTra);
+							modelSPDM.removeRow(selectedRow);
 						}
+					} catch (Exception e2) {
+						// TODO: handle exception
+						System.out.println("Số lượng trả rỗng");
 					}
-
 				}
-			
+
+			}
+
 		});
 		tblSPDM.setBackground(new Color(153, 204, 255));
 		JScrollPane jScrollPaneSPDaMua = new JScrollPane(tblSPDM);
@@ -591,6 +604,10 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 		tblHD.addMouseListener(this);
 		tblSPDM.addMouseListener(this);
 		btnXoaDong.addActionListener(this);
+		btnTraHang.addActionListener(this);
+		btnSuaSL.addActionListener(this);
+		btnChonTatCa.addActionListener(this);
+
 	}
 
 	public void DocDuLieuDatataabase() {
@@ -672,7 +689,7 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 				int diemTL = hd.getKhachHang().getDiemTL();
 				txtDTL.setText(diemTL + "");
 				// Đọc sản phẩm đã mua
-				docChiTietHoaDon(hd.getMaHoaDon());
+				docChiTietHoaDon(hd.getMaHoaDon(), modelSPDM);
 
 			} else {
 				// Nếu không có dòng nào được chọn, hiển thị thông báo
@@ -681,8 +698,179 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 			}
 		} else if (o.equals(btnXoaDong)) {
 			xoaDong();
+		} else if (o.equals(btnChonTatCa)) {
+			String maHD = txtMaHD.getText().trim();
+			chonTatCaSP(maHD, modelSPTra);
+			modelSPDM.setRowCount(0);
+			tinhTongTienHoanTra();
+		}else if (o.equals(btnSuaSL)) {
+			thayDoiSoLuong();
+		} 
+		else if (o.equals(btnTraHang)) {
+			int input = JOptionPane.showConfirmDialog(null, "Bạn có cần kiểm tra lại thông tin trả hàng không?",
+					"Cảnh báo", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
+			if (input == JOptionPane.NO_OPTION) {
+				boolean f = themHoaDonTraHang();
+				if(f == true) {
+					JOptionPane.showMessageDialog(this, "Đơn hàng đã được trả thành công");
+				}
+				pnlChonHDTH.show();
+				pnlLapHoaDonTH.hide();
+			}
+			
+				
+		}
+	}
+	//Thay đổi số lượng trả
+	public void thayDoiSoLuong() {
+		int selectedRow = tblSPTra.getSelectedRow();
+		if (selectedRow == -1) {
+			JOptionPane.showMessageDialog(this, "Vui lòng chọn một dòng để thay đổi số lượng.", "Thông báo",
+					JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+		String maSP = (String) tblSPTra.getValueAt(selectedRow, 0);
+		String tenSP = (String) tblSPTra.getValueAt(selectedRow, 1);
+		int soLuongHienTai = (int) tblSPTra.getValueAt(selectedRow, 3);
+		double giaGoc = (double) tblSPTra.getValueAt(selectedRow, 2);
+
+		String input = JOptionPane.showInputDialog(this, "Nhập số lượng cần trả " + tenSP + ":", soLuongHienTai);
+		try {
+			if (input != null) {
+				int newQuantity = Integer.parseInt(input);
+				if (newQuantity > 0) {
+					tblSPTra.setValueAt(newQuantity, selectedRow, 4);
+					tblSPTra.setValueAt(newQuantity * giaGoc, selectedRow, 5);
+					JOptionPane.showMessageDialog(this, "Đã cập nhật số lượng thành công.", "Thông báo",
+							JOptionPane.INFORMATION_MESSAGE);
+					tinhTongTienHoanTra();
+				} else if (newQuantity == 0) {
+					xoaDong();
+				} else {
+					JOptionPane.showMessageDialog(this, "Số lượng phải là một số không âm.", "Lỗi",
+							JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		} catch (NumberFormatException ex) {
+			JOptionPane.showMessageDialog(this, "Vui lòng nhập một số nguyên hợp lệ.", "Lỗi",
+					JOptionPane.ERROR_MESSAGE);
+		}
+	}
+	// Chọn tất cả các sản phẩm đã mua 
+		public void chonTatCaSP(String maHD, DefaultTableModel model) {
+			try {
+
+				for (ChiTietHoaDon ct : dao_CTHD.getDSTheoMaHD(maHD)) {
+					String maSP = ct.getSanPham().getMaSanPham();
+					String tenSP = ct.getSanPham().getTenSanPham();
+					int index = timSPTrongBangTra(maSP, tenSP ); // Tìm xem sản phẩm này đã được chọn trước đó chưa
+					//Chưa có trong bảng trả
+					if( index == -1 ){
+						double giaBan = ct.getSanPham().getGiaBan();
+						int soLuong = ct.getSoLuong();
+						double thanhTien = giaBan * soLuong;
+						model.addRow(new Object[] { maSP, tenSP, giaBan,
+								soLuong, 1, thanhTien });
+					}
+					
+				}
+			} catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
 			}
 		}
+
+	//Thêm hóa đơn trả hàng vào CSDL
+	public boolean themHoaDonTraHang() {
+		String maYCTH = txtMaTraHang.getText().trim();
+		LocalDateTime ngayLap = LocalDateTime.now();
+		String lyDo = txtLyDo.getText().trim();
+		double tienHoanTra = Double.parseDouble(txtTienHoanTra.getText().trim());
+		NhanVien nhanVien = nv;
+		KhachHang kh = dao_KhachHang.getKhachHangTheoSDT(txtSDT.getText().trim());
+		HoaDon hd = dao_HoaDon.getHDTheoMaHD(txtMaHD.getText().trim());
+
+		// Nếu khách hàng trả là khách lẻ
+		// Khách lẻ có mã là KH22112023003
+		if (kh.getMaKH().equalsIgnoreCase("KH22112023003")) {
+			HoaDonHoanTra hdht = new HoaDonHoanTra(maYCTH, ngayLap, lyDo,  tienHoanTra, nhanVien, kh, hd);
+			if (dao_HoaDonHT.createHD(hdht)) {
+				capNhatSoLuongTonTraHang(hdht);
+				System.out.println(hdht.getTongHoanTra());
+				themChiTietHoanTra(hdht);
+				return true;
+			}
+		}
+		else {
+				HoaDonHoanTra hdht = new HoaDonHoanTra(maYCTH, ngayLap, lyDo,  tienHoanTra, nhanVien, kh, hd);
+				if (dao_HoaDonHT.createHD(hdht)) {
+					String sdtkh = kh.getSdt();
+					int diemHienTai = Integer.parseInt(txtDTL.getText());
+					int diemTru = (int) tienHoanTra / 100;
+					int diemMoi = diemHienTai - diemTru;
+					dao_KhachHang.updateDiemTL(diemMoi, sdtkh);
+					capNhatSoLuongTonTraHang(hdht);
+					themChiTietHoanTra(hdht);
+					System.out.println(hdht.getTongHoanTra());
+				}
+				return true;
+			}
+		return false;
+		}
+		
+	//Thêm chi tiết hoàn trả
+		public void themChiTietHoanTra(HoaDonHoanTra hdht) {
+			int soLuongDong = modelSPTra.getRowCount();
+
+			for (int i = 0; i <= soLuongDong; i++) {
+				// Kiểm tra xem chỉ số i có hợp lệ không
+				if (i < tblSPTra.getRowCount()) {
+					String maSP = (String) tblSPTra.getValueAt(i, 0);
+
+					if (isSach(maSP)) {
+						int soLuong = (int) tblSPTra.getValueAt(i, 4);
+						SanPham sanPham = dao_QLSach.getThongTinSanPhamTheoMa(maSP);
+						ChiTietHoanTra ctht = new ChiTietHoanTra(hdht, sanPham, soLuong);
+						dao_HoanTra.createCTHT(ctht);
+						System.out.println(sanPham.getTenSanPham());
+
+					} else {
+						int soLuong = (int) tblSPTra.getValueAt(i, 4);
+						SanPham sanPham = dao_QLVPP.getThongTinSanPhamTheoMa(maSP);
+						ChiTietHoanTra ctht = new ChiTietHoanTra(hdht, sanPham, soLuong);
+						dao_HoanTra.createCTHT(ctht);
+						System.out.println(sanPham.getTenSanPham());
+					}
+				}
+			}
+		}
+		//Cập nhật số lượng tồn khi trả hàng
+		public void capNhatSoLuongTonTraHang(HoaDonHoanTra hd) {
+
+			for (int i = 0; i < modelSPTra.getRowCount(); i++) {
+				String maSP = (String) modelSPTra.getValueAt(i, 0);
+				int soLuong = (int) modelSPTra.getValueAt(i, 3);
+
+				if (isSach(maSP)) {
+					dao_QLSach.capNhatSoTraTrongCSDL(maSP, soLuong);
+				} else {
+					dao_QLVPP.capNhatSoTraTrongCSDL(maSP, soLuong);
+				}
+				// capNhatSoLuongTonTrongBangSanPham(maSP, soLuong);
+			}
+		}
+		
+		//Kiểm tra sản phẩm
+		public boolean isVanPhongPham(String maSP) {
+			return maSP.startsWith("VPP");
+		}
+
+		//Kiểm tra sản phẩm
+		public boolean isSach(String maSP) {
+			return maSP.startsWith("SAH");
+		}
+
+
 
 	// Tạo mã yêu cầu trả hàng
 	private String generateMaHD() {
@@ -710,7 +898,7 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 	}
 
 	// Đọc tất cả các sản phẩm của hóa đơn đã mua
-	public void docChiTietHoaDon(String maHD) {
+	public void docChiTietHoaDon(String maHD, DefaultTableModel model) {
 		try {
 
 			for (ChiTietHoaDon ct : dao_CTHD.getDSTheoMaHD(maHD)) {
@@ -755,7 +943,7 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 		txtTienHoanTra.setText(String.valueOf(tongTien));
 	}
 
-// Hàm tìm sản phẩm trong hóa đơn
+	// Hàm tìm sản phẩm trong hóa đơn
 	private int timSPTrongBangTra(String maSP, String tenSP) {
 		int rowCount = modelSPTra.getRowCount();
 
@@ -769,29 +957,30 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 		}
 		return -1; // Trả về -1 nếu sản phẩm không tồn tại
 	}
-	// Xoa dòng
-		public void timDongTrongBang(JTable table, int row) {
-			DefaultTableModel model = (DefaultTableModel) table.getModel();
-			model.removeRow(row);
+
+	// Xóa dòng
+	public void xoaDong() {
+		int row = tblSPTra.getSelectedRow();
+		if (row == -1) {
+			JOptionPane.showMessageDialog(this, "Vui lòng chọn sản phẩm giữ cần giữ lại.", "Thông báo",
+					JOptionPane.WARNING_MESSAGE);
+			return;
+		} else {
+			String maSP = (String) tblSPTra.getValueAt(row, 0);
+			String tenSP = (String) tblSPTra.getValueAt(row, 1);
+			double giaBan = (double) tblSPTra.getValueAt(row, 2);
+			int soLuongMua = (int) tblSPTra.getValueAt(row, 3);
+			// Thêm sản phẩm trả vào model sp trả
+			modelSPDM.addRow(new Object[] { maSP, tenSP, giaBan, soLuongMua, giaBan * soLuongMua });
+			timDongTrongBang(tblSPTra, row); // xóa dòng
+			tinhTongTienHoanTra();
 		}
 
-		public void xoaDong() {
-			int row = tblSPTra.getSelectedRow();
-			if (row == -1) {
-				JOptionPane.showMessageDialog(this, "Vui lòng chọn sản phẩm giữ cần giữ lại.", "Thông báo",
-						JOptionPane.WARNING_MESSAGE);
-				return;
-			}else {
-				String maSP = (String) tblSPTra.getValueAt(row, 0);
-				String tenSP = (String) tblSPTra.getValueAt(row, 1);
-				double giaBan = (double) tblSPTra.getValueAt(row, 2);
-				int soLuongMua = (int) tblSPTra.getValueAt(row, 3);
-				// Thêm sản phẩm trả vào model sp trả
-				modelSPDM.addRow(new Object[] { maSP, tenSP, giaBan, soLuongMua, giaBan * soLuongMua });
-				timDongTrongBang(tblSPTra, row);
-				tinhTongTienHoanTra();
-			}
-			
-		}
+	}
+	//Hàm xóa dòng
+	public void timDongTrongBang(JTable table, int row) {
+		DefaultTableModel model = (DefaultTableModel) table.getModel();
+		model.removeRow(row);
+	}
 
 }

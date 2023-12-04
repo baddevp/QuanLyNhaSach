@@ -10,29 +10,31 @@ import java.util.ArrayList;
 
 import connectDB.ConnectDB;
 import entity.ChiTietHoaDon;
+import entity.ChiTietHoanTra;
 import entity.HoaDon;
+import entity.HoaDonHoanTra;
 import entity.KhachHang;
 import entity.NhanVien;
 import entity.SanPham;
 
 public class DAO_ChiTietHoanTra {
 	
-	DAO_HoaDon dao_HoaDon = new DAO_HoaDon();
-	public ArrayList<ChiTietHoaDon> getAllCTHD(){
-		ArrayList<ChiTietHoaDon> dsCTHD = new ArrayList<ChiTietHoaDon>();
+	DAO_HoaDonTraHang dao_HoaDon = new DAO_HoaDonTraHang();
+	public ArrayList<ChiTietHoanTra> getAllCTHD(){
+		ArrayList<ChiTietHoanTra> dsCTHD = new ArrayList<ChiTietHoanTra>();
 		try {
 			ConnectDB.getInstance();
 			Connection con = ConnectDB.getConnection();
-			String sql = "select * from CHITIETHOADON";
+			String sql = "select * from CHITIETHOANTRA";
 			Statement stm = con.createStatement();
 			ResultSet rs = stm.executeQuery(sql);
 			while (rs.next()) {
-				HoaDon hoadon = new HoaDon(rs.getString(1));
+				HoaDonHoanTra hd = dao_HoaDon.getHDHTTheoMaHDTH(rs.getString("MAYCTH"));
 				SanPham sanpham = new SanPham(rs.getString(2));
 				int soLuong = rs.getInt(3);
 				
-				ChiTietHoaDon cthd = new ChiTietHoaDon(hoadon, sanpham, soLuong);
-				dsCTHD.add(cthd);
+				ChiTietHoanTra ctht = new ChiTietHoanTra(hd, sanpham, soLuong);
+				dsCTHD.add(ctht);
 		
 			}
 		} catch (Exception e) {
@@ -42,16 +44,16 @@ public class DAO_ChiTietHoanTra {
 		return dsCTHD; 
 	}
 	
-	public boolean createCTHD(ChiTietHoaDon cthd) {
+	public boolean createCTHT(ChiTietHoanTra cthd) {
 		ConnectDB.getInstance();
 		Connection con = ConnectDB.getConnection();
 		PreparedStatement st = null;
 		int n=0;
 		try {
-			st = con.prepareStatement("insert into " + "CHITIETHOADON values(?,?,?)");
-			st.setString(1, cthd.getHoaDon().getMaHoaDon());
+			st = con.prepareStatement("insert into " + "CHITIETHOANTRA values(?,?,?)");
+			st.setString(1, cthd.getHoaDonHoanTra().getMaYeuCauTraHang());
 			st.setString(2, cthd.getSanPham().getMaSanPham());
-			st.setInt(3, cthd.getSoLuong());
+			st.setInt(3, cthd.getSoLuongTra());
 			
 			n = st.executeUpdate();
 		    } catch (SQLException e) {
@@ -69,21 +71,21 @@ public class DAO_ChiTietHoanTra {
     }
 	
 	//Lấy danh sách chi tiết hóa đơn theo mã
-	public ArrayList<ChiTietHoaDon> getDSTheoMaHD(String maHD) {
+	public ArrayList<ChiTietHoanTra> getDSTHTheoMaHD(String maHD) {
 		ConnectDB.getInstance();
 		Connection con = ConnectDB.getConnection();
-		ArrayList<ChiTietHoaDon> ds = new ArrayList<ChiTietHoaDon>();
+		ArrayList<ChiTietHoanTra> ds = new ArrayList<ChiTietHoanTra>();
 		PreparedStatement pstm = null;
 		try {
-			pstm = con.prepareStatement("select * from CHITIETHOADON where MAHD = ?");
+			pstm = con.prepareStatement("select * from CHITIETHOANTRA where MAYCTH = ?");
 			pstm.setString(1, maHD);
 			ResultSet rs = pstm.executeQuery();
 			while (rs.next()) {
-				HoaDon hd = dao_HoaDon.getHDTheoMaHD(rs.getString("MAHD"));
+				HoaDonHoanTra hd = dao_HoaDon.getHDHTTheoMaHDTH(rs.getString("MAYCTH"));
 				SanPham sanpham = new SanPham(rs.getString("MASP"));
 				int soLuong = rs.getInt(3);
-				ChiTietHoaDon cthd = new ChiTietHoaDon(hd, sanpham, soLuong);
-				ds.add(cthd);
+				ChiTietHoanTra ctht = new ChiTietHoanTra(hd, sanpham, soLuong);
+				ds.add(ctht);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
