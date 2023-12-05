@@ -227,4 +227,43 @@ public class DAO_HoaDonTraHang {
 				}
 				return hdht;
 			}
+			//Kiểm tra hóa đơn đã trả hàng chưa
+			public String kiemTraTraHang(HoaDon hd) {
+				Connection con = ConnectDB.getInstance().getConnection();
+				try {
+					PreparedStatement pstm = con.prepareStatement("SELECT MAHD from HOADONTRAHANG where MAHD =?");
+					pstm.setString(1, hd.getMaHoaDon());
+					ResultSet rs = pstm.executeQuery();
+					while (rs.next()) {
+						String maHD = rs.getString(1);
+						if(maHD.equals(hd.getMaHoaDon()) ) {
+							return "Đã trả"; // Chưa trả hàng
+						}
+						
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				return "Chưa trả"; // Đã trả hàng rồi
+			}
+			//Lấy mã trả hàng khi biết mã hóa đơn
+			public String getMaTHTheoMaHD(String maHD) {
+				ConnectDB.getInstance();
+				Connection con = ConnectDB.getConnection();
+				String maYCTH = null;
+				PreparedStatement pstm = null;
+				try {
+					pstm = con.prepareStatement("select MAYEUCAUTRAHANG from HOADONTRAHANG where MAHD = ?");
+					pstm.setString(1, maHD);
+					ResultSet rs = pstm.executeQuery();
+					while (rs.next()) {
+						maYCTH = rs.getString(1);
+						
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				} finally {
+				}
+				return maYCTH;
+			}
 }

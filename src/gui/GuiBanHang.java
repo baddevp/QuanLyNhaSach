@@ -337,9 +337,6 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		pnlTbTTHoaDon.setBounds(10, 304, 897, 321);
 		pnlHoaDon.add(pnlTbTTHoaDon);
 
-//		JScrollPane jScrollPane_TTHD = new JScrollPane((Component) null);
-//		jScrollPane_TTHD.setBounds(10, 10, 875, 299);
-//		pnlTbTTHoaDon.add(jScrollPane_TTHD);
 
 		// Table San Pham trong hóa đơn
 		modelSPHD = new DefaultTableModel();

@@ -18,9 +18,10 @@ import entity.NhanVien;
 import entity.SanPham;
 
 public class DAO_ChiTietHoanTra {
-	
+	DAO_QuanLySach dao_quanLySach = new DAO_QuanLySach();
+	DAO_QuanLyVPP dao_quanLyVPP = new DAO_QuanLyVPP();
 	DAO_HoaDonTraHang dao_HoaDon = new DAO_HoaDonTraHang();
-	public ArrayList<ChiTietHoanTra> getAllCTHD(){
+	public ArrayList<ChiTietHoanTra> getAllCTHT(){
 		ArrayList<ChiTietHoanTra> dsCTHD = new ArrayList<ChiTietHoanTra>();
 		try {
 			ConnectDB.getInstance();
@@ -70,27 +71,44 @@ public class DAO_ChiTietHoanTra {
 	    return n>0;
     }
 	
-	//Lấy danh sách chi tiết hóa đơn theo mã
-	public ArrayList<ChiTietHoanTra> getDSTHTheoMaHD(String maHD) {
+	//Lấy danh sách chi tiết hóa đơn theo mã trả hàng
+	public ArrayList<ChiTietHoanTra> getDSTHTheoMaYCHT(String maHD) {
+		ArrayList<ChiTietHoanTra> ds = new ArrayList<ChiTietHoanTra>();
 		ConnectDB.getInstance();
 		Connection con = ConnectDB.getConnection();
-		ArrayList<ChiTietHoanTra> ds = new ArrayList<ChiTietHoanTra>();
-		PreparedStatement pstm = null;
 		try {
-			pstm = con.prepareStatement("select * from CHITIETHOANTRA where MAYCTH = ?");
+			PreparedStatement pstm = con.prepareStatement("select * from CHITIETHOANTRA where MAYCTH = ?");
 			pstm.setString(1, maHD);
 			ResultSet rs = pstm.executeQuery();
 			while (rs.next()) {
 				HoaDonHoanTra hd = dao_HoaDon.getHDHTTheoMaHDTH(rs.getString("MAYCTH"));
-				SanPham sanpham = new SanPham(rs.getString("MASP"));
-				int soLuong = rs.getInt(3);
-				ChiTietHoanTra ctht = new ChiTietHoanTra(hd, sanpham, soLuong);
-				ds.add(ctht);
+				String maSP = rs.getString("MASP"); 
+				
+				if(isSach(maSP)) {
+					SanPham sanpham = dao_quanLySach.getThongTinSanPhamTheoMa(maSP);
+					int soLuong = rs.getInt(3);
+					ChiTietHoanTra cthd = new ChiTietHoanTra(hd, sanpham, soLuong);
+					ds.add(cthd);
+				}else {
+					SanPham sanpham = dao_quanLyVPP.getThongTinSanPhamTheoMa(maSP);
+					int soLuong = rs.getInt(3);
+					ChiTietHoanTra cthd = new ChiTietHoanTra(hd, sanpham, soLuong);
+					ds.add(cthd);
+				}
+				
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-		}
+		} 
 		return ds;
 	}
+	//Kiểm tra sách
+	public boolean isVanPhongPham(String maSP) {
+	    return maSP.startsWith("VPP");
+	}
+	//Kiểm tra văn phòng phẩm
+	public boolean isSach(String maSP) {
+	    return maSP.startsWith("SAH");
+	}
+
 }
