@@ -80,7 +80,7 @@ public class DAO_HoaDon {
 			st.setString(2, chuyenLocalSangDateTime(hd.getNgayLapHoaDon()));
 			st.setDouble(3, hd.getTienNhan());
 			st.setDouble(4, hd.getTongTien());
-			st.setString(5, hd.getNhanVien().getTenNV());
+			st.setString(5, hd.getNhanVien().getMaNV());
 			st.setString(6, hd.getKhachHang().getMaKH());
 			st.setBoolean(7, hd.isTrangThai());
 			
@@ -104,7 +104,7 @@ public class DAO_HoaDon {
 		try {
 			ConnectDB.getInstance();
 	        Connection con = ConnectDB.getConnection();
-	        String sql = "SELECT MAX(MAHOADON) FROM HOADON";
+	        String sql = "SELECT TOP 1 MAHOADON FROM HOADON ORDER BY NGAYLAPHOADON DESC";
 	        Statement stm = con.createStatement();
 	        ResultSet rs = stm.executeQuery(sql);
 	        
@@ -126,7 +126,32 @@ public class DAO_HoaDon {
 	    }
 	    return newMaHD;
 	}
-	//test
+	public String layNgayHoaDonTruoc() {
+		String ngayCu = null;
+		try {
+			ConnectDB.getInstance();
+	        Connection con = ConnectDB.getConnection();
+	        String sql = "SELECT TOP 1 MAHOADON FROM HOADON ORDER BY NGAYLAPHOADON DESC";
+	        Statement stm = con.createStatement();
+	        ResultSet rs = stm.executeQuery(sql);
+	        
+	        if (rs.next()) {
+	            String lastMaHD = rs.getString(1);
+
+	            // Check if lastMaKH is not null and has the expected format
+	          //HD20112023002013
+	            if (lastMaHD != null && lastMaHD.startsWith("HD") && lastMaHD.length() >= 14) {
+	                // Extract the sequence number part from MAKH
+	            	//HD05122023002004
+	               ngayCu = lastMaHD.substring(2,10);
+
+	            }
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return ngayCu;
+	}
 
 
 	//

@@ -129,7 +129,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 	private DAO_QuanLyVPP vanphongpham_dao;
 	private JButton btnThanhToanLai;
 
-	static JTextField tenNV;
+	static NhanVien nhanVien;
 	private JTextField txtThongBao;
 	private JButton btnSuDungDiemTL;
 	private boolean isMode = true;
@@ -143,7 +143,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 
 			public void run() {
 				try {
-					GuiBanHang frame = new GuiBanHang(tenNV);
+					GuiBanHang frame = new GuiBanHang(nhanVien);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -155,8 +155,8 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 	/**
 	 * Create the frame.
 	 */
-	public GuiBanHang(JTextField tenNV) {
-		this.tenNV = tenNV;
+	public GuiBanHang(NhanVien nhanVien) {
+		this.nhanVien = nhanVien;
 		this.setTitle("Quản lý khách hàng");
 		this.setSize(1930, 1030);
 		this.setExtendedState(JFrame.MAXIMIZED_BOTH); // Toàn màn hình
@@ -729,26 +729,79 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 			java.util.Date currentDate = new java.util.Date();
 			SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy");
 			String formattedDate = dateFormat.format(currentDate);
+			int tam = Integer.parseInt(formattedDate);
 
-			String maNV = tenNV.getText();
-			int index1 = maNV.indexOf("23");
-			int index2 = maNV.indexOf(" ", index1);
-			if (index1 == -1) {
-				return null;
+			// Hóa đơn đầu tiên trong ngày
+			boolean f = soSanhNgay();
+
+			if (f == true) {
+				String maNV = nhanVien.getMaNV().trim();
+				// NV14112023002
+				String subMaNV = maNV.substring(10, 13);
+
+				int sequenceNumber = 1;
+				String sequencePart = String.format("%03d", sequenceNumber).trim();
+				return "HD" + formattedDate + subMaNV + sequencePart;
 			}
-			// HD20112023002001
-			String subMaNV = maNV.substring(index1 + 2, index1 + 5);
+			// Hóa đơn trong ngày
+			else {
+				String maNV = nhanVien.getMaNV();
+				// NV14112023002
+				String subMaNV = maNV.substring(10, 13);
+				int sequenceNumber = hoadon_dao.getCurrentSequenceNumber();
+				sequenceNumber++;
+				String sequencePart = String.format("%03d", sequenceNumber).trim();
+				return "HD" + formattedDate + subMaNV + sequencePart;
+			}
 
-			int sequenceNumber = hoadon_dao.getCurrentSequenceNumber();
-
-			sequenceNumber++;
-			String sequencePart = String.format("%03d", sequenceNumber).trim();
-
-			return "HD" + formattedDate + subMaNV + sequencePart;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return "";
+	}
+
+	/*
+	 * Kiểm tra ngày mới hay ngày cũ
+	 * 
+	 * @return true: ngày mới
+	 * 
+	 * @return false: ngày cũ
+	 */
+	private boolean soSanhNgay() {
+		String HDCu = hoadon_dao.layNgayHoaDonTruoc();
+
+		java.util.Date ngayHienTai = new java.util.Date();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy");
+		String ngayHT = dateFormat.format(ngayHienTai);
+
+		// 01 01 2023
+		// So sánh năm
+		String cu1 = HDCu.substring(4, 7);
+		String moi1 = ngayHT.substring(4, 7);
+		int namCu = Integer.parseInt(cu1);
+		int namMoi = Integer.parseInt(moi1);
+		if (namCu < namMoi)
+			return true;
+		// So sánh tháng
+		String cu2 = HDCu.substring(2, 4);
+
+		String moi2 = ngayHT.substring(2, 4);
+
+		int thangCu = Integer.parseInt(cu2);
+
+		int thangMoi = Integer.parseInt(moi2);
+
+		if (thangCu < thangMoi)
+			return true;
+		// So sánh ngày
+		String cu3 = HDCu.substring(0, 2);
+		String moi3 = ngayHT.substring(0, 2);
+		int ngayCu = Integer.parseInt(cu3);
+		int ngayMoi = Integer.parseInt(moi3);
+		if (ngayCu < ngayMoi)
+			return true;
+
+		return false;
 	}
 
 	//
@@ -756,7 +809,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		String maHD = generateMaHD();
 		txtMaHD.setText(maHD);
 
-		String maNV = tenNV.getText();
+		String maNV = nhanVien.getMaNV();
 		// String maNV = "NV14112023002";
 		ArrayList<NhanVien> list = nhanvien_dao.getNhanVienTheoMa(maNV);
 		for (NhanVien nv : list) {
@@ -793,15 +846,14 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		LocalDateTime ngayLapKL = LocalDateTime.now();
 		double tienNhan = Double.parseDouble(txtTienKhachDua.getText().trim());
 		double tongTien = Double.parseDouble(txtTienKhachTra.getText());
-		String nv = tenNV.getText();
-		NhanVien maNV = new NhanVien(nv);
+		NhanVien nv = nhanvien_dao.getNhanVienTheoMa2(nhanVien.getMaNV().trim());
 		String sdtkh = txtSDTKH.getText();
 
 		// Nếu txt SDT rỗng thì set mặc định là khách lẻ
 		if (sdtkh.isEmpty()) {
 
 			KhachHang kh = dao_khachHang.getKhachHangTheoMa("KH22112023003");
-			HoaDon hd = new HoaDon(maHD, ngayLap, tienNhan, tongTien, maNV, kh, trangThai);
+			HoaDon hd = new HoaDon(maHD, ngayLap, tienNhan, tongTien, nv, kh, trangThai);
 			if (hoadon_dao.createHD(hd)) {
 				capNhatSoLuongTon(hd);
 				themCTHD(hd);
@@ -809,8 +861,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 
 			}
 
-		}
-		else {
+		} else {
 			ArrayList<KhachHang> list = khachhang_dao.getDSKhachHangTheoSDT(sdtkh);
 
 			for (KhachHang kh : list) {
@@ -821,9 +872,9 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 				int diemMoi = (int) tongTien / 100;
 				int diemCongMoi = diemCu + diemMoi;
 				khachhang_dao.updateDiemTL(diemCongMoi, sdtkh);
-				
+
 				double tongTienMoi = Double.parseDouble(txtTienKhachTra.getText());
-				HoaDon hd = new HoaDon(maHD, ngayLap, tienNhan, tongTienMoi, maNV, maKH, trangThai);
+				HoaDon hd = new HoaDon(maHD, ngayLap, tienNhan, tongTienMoi, nv, maKH, trangThai);
 				if (hoadon_dao.createHD(hd)) {
 					capNhatSoLuongTon(hd);
 					themCTHD(hd);
@@ -831,9 +882,9 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 				}
 			}
 		}
-		
 
 	}
+
 	// Thêm chi tiết hóa đơn
 	public void themCTHD(HoaDon hd) {
 		int soLuongDong = modelSPHD.getRowCount();
@@ -848,14 +899,12 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 					SanPham sanPham = dao_quanLySach.getThongTinSanPhamTheoMa(maSP);
 					ChiTietHoaDon cthd = new ChiTietHoaDon(hd, sanPham, soLuong);
 					chitiethoadon_dao.createCTHD(cthd);
-					System.out.println(sanPham.getTenSanPham());
 
 				} else {
 					int soLuong = (int) tblSPHD.getValueAt(i, 3);
 					SanPham sanPham = dao_quanLyVPP.getThongTinSanPhamTheoMa(maSP);
 					ChiTietHoaDon cthd = new ChiTietHoaDon(hd, sanPham, soLuong);
 					chitiethoadon_dao.createCTHD(cthd);
-					System.out.println(sanPham.getTenSanPham());
 				}
 			}
 		}
@@ -1095,8 +1144,6 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		String tienKhachDuaText = txtTienKhachDua.getText().trim();
 		double tienNhan = Double.parseDouble(tienKhachDuaText);
 		double tongTien = Double.parseDouble(txtTienKhachTra.getText());
-		String nv = tenNV.getText();
-		NhanVien maNV = new NhanVien(nv);
 		String sdtkh = txtSDTKH.getText();
 		boolean trangThai = true;
 
@@ -1117,7 +1164,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 			KhachHang khle = new KhachHang(maKL, tenKL, diaChi, sdtKL, diemTLKL, ngayLapKL, emailKL);
 			KhachHang kle = new KhachHang(maKL);
 			if (khachhang_dao.createKH(khle)) {
-				HoaDon hd = new HoaDon(maHD, ngayLap, tienNhan, tongTien, maNV, kle, trangThai);
+				HoaDon hd = new HoaDon(maHD, ngayLap, tienNhan, tongTien, nhanVien, kle, trangThai);
 				if (hoadon_dao.createHD(hd)) {
 					capNhatSoLuongTon(hd);
 					themCTHD(hd);
@@ -1137,7 +1184,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 			int diemCongMoi = diemCu + diemMoi;
 			khachhang_dao.updateDiemTL(diemCongMoi, sdtkh);
 			//
-			HoaDon hd = new HoaDon(maHD, ngayLap, tienNhan, tongTien, maNV, maKH, trangThai);
+			HoaDon hd = new HoaDon(maHD, ngayLap, tienNhan, tongTien, nhanVien, maKH, trangThai);
 			if (hoadon_dao.createHD(hd)) {
 				capNhatSoLuongTon(hd);
 				themCTHD(hd);
