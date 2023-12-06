@@ -726,7 +726,6 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 			java.util.Date currentDate = new java.util.Date();
 			SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy");
 			String formattedDate = dateFormat.format(currentDate);
-			int tam = Integer.parseInt(formattedDate);
 
 			// Hóa đơn đầu tiên trong ngày
 			boolean f = soSanhNgay();

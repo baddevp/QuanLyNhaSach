@@ -472,13 +472,7 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 		pnlHoaDonTraHang.add(pnlBangSPTra);
 
 		// Bang san pham tra
-		modelSPTra = new DefaultTableModel();
-		modelSPTra.addColumn("Mã SP");
-		modelSPTra.addColumn("Tên SP");
-		modelSPTra.addColumn("Giá bán");
-		modelSPTra.addColumn("Số lượng mua");
-		modelSPTra.addColumn("Số lượng trả");
-		modelSPTra.addColumn("Thành tiền");
+		modelSPTra = new DefaultTableModel(); 
 		tblSPTra = new JTable(modelSPTra);
 		tblSPTra.setBackground(new Color(153, 204, 255));
 		tblSPTra.setFont(font2);
@@ -763,12 +757,13 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 				String trangThaiHD = (String) tblHD.getValueAt(selectedRow, 5).toString();
 				// Nếu hóa đơn đó lần đầu trả
 				if (trangThaiHD.equalsIgnoreCase("Chưa trả")) {
+					setModel(modelSPTra, 0);
 					btnSuaSL.setText("Trả thêm");
 					docChiTietHoaDon(hd.getMaHoaDon(), modelSPDM);
 				}
 				// Sản phẩm trả rồi
 				else {
-					modelSPTra.addColumn("Trả thêm");
+					setModel(modelSPTra, 1);
 					btnSuaSL.setText("Trả thêm");
 					btnTraHang.setText("CẬP NHẬT");
 					txtTenNVTraHang.setText(nv.getTenNV());
@@ -796,6 +791,7 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 				thayDoiSoLuong();
 			} else {
 				tangSoLuongTraHang();
+				
 			}
 
 		} else if (o.equals(btnTraHang)) {
@@ -808,10 +804,11 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 					if (f == true) {
 						JOptionPane.showMessageDialog(this, "Đơn hàng đã được trả thành công");
 						xoaRong();
+						modelHD.setRowCount(0);
+						DocDuLieuDatataabase("Chưa trả");
 
 					}
 					pnlChonHDTH.show();
-					DocDuLieuDatataabase("Chưa trả");
 					pnlLapHoaDonTH.hide();
 				}
 			}
@@ -826,6 +823,7 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 						xoaRong();
 
 					}
+					modelHD.setRowCount(0);
 					DocDuLieuDatataabase("Chưa trả");
 					pnlChonHDTH.show();
 					pnlLapHoaDonTH.hide();
@@ -833,6 +831,21 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 
 			}
 		}
+	}
+
+	private void setModel(DefaultTableModel model, int a) {
+		// TODO Auto-generated method stub
+		model.setColumnCount(0);
+		model.addColumn("Mã SP");
+		model.addColumn("Tên SP");
+		model.addColumn("Giá bán");
+		model.addColumn("Số lượng mua");
+		model.addColumn("Số lượng trả");
+		model.addColumn("Thành tiền");
+		if (a == 1) {
+			model.addColumn("Trả thêm");
+		}
+		
 	}
 
 	// Phục vụ cho việc trả hàng lần 2 với số lượng lớn hơn
@@ -850,7 +863,7 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 		int soLuongMua = (int) tblSPTra.getValueAt(selectedRow, 3);
 		int hieu = soLuongMua - soLuongTra;
 
-		String input = JOptionPane.showInputDialog(this, "Nhập số lượng cần trả : (<= " + hieu + " ):", soLuongMua);
+		String input = JOptionPane.showInputDialog(this, "Nhập số lượng cần trả : (<= " + hieu + " ):", hieu);
 		try {
 			if (input != null) {
 				int newQuantity = Integer.parseInt(input);
@@ -884,7 +897,7 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 			int soLuong = ct.getSoLuongTra();
 			double thanhTien = giaBan * soLuong;
 			modelTra.addRow(new Object[] { ct.getSanPham().getMaSanPham(), ct.getSanPham().getTenSanPham(), giaBan, "",
-					soLuong, thanhTien });
+					soLuong, thanhTien, 0 });
 		}
 		// Đọc sản phẩm chưa trả
 		for (ChiTietHoaDon ct : dao_CTHD.getDSTheoMaHD(maHD)) {
@@ -1050,10 +1063,12 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 
 				if (isSach(maSP)) {
 					int soLuong = (int) tblSPTra.getValueAt(i, 4);
+					int soLuongThem = (int) tblSPTra.getValueAt(i, 6);
 					SanPham sanPham = dao_QLSach.getThongTinSanPhamTheoMa(maSP);
-					ChiTietHoanTra ctht = new ChiTietHoanTra(hdht, sanPham, soLuong);
+					ChiTietHoanTra ctht = new ChiTietHoanTra(hdht, sanPham, soLuong + soLuongThem);
 					// Sản phẩm này có rồi
 					if (dao_chiTietTra.kiemTraSanPhamTrongCTHD(hdht, maSP) == true) {
+						
 						boolean fl = dao_chiTietTra.updateChiTietTraHang(ctht);
 						if (fl == false) {
 							JOptionPane.showMessageDialog(this, "Không cập nhật được");
@@ -1064,8 +1079,9 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 
 				} else {
 					int soLuong = (int) tblSPTra.getValueAt(i, 4);
+					int soLuongThem = (int) tblSPTra.getValueAt(i, 6);
 					SanPham sanPham = dao_QLVPP.getThongTinSanPhamTheoMa(maSP);
-					ChiTietHoanTra ctht = new ChiTietHoanTra(hdht, sanPham, soLuong);
+					ChiTietHoanTra ctht = new ChiTietHoanTra(hdht, sanPham, soLuong + soLuongThem);
 					// Sản phẩm này có rồi
 					if (dao_chiTietTra.kiemTraSanPhamTrongCTHD(hdht, maSP) == true) {
 						boolean fl = dao_chiTietTra.updateChiTietTraHang(ctht);
@@ -1140,7 +1156,6 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 			java.util.Date currentDate = new java.util.Date();
 			SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy");
 			String formattedDate = dateFormat.format(currentDate);
-			int tam = Integer.parseInt(formattedDate);
 
 			// Hóa đơn đầu tiên trong ngày
 			boolean f = soSanhNgay();
@@ -1160,9 +1175,7 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 				// NV14112023002
 				String subMaNV = maNV.substring(10, 13);
 				int sequenceNumber = dao_HoaDonHT.getCurrentSequenceNumber();
-
 				sequenceNumber++;
-
 				String sequencePart = String.format("%03d", sequenceNumber).trim();
 				return "HT" + formattedDate + subMaNV + sequencePart;
 			}

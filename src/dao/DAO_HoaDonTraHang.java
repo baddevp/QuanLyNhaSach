@@ -273,7 +273,7 @@ public class DAO_HoaDonTraHang {
 				try {
 					ConnectDB.getInstance();
 			        Connection con = ConnectDB.getConnection();
-			        String sql = "SELECT TOP 1 MAYEUCAUTRAHANG FROM HOADONTRAHANG ORDER BY NGAYLAPHOADONTH DESC";
+			        String sql = "SELECT TOP 1 MAYEUCAUTRAHANG FROM HOADONTRAHANG ORDER BY NGAYLAPHOADONTH DESC, MAYEUCAUTRAHANG DESC";
 			        Statement stm = con.createStatement();
 			        ResultSet rs = stm.executeQuery(sql);
 			        
@@ -301,13 +301,13 @@ public class DAO_HoaDonTraHang {
 				PreparedStatement st = null;
 				try {
 					st = con.prepareStatement(
-							"update HOADONTRAHANG set NGAYLAPHOADONTH = ?, LYDOTRAHANG = ?,TIENHOANTRA = ?, MANV = ? where MAYEUCAUTRAHANG = ?");
+							"update HOADONTRAHANG set LYDOTRAHANG = ?,TIENHOANTRA = ?, MANV = ? where MAYEUCAUTRAHANG = ?");
 				
-					st.setString(5, hd.getMaYeuCauTraHang());
-					st.setString(1, chuyenLocalSangDateTime(hd.getNgayLapHoaDonTH()));
-					st.setString(2, hd.getLyDoTraHang());
-					st.setDouble(3, hd.getTongHoanTra());
-					st.setString(4, hd.getNhanVien().getMaNV());
+					st.setString(4, hd.getMaYeuCauTraHang());
+
+					st.setString(1, hd.getLyDoTraHang());
+					st.setDouble(2, hd.getTongHoanTra());
+					st.setString(3, hd.getNhanVien().getMaNV());
 
 					int n = st.executeUpdate();
 					if(n > 0)
