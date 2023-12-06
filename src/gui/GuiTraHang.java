@@ -118,6 +118,12 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 	private JButton btnTraHang;
 	private JButton btnSuaSL;
 	private JComboBox cbxPhanLoai;
+	private JTextField txtDaTra;
+	private JTextField txtConLai;
+	private JLabel lblDauTru;
+	private JLabel lblDauBang;
+	private Component lblDaTra;
+	private JLabel lblConLai;
 
 	/**
 	 * Launch the application.
@@ -493,7 +499,6 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 		txtTongSP = new JTextField();
 		txtTongSP.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		txtTongSP.setEditable(false);
-		txtTongSP.setColumns(10);
 		txtTongSP.setBounds(250, 630, 273, 30);
 		pnlHoaDonTraHang.add(txtTongSP);
 
@@ -505,7 +510,6 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 		txtTienHoanTra = new JTextField();
 		txtTienHoanTra.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		txtTienHoanTra.setEditable(false);
-		txtTienHoanTra.setColumns(10);
 		txtTienHoanTra.setBounds(250, 680, 273, 30);
 		pnlHoaDonTraHang.add(txtTienHoanTra);
 
@@ -540,11 +544,53 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 
 		txtLyDo = new JTextField();
 		txtLyDo.setText("Tra hang" + formattedDate);
-
 		txtLyDo.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		txtLyDo.setColumns(10);
 		txtLyDo.setBounds(250, 730, 273, 30);
 		pnlHoaDonTraHang.add(txtLyDo);
+		
+		txtDaTra = new JTextField();
+		txtDaTra.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		txtDaTra.setEditable(false);
+		txtDaTra.setColumns(10);
+		txtDaTra.setBounds(481, 680, 182, 30);
+		txtDaTra.hide();
+		pnlHoaDonTraHang.add(txtDaTra);
+		
+		txtConLai = new JTextField();
+		txtConLai.setForeground(Color.RED);
+		txtConLai.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		txtConLai.setEditable(false);
+		txtConLai.setColumns(10);
+		txtConLai.setBounds(713, 680, 182, 30);
+		txtConLai.hide();
+		pnlHoaDonTraHang.add(txtConLai);
+		
+		lblDauTru = new JLabel("-");
+		lblDauTru.setHorizontalAlignment(SwingConstants.CENTER);
+		lblDauTru.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblDauTru.setBounds(439, 680, 32, 30);
+		pnlHoaDonTraHang.add(lblDauTru);
+		lblDauTru.hide();
+		
+		lblDauBang = new JLabel("=");
+		lblDauBang.setHorizontalAlignment(SwingConstants.CENTER);
+		lblDauBang.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblDauBang.setBounds(673, 680, 32, 30);
+		pnlHoaDonTraHang.add(lblDauBang);
+		lblDauBang.hide();
+		
+		lblDaTra = new JLabel("(Đã trả)");
+		lblDaTra.setFont(new Font("Times New Roman", Font.BOLD, 22));
+		lblDaTra.setBounds(524, 639, 84, 30);
+		pnlHoaDonTraHang.add(lblDaTra);
+		lblDaTra.hide();
+		
+		lblConLai = new JLabel("(Còn lại)");
+		lblConLai.setFont(new Font("Times New Roman", Font.BOLD, 22));
+		lblConLai.setBounds(748, 639, 98, 30);
+		pnlHoaDonTraHang.add(lblConLai);
+		lblConLai.hide();
 
 		JPanel pnlSanPhamDaMua = new JPanel();
 		pnlSanPhamDaMua.setLayout(null);
@@ -764,6 +810,7 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 				// Sản phẩm trả rồi
 				else {
 					setModel(modelSPTra, 1);
+					setFormTinhTien(true);
 					btnSuaSL.setText("Trả thêm");
 					btnTraHang.setText("CẬP NHẬT");
 					txtTenNVTraHang.setText(nv.getTenNV());
@@ -785,7 +832,7 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 			String maHD = txtMaHD.getText().trim();
 			chonTatCaSP(maHD, modelSPTra);
 			modelSPDM.setRowCount(0);
-			tinhTongTienHoanTra();
+			tinhTongTienHoanTra1();
 		} else if (o.equals(btnSuaSL)) {
 			if (btnTraHang.getText().equals("TRẢ HÀNG")) {
 				thayDoiSoLuong();
@@ -823,6 +870,7 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 						xoaRong();
 
 					}
+					setFormTinhTien(false);
 					modelHD.setRowCount(0);
 					DocDuLieuDatataabase("Chưa trả");
 					pnlChonHDTH.show();
@@ -872,7 +920,7 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 					tblSPTra.setValueAt((newQuantity + soLuongTra) * giaGoc, selectedRow, 5);
 					JOptionPane.showMessageDialog(this, "Đã cập nhật số lượng thành công.", "Thông báo",
 							JOptionPane.INFORMATION_MESSAGE);
-					tinhTongTienHoanTra();
+					tinhTongTienHoanTra1();
 				} else if (newQuantity == 0) {
 					xoaDong();
 				} else {
@@ -943,7 +991,7 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 					tblSPTra.setValueAt(newQuantity * giaGoc, selectedRow, 5);
 					JOptionPane.showMessageDialog(this, "Đã cập nhật số lượng thành công.", "Thông báo",
 							JOptionPane.INFORMATION_MESSAGE);
-					tinhTongTienHoanTra();
+					tinhTongTienHoanTra1();
 				} else if (newQuantity == 0) {
 					xoaDong();
 				} else {
@@ -1259,13 +1307,14 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 		int soLuongMua = (int) tblSPDM.getValueAt(row, 3);
 		// Thêm sản phẩm trả vào model sp trả
 		modelSPTra.addRow(new Object[] { maSP, tenSP, giaBan, soLuongMua, input, giaBan * input });
-		tinhTongTienHoanTra();
+		tinhTongTienHoanTra1();
 	}
 
 //Tính tổng tiền cần thanh toán
-	public void tinhTongTienHoanTra() {
+	public void tinhTongTienHoanTra1() {
 		double tongTien = 0;
 		int tongSP = 0;
+		double tienDaTra = 0;
 
 		for (int i = 0; i < modelSPTra.getRowCount(); i++) {
 			double thanhTien = (double) modelSPTra.getValueAt(i, 5);
@@ -1275,12 +1324,20 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 			if (tblSPTra.getColumnCount() == 7) {
 				int soLuongThem = (int) modelSPTra.getValueAt(i, 6);
 				tongSP += soLuongThem;
+				int soLuongTra = (int) modelSPTra.getValueAt(i, 4);
+				double giaGoc = (double) modelSPTra.getValueAt(i, 2);
+				tienDaTra +=  soLuongTra * giaGoc;
 			}
 		}
 
 		txtTongSP.setText(String.valueOf(tongSP));
 		txtTienHoanTra.setText(String.valueOf(tongTien));
+		if (tblSPTra.getColumnCount() == 7) {
+		txtDaTra.setText(String.valueOf(tienDaTra));
+		txtConLai.setText(String.valueOf(tongTien - tienDaTra));
+		}
 	}
+
 
 	// Hàm tìm sản phẩm trong hóa đơn
 	private int timSPTrongBangTra(String maSP, String tenSP) {
@@ -1312,7 +1369,7 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 			// Thêm sản phẩm trả vào model sp trả
 			modelSPDM.addRow(new Object[] { maSP, tenSP, giaBan, soLuongMua, giaBan * soLuongMua });
 			timDongTrongBang(tblSPTra, row); // xóa dòng
-			tinhTongTienHoanTra();
+			tinhTongTienHoanTra1();
 		}
 
 	}
@@ -1331,7 +1388,7 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 		txtLyDo.setText("");
 		modelSPDM.setRowCount(0);
 		modelSPTra.setRowCount(0);
-		tinhTongTienHoanTra();
+		tinhTongTienHoanTra1();
 	}
 
 	// Tìm hóa đơn trả hàng theo mã
@@ -1361,6 +1418,29 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 			RowFilter<DefaultTableModel, Object> filter = RowFilter.regexFilter("(?i)" + Pattern.quote(tuKhoa), 1, 0);
 			sorter.setRowFilter(filter);
 
+		}
+	}
+	//Form tinh tien sp
+	private void setFormTinhTien(boolean t) {
+		if(t == true) {
+			lblDaTra.show();
+			lblConLai.show();
+			lblDauBang.show();
+			lblDauTru.show();
+			txtDaTra.show();
+			txtConLai.show();
+			txtTienHoanTra.setBounds(250, 680, 182, 30);
+			txtTongSP.setBounds(250, 630, 182, 30);
+		}
+		else {
+			lblDaTra.hide();
+			lblConLai.hide();
+			lblDauBang.hide();;
+			lblDauTru.hide();
+			txtDaTra.hide();
+			txtConLai.hide();
+			txtTienHoanTra.setBounds(250, 680, 273, 30);
+			txtTongSP.setBounds(250, 630, 273, 30);
 		}
 	}
 }

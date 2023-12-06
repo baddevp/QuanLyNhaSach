@@ -431,6 +431,7 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 		mniThongKeDT.addActionListener(this);
 		mniThongKeKH.addActionListener(this);
 		mniThongKeNV.addActionListener(this);
+		mniBaoCaoThuChi.addActionListener(this);
 		
 		
 		
@@ -564,6 +565,13 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 					GuiThongKeNhanVien frmTKNhanVien = new GuiThongKeNhanVien();
 					tabNoiDung.remove(tabNoiDung.getSelectedComponent());
 					tabNoiDung.add(frmTKNhanVien.pnlBorder);
+				}else if (o.equals(mniBaoCaoThuChi)) {
+					DAO_NhanVien dao_NhanVien = new DAO_NhanVien();
+					NhanVien nv = dao_NhanVien.getNhanVienTheoMa2(txtusername.getText());
+					GuiBaoCaoHangNgay traHang = new GuiBaoCaoHangNgay(nv);
+					tabNoiDung.remove(tabNoiDung.getSelectedComponent());
+					tabNoiDung.add(traHang.contentPane);
+					
 				}
 		//Chức năng hỗ trợ
 		
