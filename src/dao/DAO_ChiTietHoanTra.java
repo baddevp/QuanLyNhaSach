@@ -102,6 +102,26 @@ public class DAO_ChiTietHoanTra {
 		} 
 		return ds;
 	}
+	//Update chi tiết trả hàng
+	public boolean updateChiTietTraHang(ChiTietHoanTra hd) {
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		PreparedStatement st = null;
+		try {
+			st = con.prepareStatement(
+					"update CHITIETHOANTRA set SOLUONGTRA = ? where MASP=? AND MAYCTH = ?");
+			st.setInt(1, hd.getSoLuongTra());
+			st.setString(2, hd.getSanPham().getMaSanPham());
+			st.setString(3, hd.getHoaDonHoanTra().getMaYeuCauTraHang());
+			int n = st.executeUpdate();
+			if(n > 0)
+				return true;
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
 	//Kiểm tra sách
 	public boolean isVanPhongPham(String maSP) {
 	    return maSP.startsWith("VPP");
@@ -109,6 +129,30 @@ public class DAO_ChiTietHoanTra {
 	//Kiểm tra văn phòng phẩm
 	public boolean isSach(String maSP) {
 	    return maSP.startsWith("SAH");
+	}
+	//Kiểm tra sản phẩm đó đã tra chưa
+	public boolean kiemTraSanPhamTrongCTHD(HoaDonHoanTra hd, String ma) {
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		PreparedStatement st = null;
+		String maSP = null;
+		try {
+			st = con.prepareStatement(
+					"SELECT MASP FROM CHITIETHOANTRA WHERE MASP = ? AND MAYCTH = ?");
+			
+			st.setString(1, ma);
+			st.setString(2, hd.getMaYeuCauTraHang());
+			ResultSet rs = st.executeQuery();
+			while (rs.next()) {
+				maSP = rs.getString(1);
+				if(maSP != null)
+					return true;
+				
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 }

@@ -765,11 +765,16 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 	 * @return false: ngày cũ
 	 */
 	private boolean soSanhNgay() {
-		String HDCu = hoadon_dao.layNgayHoaDonTruoc();
-
 		java.util.Date ngayHienTai = new java.util.Date();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy");
 		String ngayHT = dateFormat.format(ngayHienTai);
+		String HDCu = hoadon_dao.layNgayHoaDonTruoc();
+		//Hóa đơn đầu tiên
+		if (HDCu == null) {
+			return true;
+		}
+
+		
 
 		// 01 01 2023
 		// So sánh năm

@@ -100,13 +100,13 @@ public class DAO_HoaDonTraHang {
 		}
 	    return n>0;
     }
-	
+	//Lấy mã hóa đơn cuối
 	public int getCurrentSequenceNumber() {
 		int newMaHD = 0;
 		try {
 			ConnectDB.getInstance();
 	        Connection con = ConnectDB.getConnection();
-	        String sql = "SELECT MAX(MAYEUCAUTRAHANG) FROM HOADONTRAHANG";
+	        String sql = "SELECT TOP 1 MAYEUCAUTRAHANG FROM HOADONTRAHANG ORDER BY NGAYLAPHOADONTH DESC";
 	        Statement stm = con.createStatement();
 	        ResultSet rs = stm.executeQuery(sql);
 	        
@@ -114,8 +114,9 @@ public class DAO_HoaDonTraHang {
 	            String lastMaHD = rs.getString(1);
 
 	            // Check if lastMaKH is not null and has the expected format
-	            if (lastMaHD != null && lastMaHD.startsWith("TH") && lastMaHD.length() >= 14) {
-	                // TH 15 11 20 23 00 1 001
+	          //HD20112023002013
+	            if (lastMaHD != null && lastMaHD.startsWith("HT") && lastMaHD.length() >= 14) {
+	                // Extract the sequence number part from MAKH
 	                String sequenceNumberPart = lastMaHD.substring(13);
 
 	                // Convert the extracted part to an integer
@@ -265,5 +266,56 @@ public class DAO_HoaDonTraHang {
 				} finally {
 				}
 				return maYCTH;
+			}
+			//Lấy ngày hóa đơn cũ để tạo mã
+			public String layNgayHoaDonTruoc() {
+				String ngayCu = null;
+				try {
+					ConnectDB.getInstance();
+			        Connection con = ConnectDB.getConnection();
+			        String sql = "SELECT TOP 1 MAYEUCAUTRAHANG FROM HOADONTRAHANG ORDER BY NGAYLAPHOADONTH DESC";
+			        Statement stm = con.createStatement();
+			        ResultSet rs = stm.executeQuery(sql);
+			        
+			        if (rs.next()) {
+			            String lastMaHD = rs.getString(1);
+
+			            // Check if lastMaKH is not null and has the expected format
+			          //HT20112023002013
+			            if (lastMaHD != null && lastMaHD.startsWith("HT") && lastMaHD.length() >= 14) {
+			                // Extract the sequence number part from MAKH
+			            	//HT05122023002004
+			               ngayCu = lastMaHD.substring(2,10);
+
+			            }
+			        }
+			    } catch (Exception e) {
+			        e.printStackTrace();
+			    }
+			    return ngayCu;
+			}
+			//Update hoa don tra hang
+			public boolean updateHDTraHang(HoaDonHoanTra hd) {
+				ConnectDB.getInstance();
+				Connection con = ConnectDB.getConnection();
+				PreparedStatement st = null;
+				try {
+					st = con.prepareStatement(
+							"update HOADONTRAHANG set NGAYLAPHOADONTH = ?, LYDOTRAHANG = ?,TIENHOANTRA = ?, MANV = ? where MAYEUCAUTRAHANG = ?");
+				
+					st.setString(5, hd.getMaYeuCauTraHang());
+					st.setString(1, chuyenLocalSangDateTime(hd.getNgayLapHoaDonTH()));
+					st.setString(2, hd.getLyDoTraHang());
+					st.setDouble(3, hd.getTongHoanTra());
+					st.setString(4, hd.getNhanVien().getMaNV());
+
+					int n = st.executeUpdate();
+					if(n > 0)
+						return true;
+				
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return false;
 			}
 }
