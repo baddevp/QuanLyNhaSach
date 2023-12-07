@@ -38,6 +38,13 @@ public class DAO_HoaDon {
 			String str = chuoiJava.toString();
 			return str.substring(0, 10) + " " + str.substring(11, 19);
 		}
+		// hàm chuyển đổi localdatetime để so sánh
+				public static String chuyenDateSoSanh(LocalDateTime chuoiJava) {
+					if (chuoiJava == null)
+						return null;
+					String str = chuoiJava.toString();
+					return str.substring(0, 10);
+				}
 
 	public ArrayList<HoaDon> getAllHD(){
 		ArrayList<HoaDon> dsHD = new ArrayList<HoaDon>();
@@ -67,7 +74,34 @@ public class DAO_HoaDon {
 		}
 		return dsHD; 
 	}
-	
+	//Lấy tất cả hóa đơn trong ngày
+	public ArrayList<HoaDon> getAllHDTheoNgay(LocalDateTime thGian){
+		ArrayList<HoaDon> dsHD = new ArrayList<HoaDon>();
+		try {
+			ConnectDB.getInstance();
+			Connection con = ConnectDB.getConnection();
+			String ngayBaoCao = chuyenDateSoSanh(thGian);
+			String sql = "SELECT * FROM HOADON WHERE NGAYLAPHOADON BETWEEN '"+ ngayBaoCao +" 00:00:00' AND '"+ ngayBaoCao +" 23:59:59'";
+			PreparedStatement pstm = con.prepareStatement(sql);
+			ResultSet rs = pstm.executeQuery();
+			while (rs.next()) {
+				String maHD = rs.getString(1);
+				LocalDateTime ngayLapHD = chuyenDateTimeSangLocal(rs.getString("NGAYLAPHOADON"));
+				double tienNhan = rs.getDouble(3);
+				double tongTien = rs.getDouble(4);
+				NhanVien nhanvien = new NhanVien(rs.getString(5));
+				KhachHang khachhang = new KhachHang(rs.getString(6));
+				boolean trangThai = rs.getBoolean(7);	
+				HoaDon hd = new HoaDon(maHD, ngayLapHD, tienNhan, tongTien, nhanvien, khachhang, trangThai);
+				dsHD.add(hd);
+		
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+		return dsHD; 
+	}
 	public boolean createHD(HoaDon hd) {
 		ConnectDB.getInstance();
 		Connection con = ConnectDB.getConnection();

@@ -15,11 +15,17 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
@@ -106,6 +112,7 @@ public class GuiBaoCaoHangNgay extends JFrame implements ActionListener, MouseLi
 	private JLabel lblTongTien;
 	private JPanel pnlBaoCao;
 	private DefaultTableModel tblSPTra;
+	private JButton btnXem;
 
 	/**
 	 * Launch the application.
@@ -193,7 +200,10 @@ public class GuiBaoCaoHangNgay extends JFrame implements ActionListener, MouseLi
 		lblNewLabel.setFont(new Font("Times New Roman", Font.PLAIN, 20));
 		pnlBaoCao.add(lblNewLabel);
 		
-		dtmBaoCao = new JDateChooser();
+		java.util.Date currentDate = new java.util.Date();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+		String formattedDate = dateFormat.format(currentDate);
+		dtmBaoCao = new JDateChooser(currentDate);
 		dtmBaoCao.setBounds(186, 10, 258, 35);
 		pnlBaoCao.add(dtmBaoCao);
 		
@@ -246,7 +256,7 @@ public class GuiBaoCaoHangNgay extends JFrame implements ActionListener, MouseLi
 		pnlBaoCao.add(lblToTi);
 		
 		lblSoLuongDon = new JLabel("");
-		lblSoLuongDon.setBounds(274, 858, 180, 50);
+		lblSoLuongDon.setBounds(274, 870, 180, 50);
 		lblSoLuongDon.setForeground(Color.BLACK);
 		lblSoLuongDon.setFont(new Font("Times New Roman", Font.BOLD, 26));
 		pnlBaoCao.add(lblSoLuongDon);
@@ -265,32 +275,25 @@ public class GuiBaoCaoHangNgay extends JFrame implements ActionListener, MouseLi
 		
 		lblTongTien = new JLabel("");
 		lblTongTien.setBounds(1629, 870, 250, 50);
-		lblTongTien.setForeground(Color.BLACK);
+		lblTongTien.setForeground(new Color(255, 0, 0));
 		lblTongTien.setFont(new Font("Times New Roman", Font.BOLD, 26));
 		pnlBaoCao.add(lblTongTien);
-		//bắt 
-
 		
-	}
-
-	public void DocDuLieuDatataabase(String tt) {
-		dao_HoaDon = new DAO_HoaDon();
-		String trangThai = "";
-		for (HoaDon hd : dao_HoaDon.getAllHD()) {
-			KhachHang kh = dao_KhachHang.getKhachHangTheoMa(hd.getKhachHang().getMaKH());
-			trangThai = dao_HoaDonHT.kiemTraTraHang(hd);
-			// Lấy tất cả hóa đơn
-			if (tt.equalsIgnoreCase("Tất cả")) {
-				modelHD.addRow(new Object[] { hd.getMaHoaDon(), hd.getNgayLapHoaDon(), hd.getTongTien(),
-						hd.getNhanVien().getMaNV(), kh.getTenKH(), trangThai });
-			}
-			// Phân loại
-			else if (trangThai.equalsIgnoreCase(tt)) {
-				modelHD.addRow(new Object[] { hd.getMaHoaDon(), hd.getNgayLapHoaDon(), hd.getTongTien(),
-						hd.getNhanVien().getMaNV(), kh.getTenKH(), trangThai });
-			}
-
+		btnXem = new JButton("Xem báo cáo");
+		btnXem.setBackground(new Color(51, 204, 204));
+		btnXem.setForeground(new Color(255, 255, 255));
+		btnXem.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+		btnXem.setBounds(459, 10, 171, 35);
+		pnlBaoCao.add(btnXem);
+		
+		//bắt sự kiện
+		try {
+			ConnectDB.getInstance().connect();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		btnXem.addActionListener(this);
+		
 	}
 
 	@Override
@@ -318,48 +321,92 @@ public class GuiBaoCaoHangNgay extends JFrame implements ActionListener, MouseLi
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-	}
-//Tính tổng tiền cần thanh toán
-	public void tinhTongTienHoanTra() {
-		double tongTien = 0;
-		int tongSP = 0;
-
-		for (int i = 0; i < modelSPTra.getRowCount(); i++) {
-			double thanhTien = (double) modelSPTra.getValueAt(i, 5);
-			int soLuong = (int) modelSPTra.getValueAt(i, 4);
-			tongTien += thanhTien;
-			tongSP += soLuong;
-			if (tblSPTra.getColumnCount() == 7) {
-				int soLuongThem = (int) modelSPTra.getValueAt(i, 6);
-				tongSP += soLuongThem;
-			}
-		}
-
-		txtTongSP.setText(String.valueOf(tongSP));
-		txtTienHoanTra.setText(String.valueOf(tongTien));
-	}
-
-	// Hàm tìm sản phẩm trong hóa đơn
-	private int timSPTrongBangTra(String maSP, String tenSP) {
-		int rowCount = modelSPTra.getRowCount();
-
-		for (int i = 0; i < rowCount; i++) {
-			String maSPHD = (String) modelSPTra.getValueAt(i, 0);
-			String tenSPHD = (String) modelSPTra.getValueAt(i, 1);
-
-			if (maSP.equals(maSPHD) && tenSP.equals(tenSPHD)) {
-				return i; // Trả về chỉ số nếu sản phẩm đã tồn tại
-			}
-		}
-		return -1; // Trả về -1 nếu sản phẩm không tồn tại
-	}
-
-	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		Object o = e.getSource();
+		if(o.equals(btnXem)) {
+		Date date =	dtmBaoCao.getDate();
+		LocalDateTime ngayBC = convertToLocalDateTime(date);
+		docBaoCaoThuChiTheoNgay(ngayBC);
+		tongBaoCao();
+		}
+	}
+	//Doc du lieu theo ngay
+	public void docBaoCaoThuChiTheoNgay(LocalDateTime thGian) {
+		lblTenNhanVien.setText(nv.getTenNV());
+		lblNgay.setText(chuyenDateSoSanh(thGian));
+		int i = 0;
+		for (HoaDon hd : dao_HoaDon.getAllHDTheoNgay(thGian)) {
+			i++;
+			String maTH = dao_HoaDonHT.getMaTHTheoMaHD(hd.getMaHoaDon());
+			// Hóa đơn chưa trả
+			if (maTH == null) {
+				double tongTien = hd.getTongTien();
+				modelHD.addRow(new Object[] { i, hd.getMaHoaDon(), chuyenDateSoSanh(hd.getNgayLapHoaDon()) ,tongTien,"","","",tongTien});
+			}
+			//Hóa đơn có trả
+			else {
+				HoaDonHoanTra ht = dao_HoaDonHT.getHDHTTheoMaHDTH(maTH);
+				double tongThu = hd.getTongTien();
+				double tongTra = ht.getTongHoanTra();
+				modelHD.addRow(new Object[] { i, hd.getMaHoaDon(), chuyenDateSoSanh(hd.getNgayLapHoaDon()), tongThu,ht.getMaYeuCauTraHang(), ht.getLyDoTraHang(), tongTra, tongThu - tongTra});
+				
+			}
+			
+			
+		}
+	}
+	//Tính tổng
+	public void tongBaoCao() {
+		int tongHD = 0;
+		double tongTienThu = 0;
+		double tongTienChi = 0;
+		double tongTatCa = 0;
+		
+		int rowCount =  modelHD.getRowCount();
+		for (int i = 0; i < rowCount; i++) {
+			tongHD++;
+			tongTienThu +=   (double) tblHD.getValueAt(i, 3);
+			tongTienChi += tinhTienChi(modelHD, i);
+			tongTatCa += (double) tblHD.getValueAt(i, 7);
+		}
+		lblSoLuongDon.setText(String.valueOf(tongHD));
+		lblTongThu.setText(String.valueOf(tongTienThu));
+		lblTongChi.setText(String.valueOf(tongTienChi));
+		lblTongTien.setText(String.valueOf(tongTatCa));
+	}
+	//Hàm chuyển date --> localdatetime
+	 public static LocalDateTime convertToLocalDateTime(Date date) {
+	        Instant instant = date.toInstant();
+	        return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+	    }
+	// hàm chuyển đổi localdatetime để so sánh
+		public static String chuyenDateSoSanh(LocalDateTime chuoiJava) {
+			if (chuoiJava == null)
+				return null;
+			String str = chuoiJava.toString();
+			return str.substring(0, 10);
+		}
+	//Kiểm tra dòng
+		public double tinhTienChi(DefaultTableModel model,  int i) {
+			try {
+				double t = (double) model.getValueAt(i, 6);
+				if(t > 0) {
+					return t;
+				}	
+			} catch (Exception e) {
+				// TODO: handle exception
+				System.out.println();
+			}
+		
+		
+			return 0;
+		}
 
 }

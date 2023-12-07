@@ -124,6 +124,7 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 	private JLabel lblDauBang;
 	private Component lblDaTra;
 	private JLabel lblConLai;
+	private String formattedDate;
 
 	/**
 	 * Launch the application.
@@ -409,8 +410,8 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 
 		// Thiết lâpj ngày lập hóa đơn trả hàng
 		java.util.Date currentDate = new java.util.Date();
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-		String formattedDate = dateFormat.format(currentDate);
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		formattedDate = dateFormat.format(currentDate);
 
 		dtmNgayLapTH = new JDateChooser(currentDate);
 		dtmNgayLapTH.setEnabled(false);
@@ -543,7 +544,7 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 		pnlHoaDonTraHang.add(lblLyDo);
 
 		txtLyDo = new JTextField();
-		txtLyDo.setText("Tra hang" + formattedDate);
+		txtLyDo.setText(formattedDate);
 		txtLyDo.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		txtLyDo.setColumns(10);
 		txtLyDo.setBounds(250, 730, 273, 30);
@@ -1068,7 +1069,7 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 	private boolean capNhatHoaDonTraHang() {
 		String maYCTH = txtMaTraHang.getText().trim();
 		LocalDateTime ngayLap = LocalDateTime.now();
-		String lyDo = txtLyDo.getText().trim();
+		String lyDo = formattedDate;
 		double tienHoanTra = Double.parseDouble(txtTienHoanTra.getText().trim());
 		NhanVien nhanVien = nv;
 		KhachHang kh = dao_KhachHang.getKhachHangTheoSDT(txtSDT.getText().trim());
