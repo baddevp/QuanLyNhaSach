@@ -56,9 +56,9 @@ import net.sf.jasperreports.view.JasperViewer;
 
 public class GuiThongKeDoanhThu extends JFrame implements ActionListener {
 	public static JPanel pnlBorder;
-	private JButton btnDoanhThuHoaDon;
-	private JButton btnDoanhThuPhong;
-	private JButton btnDoanhThuDichVu;
+	private JButton btnTongHoaDon;
+	private JButton btnTheoLoai;
+	private JButton btnTheoSanPham;
 	private Color color3;
 	private Color color1;
 	private JComboBox<String> cmbLuaChon;
@@ -181,24 +181,24 @@ public class GuiThongKeDoanhThu extends JFrame implements ActionListener {
 		pnlChonMucThongKe.setBounds(0, 60, 350, 255);
 		pnlChonMucThongKe.setBackground(Color.WHITE);
 		pnlChonMucThongKe.setLayout(null);
-		btnDoanhThuHoaDon = new JButton("Doanh thu hóa đơn");
-		btnDoanhThuHoaDon.setBounds(50, 30, 250, 50);
-		btnDoanhThuHoaDon.setFont(font3);
-		btnDoanhThuHoaDon.setBackground(color3);
-		btnDoanhThuHoaDon.setForeground(Color.WHITE);
-		btnDoanhThuPhong = new JButton("Doanh thu sản phẩm");
-		btnDoanhThuPhong.setFont(font3);
-		btnDoanhThuPhong.setBounds(50, 100, 250, 50);
-		btnDoanhThuPhong.setBackground(Color.WHITE);
-		btnDoanhThuPhong.setForeground(color1);
-		btnDoanhThuDichVu = new JButton("Số lượng sản phẩm");
-		btnDoanhThuDichVu.setFont(font3);
-		btnDoanhThuDichVu.setBounds(50, 170, 250, 50);
-		btnDoanhThuDichVu.setBackground(Color.WHITE);
-		btnDoanhThuDichVu.setForeground(color1);
-		pnlChonMucThongKe.add(btnDoanhThuHoaDon);
-		pnlChonMucThongKe.add(btnDoanhThuPhong);
-		pnlChonMucThongKe.add(btnDoanhThuDichVu);
+		btnTongHoaDon = new JButton("Tổng hóa đơn");
+		btnTongHoaDon.setBounds(50, 30, 250, 50);
+		btnTongHoaDon.setFont(font3);
+		btnTongHoaDon.setBackground(color3);
+		btnTongHoaDon.setForeground(Color.WHITE);
+		btnTheoLoai = new JButton("Theo loại sản phẩm");
+		btnTheoLoai.setFont(font3);
+		btnTheoLoai.setBounds(50, 100, 250, 50);
+		btnTheoLoai.setBackground(Color.WHITE);
+		btnTheoLoai.setForeground(color1);
+		btnTheoSanPham = new JButton("Theo sản phẩm");
+		btnTheoSanPham.setFont(font3);
+		btnTheoSanPham.setBounds(50, 180, 250, 50);
+		btnTheoSanPham.setBackground(Color.WHITE);
+		btnTheoSanPham.setForeground(color1);
+		pnlChonMucThongKe.add(btnTongHoaDon);
+		pnlChonMucThongKe.add(btnTheoLoai);
+		pnlChonMucThongKe.add(btnTheoSanPham);
 
 		pnlMucThonKe.add(pnlTittleMucThongKe);
 		pnlMucThonKe.add(pnlChonMucThongKe);
@@ -335,9 +335,9 @@ public class GuiThongKeDoanhThu extends JFrame implements ActionListener {
 		showData();
 
 		cmbLuaChon.addActionListener(this);
-		btnDoanhThuHoaDon.addActionListener(this);
-		btnDoanhThuPhong.addActionListener(this);
-		btnDoanhThuDichVu.addActionListener(this);
+		btnTongHoaDon.addActionListener(this);
+		btnTheoLoai.addActionListener(this);
+		btnTheoSanPham.addActionListener(this);
 		btnBaoCao.addActionListener(this);
 		btnXacNhan.addActionListener(this);
 	}
@@ -746,14 +746,36 @@ public class GuiThongKeDoanhThu extends JFrame implements ActionListener {
 		}
 	}
 
-	private void setDataChartDoanhThuPhong() throws NumberFormatException, ParseException {
-		chartPanel.setChart(createChart(createDatasetDoanhThuPhong(getTKDoanhThuSanPham(dsHoaDonDaThanhToan)),
-				"BIỂU ĐỒ TOP 10 SẢN PHẨM CÓ DOANH THU CAO NHẤT", "Sản phẩm", "Doanh thu sản phẩm"));
+	private void setDataChartDoanhThuLoaiSanPham() throws NumberFormatException, ParseException {
+		if (cmbLuaChon.getSelectedItem().equals("Theo ngày")) {
+			chartPanel.setChart(createChart(createDatasetDoanhThuPhong(getTKDoanhThuSanPham(dsHoaDonDaThanhToan)),
+					"BIỂU ĐỒ TOP 10 LOẠI SẢN PHẨM CÓ DOANH THU CAO NHẤT THEO NGÀY", "Sản phẩm", "Doanh thu sản phẩm"));
+		} else {
+			if (cmbLuaChon.getSelectedItem().equals("Theo tháng")) {
+				chartPanel.setChart(createChart(createDatasetDoanhThuPhong(getTKDoanhThuSanPham(dsHoaDonDaThanhToan)),
+						"BIỂU ĐỒ TOP 10 LOẠI SẢN PHẨM CÓ DOANH THU CAO NHẤT THEO THÁNG", "Sản phẩm", "Doanh thu sản phẩm"));
+			} else {
+				chartPanel.setChart(createChart(createDatasetDoanhThuPhong(getTKDoanhThuSanPham(dsHoaDonDaThanhToan)),
+						"BIỂU ĐỒ TOP 10 LOẠI SẢN PHẨM CÓ DOANH THU CAO NHẤT THEO NĂM", "Sản phẩm", "Doanh thu sản phẩm"));
+			}
+		}
+		
 	}
 
-	private void setDataChartDoanhThuDichVu() throws NumberFormatException, ParseException {
-		chartPanel.setChart(createChart(createDatasetDoanhThuDichVu(getTKSoLuongSanPhamDaBan(dsHoaDonDaThanhToan)),
-				"BIỂU ĐỒ TOP 10 SẢN PHẨM CÓ LƯỢT BÁN CAO NHẤT", "Sản phẩm", "Số lượng bán"));
+	private void setDataChartDoanhThuSanPham() throws NumberFormatException, ParseException {
+		if (cmbLuaChon.getSelectedItem().equals("Theo ngày")) {
+			chartPanel.setChart(createChart(createDatasetDoanhThuDichVu(getTKSoLuongSanPhamDaBan(dsHoaDonDaThanhToan)),
+					"BIỂU ĐỒ TOP 10 SẢN PHẨM CÓ LƯỢT BÁN CAO NHẤT THEO NGÀY", "Sản phẩm", "Số lượng bán"));
+		} else {
+			if (cmbLuaChon.getSelectedItem().equals("Theo tháng")) {
+				chartPanel.setChart(createChart(createDatasetDoanhThuDichVu(getTKSoLuongSanPhamDaBan(dsHoaDonDaThanhToan)),
+						"BIỂU ĐỒ TOP 10 SẢN PHẨM CÓ LƯỢT BÁN CAO NHẤT THEO THÁNG", "Sản phẩm", "Số lượng bán"));
+			} else {
+				chartPanel.setChart(createChart(createDatasetDoanhThuDichVu(getTKSoLuongSanPhamDaBan(dsHoaDonDaThanhToan)),
+						"BIỂU ĐỒ TOP 10 SẢN PHẨM CÓ LƯỢT BÁN CAO NHẤT THEO NĂM", "Sản phẩm", "Số lượng bán"));
+			}
+		}
+		
 	}
 
 	/**
@@ -807,7 +829,7 @@ public class GuiThongKeDoanhThu extends JFrame implements ActionListener {
 	}
 
 	private void setAllData() {
-		if (btnDoanhThuHoaDon.getBackground().equals(color3)) {
+		if (btnTongHoaDon.getBackground().equals(color3)) {
 			String colums[] = { "STT", "Mã hóa đơn", "Ngày lập", "Khách hàng", "SĐT khách", "Nhân viên",
 					"Tiền thanh toán" };
 			String textLabel[] = { "Tổng doanh thu:", "Tổng số hóa đơn:", "Hóa đơn tiền cao nhất",
@@ -821,7 +843,7 @@ public class GuiThongKeDoanhThu extends JFrame implements ActionListener {
 				e.printStackTrace();
 			}
 		} else {
-			if (btnDoanhThuPhong.getBackground().equals(color3)) {
+			if (btnTheoLoai.getBackground().equals(color3)) {
 				String colums[] = { "STT", "Mã sản phẩm", "Tên sản phẩm", "Số lượng bán", "Tổng tiền" };
 				String textLabel[] = { "Tổng doanh thu sản phẩm:", "Tổng số phòng:", "Sản phẩm có doanh thu cao nhất:",
 						"Sản phẩm có doanh thu thấp nhất:" };
@@ -830,12 +852,12 @@ public class GuiThongKeDoanhThu extends JFrame implements ActionListener {
 					model = loadDataModel(colums, getTKDoanhThuSanPham(dsHoaDonDaThanhToan));
 					setDataTable(model);
 					setDataThongKeTongQuat(model, 3, textLabel);
-					setDataChartDoanhThuPhong();
+					setDataChartDoanhThuLoaiSanPham();
 				} catch (NumberFormatException | ParseException e) {
 					e.printStackTrace();
 				}
 			} else {
-				if (btnDoanhThuDichVu.getBackground().equals(color3)) {
+				if (btnTheoSanPham.getBackground().equals(color3)) {
 					String colums[] = { "STT", "Mã dịch vụ", "Tên dịch vụ", "Đơn vị", "Loại dịch vụ", "Doanh thu" };
 					String textLabel[] = { "Tổng doanh thu DV:", "Tổng số dịch vụ:", "Doanh thu cao nhất:",
 							"Doanh thu thấp nhất:" };
@@ -844,7 +866,7 @@ public class GuiThongKeDoanhThu extends JFrame implements ActionListener {
 						model = loadDataModel(colums, getTKSoLuongSanPhamDaBan(dsHoaDonDaThanhToan));
 						setDataTable(model);
 						setDataThongKeTongQuat(model, 4, textLabel);
-						setDataChartDoanhThuDichVu();
+						setDataChartDoanhThuSanPham();
 					} catch (NumberFormatException | ParseException e) {
 						e.printStackTrace();
 					}
@@ -856,17 +878,17 @@ public class GuiThongKeDoanhThu extends JFrame implements ActionListener {
 	private void setMauButton(JButton btn) {
 		btn.setBackground(color3);
 		btn.setForeground(Color.WHITE);
-		if (!btn.equals(btnDoanhThuHoaDon)) {
-			btnDoanhThuHoaDon.setBackground(Color.WHITE);
-			btnDoanhThuHoaDon.setForeground(color1);
+		if (!btn.equals(btnTongHoaDon)) {
+			btnTongHoaDon.setBackground(Color.WHITE);
+			btnTongHoaDon.setForeground(color1);
 		}
-		if (!btn.equals(btnDoanhThuPhong)) {
-			btnDoanhThuPhong.setBackground(Color.WHITE);
-			btnDoanhThuPhong.setForeground(color1);
+		if (!btn.equals(btnTheoLoai)) {
+			btnTheoLoai.setBackground(Color.WHITE);
+			btnTheoLoai.setForeground(color1);
 		}
-		if (!btn.equals(btnDoanhThuDichVu)) {
-			btnDoanhThuDichVu.setBackground(Color.WHITE);
-			btnDoanhThuDichVu.setForeground(color1);
+		if (!btn.equals(btnTheoSanPham)) {
+			btnTheoSanPham.setBackground(Color.WHITE);
+			btnTheoSanPham.setForeground(color1);
 		}
 	}
 
@@ -942,20 +964,20 @@ public class GuiThongKeDoanhThu extends JFrame implements ActionListener {
 				showData();
 			}
 		}
-		if (o.equals(btnDoanhThuHoaDon)) {
-			setMauButton(btnDoanhThuHoaDon);
+		if (o.equals(btnTongHoaDon)) {
+			setMauButton(btnTongHoaDon);
 			showData();
 		}
-		if (o.equals(btnDoanhThuPhong)) {
-			setMauButton(btnDoanhThuPhong);
+		if (o.equals(btnTheoLoai)) {
+			setMauButton(btnTheoLoai);
 			showData();
 		}
-		if (o.equals(btnDoanhThuDichVu)) {
-			setMauButton(btnDoanhThuDichVu);
+		if (o.equals(btnTheoSanPham)) {
+			setMauButton(btnTheoSanPham);
 			showData();
 		}
 		if (o.equals(btnBaoCao)) {
-			if (btnDoanhThuHoaDon.getBackground().equals(color3)) {
+			if (btnTongHoaDon.getBackground().equals(color3)) {
 				try {
 					ArrayList<ArrayList<String>> dsLoad = getTKDoanhThuHoaDon(dsHoaDonDaThanhToan);
 					JasperReport jasperReport = JasperCompileManager.compileReport("report/ThongKeHoaDon.jrxml");
@@ -992,7 +1014,7 @@ public class GuiThongKeDoanhThu extends JFrame implements ActionListener {
 					e2.printStackTrace();
 				}
 			}
-			if (btnDoanhThuPhong.getBackground().equals(color3)) {
+			if (btnTheoLoai.getBackground().equals(color3)) {
 				try {
 					JasperReport jasperReport = JasperCompileManager.compileReport("report/ThongKeDoanhThuPhong.jrxml");
 					ArrayList<Map<String, String>> ds = new ArrayList<Map<String, String>>();
@@ -1029,7 +1051,7 @@ public class GuiThongKeDoanhThu extends JFrame implements ActionListener {
 					e1.printStackTrace();
 				}
 			}
-			if (btnDoanhThuDichVu.getBackground().equals(color3)) {
+			if (btnTheoSanPham.getBackground().equals(color3)) {
 				try {
 					JasperReport jasperReport = JasperCompileManager
 							.compileReport("report/ThongKeDoanhThuDichVu.jrxml");

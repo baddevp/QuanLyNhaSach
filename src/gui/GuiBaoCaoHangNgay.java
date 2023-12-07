@@ -342,7 +342,7 @@ public class GuiBaoCaoHangNgay extends JFrame implements ActionListener, MouseLi
 		lblTenNhanVien.setText(nv.getTenNV());
 		lblNgay.setText(chuyenDateSoSanh(thGian));
 		int i = 0;
-		for (HoaDon hd : dao_HoaDon.getAllHDTheoNgay(thGian)) {
+		for (HoaDon hd : dao_HoaDon.getAllHDTheoNgay(thGian, nv)) {
 			i++;
 			String maTH = dao_HoaDonHT.getMaTHTheoMaHD(hd.getMaHoaDon());
 			// Hóa đơn chưa trả

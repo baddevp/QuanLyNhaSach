@@ -75,14 +75,15 @@ public class DAO_HoaDon {
 		return dsHD; 
 	}
 	//Lấy tất cả hóa đơn trong ngày
-	public ArrayList<HoaDon> getAllHDTheoNgay(LocalDateTime thGian){
+	public ArrayList<HoaDon> getAllHDTheoNgay(LocalDateTime thGian, NhanVien nv){
 		ArrayList<HoaDon> dsHD = new ArrayList<HoaDon>();
 		try {
 			ConnectDB.getInstance();
 			Connection con = ConnectDB.getConnection();
 			String ngayBaoCao = chuyenDateSoSanh(thGian);
-			String sql = "SELECT * FROM HOADON WHERE NGAYLAPHOADON BETWEEN '"+ ngayBaoCao +" 00:00:00' AND '"+ ngayBaoCao +" 23:59:59'";
+			String sql = "SELECT * FROM HOADON WHERE MANV = ? AND NGAYLAPHOADON BETWEEN '"+ ngayBaoCao +" 00:00:00' AND '"+ ngayBaoCao +" 23:59:59'";
 			PreparedStatement pstm = con.prepareStatement(sql);
+			pstm.setString(1, nv.getMaNV() );
 			ResultSet rs = pstm.executeQuery();
 			while (rs.next()) {
 				String maHD = rs.getString(1);
@@ -133,14 +134,15 @@ public class DAO_HoaDon {
 	    return n>0;
     }
 	
-	public int getCurrentSequenceNumber() {
+	public int getCurrentSequenceNumber(NhanVien nv) {
 		int newMaHD = 0;
 		try {
 			ConnectDB.getInstance();
 	        Connection con = ConnectDB.getConnection();
-	        String sql = "SELECT TOP 1 MAHOADON FROM HOADON ORDER BY NGAYLAPHOADON DESC";
-	        Statement stm = con.createStatement();
-	        ResultSet rs = stm.executeQuery(sql);
+	        String sql = "SELECT TOP 1 MAHOADON FROM HOADON WHERE MANV = ? ORDER BY NGAYLAPHOADON DESC";
+	        PreparedStatement pstm = con.prepareStatement(sql);
+	        pstm.setString(1, nv.getMaNV());
+	        ResultSet rs = pstm.executeQuery();
 	        
 	        if (rs.next()) {
 	            String lastMaHD = rs.getString(1);
@@ -413,5 +415,30 @@ public class DAO_HoaDon {
 			// TODO: handle exception
 		}
 		return k>0;
+	}
+		//Thống kê số lượng hóa đơn của nhân viên
+	public ArrayList<ArrayList<String>> getTKNhanVienTheoSoHoaDon(LocalDate ngayBatDau, LocalDate ngayKetThuc) {
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		ArrayList<ArrayList<String>> ds = new ArrayList<ArrayList<String>>();
+		PreparedStatement pstm = null;
+		try {
+			pstm = con.prepareStatement(
+					"SELECT NV.MANV, NV.TENNV, NV.SDT, COUNT(HD.MAHOADON) AS SLHOADON FROM NHANVIEN NV JOIN HOADON HD ON NV.MANV = HD.MANV WHERE NGAYLAPHOADON BETWEEN ? AND ? GROUP BY NV.MANV, NV.TENNV, NV.SDT");
+			pstm.setString(1, ngayBatDau.toString());
+			pstm.setString(2, ngayKetThuc.plusDays(1).toString());
+			ResultSet rs = pstm.executeQuery();
+			while (rs.next()) {
+				ArrayList<String> row = new ArrayList<String>();
+				row.add(rs.getString("MANV"));
+				row.add(rs.getString("TENNV"));
+				row.add(rs.getString("SDT"));
+				row.add(rs.getString("SLHOADON"));
+				ds.add(row);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return ds;
 	}
 }

@@ -744,7 +744,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 				String maNV = nhanVien.getMaNV();
 				// NV14112023002
 				String subMaNV = maNV.substring(10, 13);
-				int sequenceNumber = hoadon_dao.getCurrentSequenceNumber();
+				int sequenceNumber = hoadon_dao.getCurrentSequenceNumber(nhanVien);
 				sequenceNumber++;
 				String sequencePart = String.format("%03d", sequenceNumber).trim();
 				return "HD" + formattedDate + subMaNV + sequencePart;

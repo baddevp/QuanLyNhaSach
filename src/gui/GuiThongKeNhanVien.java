@@ -55,8 +55,8 @@ import net.sf.jasperreports.view.JasperViewer;
 
 public class GuiThongKeNhanVien extends JFrame implements ActionListener {
 	public static JPanel pnlBorder;
-	private JButton btnPhieuDatPhong;
-	private JButton btnHoaDon;
+	private JButton btnTheoSoHoaDon;
+	private JButton btnTheoDoanhThu;
 	private Color color3;
 	private Color color1;
 	private JComboBox<String> cmbLuaChon;
@@ -70,11 +70,11 @@ public class GuiThongKeNhanVien extends JFrame implements ActionListener {
 	private LocalDate ngayKetThuc = LocalDate.now();
 	private JTable tblThongKe;
 	private Box bThongKeTongQuat;
-	private JLabel lblTongSoPhieuDatPhong;
-	private JLabel lblTongSo;
+	private JLabel lblTongSoHoaDon;
+	private JLabel lblTongSoNhanVien;
 	private JLabel lblCaoNhat;
 	private JLabel lblThapNhat;
-	private JTextField txtTongSoPhieuDatPhong;
+	private JTextField txtTongSoHoaDon;
 	private JTextField txtTongSo;
 	private JTextField txtCaoNhat;
 	private JTextField txtThapNhat;
@@ -99,7 +99,7 @@ public class GuiThongKeNhanVien extends JFrame implements ActionListener {
 		Font font3 = new Font("Times New Roman", Font.BOLD, 24);
 
 		// Màu chữ
-		color1 = new Color(51,204,204);
+		color1 = new Color(51, 204, 204);
 		Color color2 = Color.white;
 		color3 = new Color(255, 153, 51);
 
@@ -179,18 +179,18 @@ public class GuiThongKeNhanVien extends JFrame implements ActionListener {
 		pnlChonMucThongKe.setBounds(0, 60, 350, 255);
 		pnlChonMucThongKe.setBackground(Color.WHITE);
 		pnlChonMucThongKe.setLayout(null);
-		btnPhieuDatPhong = new JButton("Hóa đơn");
-		btnPhieuDatPhong.setBounds(50, 60, 250, 50);
-		btnPhieuDatPhong.setFont(font3);
-		btnPhieuDatPhong.setBackground(color3);
-		btnPhieuDatPhong.setForeground(Color.WHITE);
-		btnHoaDon = new JButton("Hóa đơn");
-		btnHoaDon.setFont(font3);
-		btnHoaDon.setBounds(50, 130, 250, 50);
-		btnHoaDon.setBackground(Color.WHITE);
-		btnHoaDon.setForeground(color1);
-		pnlChonMucThongKe.add(btnPhieuDatPhong);
-		pnlChonMucThongKe.add(btnHoaDon);
+		btnTheoSoHoaDon = new JButton("Số hóa đơn");
+		btnTheoSoHoaDon.setBounds(50, 60, 250, 50);
+		btnTheoSoHoaDon.setFont(font3);
+		btnTheoSoHoaDon.setBackground(color3);
+		btnTheoSoHoaDon.setForeground(Color.WHITE);
+		btnTheoDoanhThu = new JButton("DoanhThu");
+		btnTheoDoanhThu.setFont(font3);
+		btnTheoDoanhThu.setBounds(50, 130, 250, 50);
+		btnTheoDoanhThu.setBackground(Color.WHITE);
+		btnTheoDoanhThu.setForeground(color1);
+		pnlChonMucThongKe.add(btnTheoSoHoaDon);
+		pnlChonMucThongKe.add(btnTheoDoanhThu);
 
 		pnlMucThonKe.add(pnlTittleMucThongKe);
 		pnlMucThonKe.add(pnlChonMucThongKe);
@@ -204,7 +204,7 @@ public class GuiThongKeNhanVien extends JFrame implements ActionListener {
 		JPanel pnlTable = new JPanel();
 		pnlTable.setLayout(new BorderLayout());
 		pnlTable.setBounds(390, 600, 1510, 318);
-		pnlTable.setBackground(Color.WHITE);  
+		pnlTable.setBackground(Color.WHITE);
 		pnlTable.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(color1), "BẢNG THỐNG KÊ",
 				TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION, font3, color1));
 		tblThongKe = new JTable();
@@ -234,19 +234,19 @@ public class GuiThongKeNhanVien extends JFrame implements ActionListener {
 		Box bTxtThapNhat = Box.createHorizontalBox();
 		Box bBaoCao = Box.createHorizontalBox();
 
-		lblTongSoPhieuDatPhong = new JLabel();
-		lblTongSoPhieuDatPhong.setFont(font2);
-		lblTongSo = new JLabel();
-		lblTongSo.setFont(font2);
+		lblTongSoHoaDon = new JLabel();
+		lblTongSoHoaDon.setFont(font2);
+		lblTongSoNhanVien = new JLabel();
+		lblTongSoNhanVien.setFont(font2);
 		lblCaoNhat = new JLabel();
 		lblCaoNhat.setFont(font2);
 		lblThapNhat = new JLabel();
 		lblThapNhat.setFont(font2);
 
-		txtTongSoPhieuDatPhong = new JTextField(14);
-		txtTongSoPhieuDatPhong.setFont(font2);
-		txtTongSoPhieuDatPhong.setBackground(color2);
-		txtTongSoPhieuDatPhong.setEditable(false);
+		txtTongSoHoaDon = new JTextField(14);
+		txtTongSoHoaDon.setFont(font2);
+		txtTongSoHoaDon.setBackground(color2);
+		txtTongSoHoaDon.setEditable(false);
 
 		txtTongSo = new JTextField(14);
 		txtTongSo.setFont(font2);
@@ -271,10 +271,10 @@ public class GuiThongKeNhanVien extends JFrame implements ActionListener {
 		btnBaoCao.setForeground(Color.WHITE);
 		btnBaoCao.setFont(font3);
 
-		bLblTongDoanhThu.add(lblTongSoPhieuDatPhong);
+		bLblTongDoanhThu.add(lblTongSoHoaDon);
 		bLblTongDoanhThu.add(Box.createVerticalStrut(0));
-		bTxtTongDoanhThu.add(txtTongSoPhieuDatPhong);
-		bLblTongSo.add(lblTongSo);
+		bTxtTongDoanhThu.add(txtTongSoHoaDon);
+		bLblTongSo.add(lblTongSoNhanVien);
 		bLblTongSo.add(Box.createVerticalStrut(0));
 		bTxtTongSo.add(txtTongSo);
 		bLblCaoNhat.add(lblCaoNhat);
@@ -319,8 +319,8 @@ public class GuiThongKeNhanVien extends JFrame implements ActionListener {
 		showData();
 
 		cmbLuaChon.addActionListener(this);
-		btnPhieuDatPhong.addActionListener(this);
-		btnHoaDon.addActionListener(this);
+		btnTheoSoHoaDon.addActionListener(this);
+		btnTheoDoanhThu.addActionListener(this);
 		btnBaoCao.addActionListener(this);
 		btnXacNhan.addActionListener(this);
 	}
@@ -403,8 +403,7 @@ public class GuiThongKeNhanVien extends JFrame implements ActionListener {
 			throws NumberFormatException, ParseException {
 		ArrayList<ArrayList<String>> ketQua = new ArrayList<ArrayList<String>>();
 		for (int i = 0; i < dsHoaDonDaThanhToan.size(); i++) {
-			ArrayList<ChiTietHoaDon> ds = dao_CTHD
-					.getDSTheoMaHD(dsHoaDonDaThanhToan.get(i).getMaHoaDon());
+			ArrayList<ChiTietHoaDon> ds = dao_CTHD.getDSTheoMaHD(dsHoaDonDaThanhToan.get(i).getMaHoaDon());
 			LocalDate ngayLap = dsHoaDonDaThanhToan.get(i).getNgayLapHoaDon().toLocalDate();
 			if (ngayLap.compareTo(ngayBatDau) >= 0 && ngayLap.compareTo(ngayKetThuc) <= 0) {
 				ArrayList<String> row = new ArrayList<String>();
@@ -475,14 +474,9 @@ public class GuiThongKeNhanVien extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * Lấy ra 10 nhân viên có số lượng phiếu đặt phòng nhiều nhất và sắp xếp theo
-	 * thứ tự giảm dần số lượng phiếu đặt phòng.
-	 * 
-	 * @param dsTK: ds thống kê nhân viên theo phiếu đặt phòng
-	 * @return ds 10 nhân viên nếu dsTK.size()>=10, ngược lại trả về dsTK.size()
-	 *         nhân viên
+	 * Lấy ra 10 nhân viên có số lượng hóa đơn cao nhất
 	 */
-	private ArrayList<ArrayList<String>> getMuoiNhanVienCoSoPhieuDatPhongNhieuNhat(ArrayList<ArrayList<String>> dsTK) {
+	private ArrayList<ArrayList<String>> getMuoiNhanVienCoSoHoaDonCaoNhat(ArrayList<ArrayList<String>> dsTK) {
 		ArrayList<ArrayList<String>> ketQua = new ArrayList<ArrayList<String>>();
 		int soLuong = 0;
 		int soPhanTu = dsTK.size();
@@ -490,12 +484,12 @@ public class GuiThongKeNhanVien extends JFrame implements ActionListener {
 			while (soLuong < 10 && soLuong < soPhanTu) {
 
 				// 3 là vị trí của cột số lượng phiếu đặt phòng trong dsTK
-				double slPhieuLonNhat = Double.parseDouble(dsTK.get(0).get(3));
+				double slDonCaoNhat = Double.parseDouble(dsTK.get(0).get(3));
 				int rowCaoNhat = 0;
 				for (int i = 0; i < dsTK.size(); i++) {
 					double slPhieu = Double.parseDouble(dsTK.get(i).get(3));
-					if (slPhieuLonNhat < slPhieu) {
-						slPhieuLonNhat = slPhieu;
+					if (slDonCaoNhat < slPhieu) {
+						slDonCaoNhat = slPhieu;
 						rowCaoNhat = i;
 					}
 				}
@@ -542,14 +536,12 @@ public class GuiThongKeNhanVien extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * Tạo dữ liệu biểu đồ thống kê nhân viên theo phiếu đặt phòng
+	 * Tạo dữ liệu biểu đồ thống kê nhân viên số hóa đơn
 	 * 
-	 * @param dsTK: ds thống kê nhân viên theo phiếu đặt phòng
-	 * @return dữ liệu biểu đồ gồm có 10 nhân viên có số phiếu đặt phòng nhiều nhất
 	 */
-	private CategoryDataset createDatasetSoPhieuDatPhong(ArrayList<ArrayList<String>> dsTK) {
+	private CategoryDataset createDatasetThongKeSoHoaDon(ArrayList<ArrayList<String>> dsTK) {
 		final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-		ArrayList<ArrayList<String>> dsMuoiNhanVien = getMuoiNhanVienCoSoPhieuDatPhongNhieuNhat(dsTK);
+		ArrayList<ArrayList<String>> dsMuoiNhanVien = getMuoiNhanVienCoSoHoaDonCaoNhat(dsTK);
 		for (int i = 0; i < dsMuoiNhanVien.size(); i++) {
 
 			// 3 là vị trí cột số lượng phiếu đặt phòng trong dsMuoiNhanVien
@@ -564,12 +556,11 @@ public class GuiThongKeNhanVien extends JFrame implements ActionListener {
 	/**
 	 * Tạo dữ liệu biểu đồ thống kê nhân viên theo tổng tiền hóa đơn
 	 * 
-	 * @param dsTK: ds thống kê nhân viên theo phiếu đặt phòng
 	 * @return dữ liệu biểu đồ gồm có 10 nhân viên có tổng tiền hóa đơn cao nhất
 	 * @throws NumberFormatException
 	 * @throws ParseException
 	 */
-	private CategoryDataset createDatasetHoaDon(ArrayList<ArrayList<String>> dsTK)
+	private CategoryDataset createDatasetTongTienHoaDon(ArrayList<ArrayList<String>> dsTK)
 			throws NumberFormatException, ParseException {
 		final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 		ArrayList<ArrayList<String>> dsMuoiNhanVien = getMuoiNhanVienCoTongTienHoaDonCaoNhat(dsTK);
@@ -583,20 +574,47 @@ public class GuiThongKeNhanVien extends JFrame implements ActionListener {
 		}
 		return dataset;
 	}
-
+	private void setDataChartSoLuongHoaDon(){
+		if (cmbLuaChon.getSelectedItem().equals("Theo ngày")) {
+			chartPanel.setChart(createChart(
+					createDatasetThongKeSoHoaDon(dao_HoaDon.getTKNhanVienTheoSoHoaDon(ngayBatDau, ngayKetThuc)),
+					"BIỂU ĐỒ TOP 10 NHÂN VIÊN CÓ SỐ HÓA ĐƠN NHIỀU NHẤT THEO NGÀY", "Nhân viên", "Số hóa đơn"));
+		} else {
+			if (cmbLuaChon.getSelectedItem().equals("Theo tháng")) {
+				chartPanel.setChart(createChart(
+						createDatasetThongKeSoHoaDon(dao_HoaDon.getTKNhanVienTheoSoHoaDon(ngayBatDau, ngayKetThuc)),
+						"BIỂU ĐỒ TOP 10 NHÂN VIÊN CÓ SỐ HÓA ĐƠN NHIỀU NHẤT THEO THÁNG", "Nhân viên", "Số hóa đơn"));
+			} else {
+				chartPanel.setChart(createChart(
+						createDatasetThongKeSoHoaDon(dao_HoaDon.getTKNhanVienTheoSoHoaDon(ngayBatDau, ngayKetThuc)),
+						"BIỂU ĐỒ TOP 10 NHÂN VIÊN CÓ SỐ HÓA ĐƠN NHIỀU NHẤT THEO NĂM", "Nhân viên", "Số hóa đơn"));
+			}
+		}
+		
+	}
 	private void setDataChartTongTienHoaDon() throws NumberFormatException, ParseException {
-		chartPanel.setChart(createChart(createDatasetHoaDon(getTKNhanVienTheoHoaDon(dsHoaDonDaThanhToan)),
-				"BIỂU ĐỒ TOP 10 NHÂN VIÊN CÓ TỔNG TIỀN HÓA ĐƠN CAO NHẤT", "Nhân viên", "Tổng tiền hóa đơn"));
+		if (cmbLuaChon.getSelectedItem().equals("Theo ngày")) {
+			chartPanel.setChart(createChart(createDatasetTongTienHoaDon(getTKNhanVienTheoHoaDon(dsHoaDonDaThanhToan)),
+					"BIỂU ĐỒ TOP 10 NHÂN VIÊN CÓ TỔNG TIỀN HÓA ĐƠN CAO NHẤT THEO NGÀY", "Nhân viên", "Tổng tiền hóa đơn"));
+		} else {
+			if (cmbLuaChon.getSelectedItem().equals("Theo tháng")) {
+				chartPanel.setChart(createChart(createDatasetTongTienHoaDon(getTKNhanVienTheoHoaDon(dsHoaDonDaThanhToan)),
+						"BIỂU ĐỒ TOP 10 NHÂN VIÊN CÓ TỔNG TIỀN HÓA ĐƠN CAO NHẤT THEO THÁNG", "Nhân viên", "Tổng tiền hóa đơn"));
+			} else {
+				chartPanel.setChart(createChart(createDatasetTongTienHoaDon(getTKNhanVienTheoHoaDon(dsHoaDonDaThanhToan)),
+						"BIỂU ĐỒ TOP 10 NHÂN VIÊN CÓ TỔNG TIỀN HÓA ĐƠN CAO NHẤT THEO NĂM", "Nhân viên", "Tổng tiền hóa đơn"));
+			}
+		}
+		
 	}
 
 	/**
-	 * Cập nhật dữ liệu phần thống kê tổng quát cho thống kê nhân viên theo số phiếu
-	 * đặt phòng.
+	 * Cập nhật dữ liệu phần thống kê tổng quát cho thống kê nhân viên theo số hóa
+	 * đơn
 	 * 
-	 * @param model: thống kê nhân viên theo số phiếu đặt phòng
 	 */
 	@SuppressWarnings("deprecation")
-	private void setDataThongKeTongQuatSoPhieuDatPhong(DefaultTableModel model) {
+	private void setDataThongKeTongSoLuongHoaDon(DefaultTableModel model) {
 
 		// Nếu model chưa có dữ liệu thì sẽ ẩn phần thống kê tổng quát
 		if (model.getRowCount() == 0) {
@@ -606,12 +624,12 @@ public class GuiThongKeNhanVien extends JFrame implements ActionListener {
 			// 4 là vị trí của cột số lượng phiếu đặt phòng trong model
 			double giaTriCaoNhat = Double.parseDouble(model.getValueAt(0, 4).toString());
 			double giaTriThapNhat = giaTriCaoNhat;
-			double tongSoPhieu = 0;
+			double tongSoHD = 0;
 			int rowCaoNhat = 0;
 			int rowThapNhat = 0;
 			for (int i = 0; i < model.getRowCount(); i++) {
 				double giaTri = Double.parseDouble(model.getValueAt(i, 4).toString());
-				tongSoPhieu += giaTri;
+				tongSoHD += giaTri;
 				if (giaTriCaoNhat < giaTri) {
 					giaTriCaoNhat = giaTri;
 					rowCaoNhat = i;
@@ -621,15 +639,15 @@ public class GuiThongKeNhanVien extends JFrame implements ActionListener {
 					rowThapNhat = i;
 				}
 			}
-			lblTongSoPhieuDatPhong.setText("Tổng số phiếu đặt phòng:");
-			lblTongSo.setText("Tổng số nhân viên đã tạo phiếu:");
-			lblCaoNhat.setText("Nhân viên tạo nhiều nhất:");
-			lblThapNhat.setText("Nhân viên tạo ít nhất:");
+			lblTongSoHoaDon.setText("Hóa đơn:");
+			lblTongSoNhanVien.setText("Nhân viên:");
+			lblCaoNhat.setText("Nhân viên có số hóa đơn nhất:");
+			lblThapNhat.setText("Nhân viên có số hóa đơn ít nhất:");
 
-			txtTongSoPhieuDatPhong.setText(tongSoPhieu + "");
+			txtTongSoHoaDon.setText(tongSoHD + "");
 			txtTongSo.setText(model.getRowCount() + "");
-			txtCaoNhat.setText(model.getValueAt(rowCaoNhat, 1).toString());
-			txtThapNhat.setText(model.getValueAt(rowThapNhat, 1).toString());
+			txtCaoNhat.setText(model.getValueAt(rowCaoNhat, 2).toString());
+			txtThapNhat.setText(model.getValueAt(rowThapNhat, 2).toString());
 
 			bThongKeTongQuat.show();
 		}
@@ -672,12 +690,12 @@ public class GuiThongKeNhanVien extends JFrame implements ActionListener {
 					rowThapNhat = i;
 				}
 			}
-			lblTongSoPhieuDatPhong.setText("Tổng số hóa đơn lập:");
-			lblTongSo.setText("Tổng số nhân viên:");
+			lblTongSoHoaDon.setText("Hóa đơn lập:");
+			lblTongSoNhanVien.setText("Nhân viên:");
 			lblCaoNhat.setText("Tổng tiền hóa đơn cao nhất:");
 			lblThapNhat.setText("Tổng tiền hóa đơn thấp nhất:");
 
-			txtTongSoPhieuDatPhong.setText(tongSoHoaDonLap + "");
+			txtTongSoHoaDon.setText(tongSoHoaDonLap + "");
 			txtTongSo.setText(model.getRowCount() + "");
 			txtCaoNhat.setText(model.getValueAt(rowCaoNhat, 1).toString());
 			txtThapNhat.setText(model.getValueAt(rowThapNhat, 1).toString());
@@ -687,31 +705,43 @@ public class GuiThongKeNhanVien extends JFrame implements ActionListener {
 	}
 
 	private void setAllData() {
-			if (btnHoaDon.getBackground().equals(color3)) {
-				String colums[] = { "STT", "Mã nhân viên", "Tên nhân viên", "Số điện thoại", "Số lượng hóa đơn lập",
-						"Tổng tiền hóa đơn" };
-				try {
-					DefaultTableModel model = loadDataModel(colums, getTKNhanVienTheoHoaDon(dsHoaDonDaThanhToan));
-					setDataTable(model);
-					setDataThongKeTongQuatTongTienHoaDon(model);
-					setDataChartTongTienHoaDon();
-				} catch (NumberFormatException | ParseException e) {
-					e.printStackTrace();
-				}
-
+		if (btnTheoDoanhThu.getBackground().equals(color3)) {
+			String colums[] = { "STT", "Mã nhân viên", "Tên nhân viên", "Số điện thoại", "Số lượng hóa đơn lập",
+					"Tổng tiền hóa đơn" };
+			try {
+				DefaultTableModel model = loadDataModel(colums, getTKNhanVienTheoHoaDon(dsHoaDonDaThanhToan));
+				setDataTable(model);
+				setDataThongKeTongQuatTongTienHoaDon(model);
+				setDataChartTongTienHoaDon();
+			} catch (NumberFormatException | ParseException e) {
+				e.printStackTrace();
 			}
+
 		}
+		if (btnTheoSoHoaDon.getBackground().equals(color3)) {
+			String colums[] = { "STT", "Mã nhân viên", "Tên nhân viên", "Số điện thoại", "Tổng số hóa đơn lập" };
+			try {
+				DefaultTableModel model = loadDataModel(colums, getTKNhanVienTheoHoaDon(dsHoaDonDaThanhToan));
+				setDataTable(model);
+				setDataThongKeTongSoLuongHoaDon(model);;
+				setDataChartSoLuongHoaDon();
+			} catch (NumberFormatException | ParseException e) {
+				e.printStackTrace();
+			}
+
+		}
+	}
 
 	private void setMauButton(JButton btn) {
 		btn.setBackground(color3);
 		btn.setForeground(Color.WHITE);
-		if (!btn.equals(btnPhieuDatPhong)) {
-			btnPhieuDatPhong.setBackground(Color.WHITE);
-			btnPhieuDatPhong.setForeground(color1);
+		if (!btn.equals(btnTheoSoHoaDon)) {
+			btnTheoSoHoaDon.setBackground(Color.WHITE);
+			btnTheoSoHoaDon.setForeground(color1);
 		}
-		if (!btn.equals(btnHoaDon)) {
-			btnHoaDon.setBackground(Color.WHITE);
-			btnHoaDon.setForeground(color1);
+		if (!btn.equals(btnTheoDoanhThu)) {
+			btnTheoDoanhThu.setBackground(Color.WHITE);
+			btnTheoDoanhThu.setForeground(color1);
 		}
 	}
 
@@ -787,16 +817,16 @@ public class GuiThongKeNhanVien extends JFrame implements ActionListener {
 				showData();
 			}
 		}
-		if (o.equals(btnPhieuDatPhong)) {
-			setMauButton(btnPhieuDatPhong);
+		if (o.equals(btnTheoSoHoaDon)) {
+			setMauButton(btnTheoSoHoaDon);
 			showData();
 		}
-		if (o.equals(btnHoaDon)) {
-			setMauButton(btnHoaDon);
+		if (o.equals(btnTheoDoanhThu)) {
+			setMauButton(btnTheoDoanhThu);
 			showData();
 		}
 		if (o.equals(btnBaoCao)) {
-			if (btnHoaDon.getBackground().equals(color3)) {
+			if (btnTheoDoanhThu.getBackground().equals(color3)) {
 				try {
 					JasperReport jasperReport = JasperCompileManager
 							.compileReport("report/ThongKeTongTienHoaDonNhanVien.jrxml");
