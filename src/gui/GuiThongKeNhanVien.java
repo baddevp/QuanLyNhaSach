@@ -548,7 +548,7 @@ public class GuiThongKeNhanVien extends JFrame implements ActionListener {
 			int slPhieu = Integer.parseInt(dsMuoiNhanVien.get(i).get(3));
 
 			// 0 là vị trí cột mã nhân viên trong dsMuoiNhanVien
-			dataset.addValue(slPhieu, "Số phiếu đặt phòng", dsMuoiNhanVien.get(i).get(0));
+			dataset.addValue(slPhieu, "Số hóa đơn", dsMuoiNhanVien.get(i).get(0));
 		}
 		return dataset;
 	}
