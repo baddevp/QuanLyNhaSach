@@ -48,6 +48,7 @@ import dao.DAO_QuanLyVPP;
 import entity.ChiTietHoaDon;
 import entity.HoaDon;
 import entity.Sach;
+import entity.VanPhongPham;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -69,6 +70,7 @@ public class GuiThongKeDoanhThu extends JFrame implements ActionListener {
 	private ChartPanel chartPanel;
 	private DecimalFormat df = new DecimalFormat("#,##0đ");
 	private DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyy");
+	private DateTimeFormatter dtf2 = DateTimeFormatter.ofPattern("dd/MM/yyyHH:mm");
 	DAO_QuanLySach dao_QuanLySach = new DAO_QuanLySach();
 	DAO_QuanLyVPP dao_quanLyVPP = new DAO_QuanLyVPP();
 	private DAO_HoaDon dao_HoaDon = new DAO_HoaDon();
@@ -192,12 +194,12 @@ public class GuiThongKeDoanhThu extends JFrame implements ActionListener {
 		btnTongHoaDon.setFont(font3);
 		btnTongHoaDon.setBackground(color3);
 		btnTongHoaDon.setForeground(Color.WHITE);
-		btnTheoSanPham = new JButton("Theo loại sản phẩm");
+		btnTheoSanPham = new JButton("Theo sản phẩm");
 		btnTheoSanPham.setFont(font3);
 		btnTheoSanPham.setBounds(50, 100, 250, 50);
 		btnTheoSanPham.setBackground(Color.WHITE);
 		btnTheoSanPham.setForeground(color1);
-		btnTheoLoaiSanPham = new JButton("Theo sản phẩm");
+		btnTheoLoaiSanPham = new JButton("Theo  loại sản phẩm");
 		btnTheoLoaiSanPham.setFont(font3);
 		btnTheoLoaiSanPham.setBounds(50, 180, 250, 50);
 		btnTheoLoaiSanPham.setBackground(Color.WHITE);
@@ -379,15 +381,28 @@ public class GuiThongKeDoanhThu extends JFrame implements ActionListener {
 			}
 		return ketQua;
 	}
+	
 
-	/**
-	 * Lấy danh sách hóa đơn hiển thị cho chức năng thống kê doanh thu hóa đơn theo
-	 * khoảng thời gian từ ngày bắt đầu đến ngày kết thúc.
-	 * 
-	 * @param dsHoaDonDaThanhToan
-	 * @return Danh sách thống kê doanh thu hóa đơn
-	 */
 	private ArrayList<ArrayList<String>> getTKDoanhThuHoaDon(ArrayList<HoaDon> dsHoaDonDaThanhToan) {
+		ArrayList<ArrayList<String>> ketQua = new ArrayList<ArrayList<String>>();
+		for (int i = 0; i < dsHoaDonDaThanhToan.size(); i++) {
+			
+			LocalDate ngayLap = dsHoaDonDaThanhToan.get(i).getNgayLapHoaDon().toLocalDate();
+			if (ngayLap.compareTo(ngayBatDau) >= 0 && ngayLap.compareTo(ngayKetThuc) <= 0) {
+				ArrayList<String> row = new ArrayList<String>();
+				row.add(dsHoaDonDaThanhToan.get(i).getMaHoaDon());
+				row.add(dtf.format(dsHoaDonDaThanhToan.get(i).getNgayLapHoaDon().toLocalDate()));
+				row.add(dsHoaDonDaThanhToan.get(i).getKhachHang().getTenKH());
+				row.add(dsHoaDonDaThanhToan.get(i).getKhachHang().getSdt());
+				row.add(dsHoaDonDaThanhToan.get(i).getNhanVien().getTenNV());
+				row.add(df.format(dsHoaDonDaThanhToan.get(i).getTongTien()));
+				ketQua.add(row);
+			}
+		}
+		return sapXepTKHoaDonTangTheoNgayLap(ketQua);
+	}
+	
+	private ArrayList<ArrayList<String>> getTKDoanhThuHoaDonTheoGio(ArrayList<HoaDon> dsHoaDonDaThanhToan) {
 		ArrayList<ArrayList<String>> ketQua = new ArrayList<ArrayList<String>>();
 		for (int i = 0; i < dsHoaDonDaThanhToan.size(); i++) {
 			
@@ -416,12 +431,13 @@ public class GuiThongKeDoanhThu extends JFrame implements ActionListener {
 				// 0 là vị trí mã phòng/dịch vụ trong dsTK
 				if (dsTK.get(i).get(0).equals(dsTK.get(j).get(0))) {
 					doanhThu += Double.parseDouble(df.parse(dsTK.get(j).get(viTriDoanhThu).toString()).toString());
-					soLuong += Integer.parseInt(dsTK.get(i).get(viTriSoLuong).toString());
+					soLuong += Integer.parseInt(dsTK.get(j).get(viTriSoLuong).toString());
 					dsTK.remove(j);
 					j--;
 				}
 			}
 			dsTK.get(i).set(viTriDoanhThu, df.format(doanhThu));
+			dsTK.get(i).set(viTriSoLuong, soLuong + "");
 		}
 		return dsTK;
 	}
@@ -510,6 +526,10 @@ public class GuiThongKeDoanhThu extends JFrame implements ActionListener {
 						Sach s = dao_QuanLySach.getSachTheoMa(maSP);
 						row.add(s.getLoaiSach().getMaLoaiSach());
 						row.add(s.getLoaiSach().getTenLoai());
+					}else {
+						VanPhongPham s = dao_quanLyVPP.getVPPTheoMa(maSP);
+						row.add(s.getLoaiVanPhongPham().getMaLoaiVPP());
+						row.add(s.getLoaiVanPhongPham().getTenLoaiVPP());
 					}
 					row.add(ds.get(j).getSoLuong()+ "");
 					double tienBanDuoc = (ds.get(j).getSoLuong()) * (ds.get(j).getSanPham().getGiaBan());
@@ -574,34 +594,34 @@ public class GuiThongKeDoanhThu extends JFrame implements ActionListener {
 	 * @throws NumberFormatException
 	 * @throws ParseException
 	 */
-//	private CategoryDataset createDatasetDoanhThuHoaDonTheoGio(ArrayList<ArrayList<String>> dsTKDoanhThuHoaDon)
-//			throws NumberFormatException, ParseException {
-//		final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-//
-//		// Giờ làm việc là từ 8->24h
-//		// Tuy nhiên vào lúc 8h mới mở của kinh doanh chưa có hóa đơn nào ngay móc 8h
-//		// nên chỉ hiển thị biểu đồ từ 9h->24h
-//		for (int i = 9; i <= 24; i++) {
-//			double tongDoanhThuGio = 0;
-//			for (int j = 0; j < dsTKDoanhThuHoaDon.size(); j++) {
-//				ArrayList<ChiTietHoaDon> dsPhong = dao_CTHD
-//						.getDSTheoMaHD(dsTKDoanhThuHoaDon.get(j).get(0));
-//				LocalTime gioRa = dsPhong.get(0).getHoaDon().getGioRa(dsPhong).toLocalTime();
-//				LocalTime gioDau = LocalTime.of(i - 1, 0);
-//				LocalTime gioCuoi;
-//				if (i == 24) {
-//					gioCuoi = LocalTime.of(i - 1, 59, 59);
-//				} else {
-//					gioCuoi = LocalTime.of(i, 0);
-//				}
-//				if (gioRa.compareTo(gioDau) > 0 && gioRa.compareTo(gioCuoi) <= 0) {
-//					tongDoanhThuGio += Double.parseDouble(df.parse(dsTKDoanhThuHoaDon.get(j).get(6)).toString());
-//				}
-//			}
-//			dataset.addValue(tongDoanhThuGio, "Doanh thu hóa đơn", i + "");
-//		}
-//		return dataset;
-//	}
+	private CategoryDataset createDatasetDoanhThuHoaDonTheoGio(ArrayList<ArrayList<String>> dsTKDoanhThuHoaDon)
+			throws NumberFormatException, ParseException {
+		final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
+		// Giờ làm việc là từ 8->24h
+		// Tuy nhiên vào lúc 8h mới mở của kinh doanh chưa có hóa đơn nào ngay móc 8h
+		// nên chỉ hiển thị biểu đồ từ 9h->24h
+		for (int i = 6; i <= 21; i++) {
+			double tongDoanhThuGio = 0;
+			for (int j = 0; j < dsTKDoanhThuHoaDon.size(); j++) {
+				HoaDon hd = dao_HoaDon
+						.getHDTheoMaHD(dsTKDoanhThuHoaDon.get(j).get(0));
+				LocalTime gioMua = hd.getNgayLapHoaDon().toLocalTime();
+				LocalTime gioDau = LocalTime.of(i - 1, 0,0 );
+				LocalTime gioCuoi;
+				if (i == 21) {
+					gioCuoi = LocalTime.of(i - 1, 59, 59);
+				} else {
+					gioCuoi = LocalTime.of(i, 0);
+				}
+				if (gioMua.compareTo(gioDau) > 0 && gioMua.compareTo(gioCuoi) <= 0) {
+					tongDoanhThuGio += Double.parseDouble(df.parse(dsTKDoanhThuHoaDon.get(j).get(5)).toString());
+				}
+			}
+			dataset.addValue(tongDoanhThuGio, "Doanh thu hóa đơn", i + "");
+		}
+		return dataset;
+	}
 
 	/**
 	 * Tạo dữ liệu biểu đồ thống kê doanh thu hóa đơn của từng ngày trong tháng cho
@@ -647,7 +667,7 @@ public class GuiThongKeDoanhThu extends JFrame implements ActionListener {
 			for (int i = 0; i < dsTKDoanhThuHoaDon.size(); i++) {
 				LocalDate ngayLap = LocalDate.parse(dsTKDoanhThuHoaDon.get(i).get(1), dtf);
 				if (temp.getMonthValue() == ngayLap.getMonthValue() && temp.getYear() == ngayLap.getYear()) {
-					tongDoanhThuThang += Double.parseDouble(df.parse(dsTKDoanhThuHoaDon.get(i).get(6)).toString());
+					tongDoanhThuThang += Double.parseDouble(df.parse(dsTKDoanhThuHoaDon.get(i).get(5)).toString());
 				}
 			}
 			dataset.addValue(tongDoanhThuThang, "Doanh thu hóa đơn", temp.getMonthValue() + "");
@@ -709,22 +729,13 @@ public class GuiThongKeDoanhThu extends JFrame implements ActionListener {
 		return dataset;
 	}
 
-	/**
-	 * Tạo dữ liệu biểu đồ thống kê doanh thu theo dịch vụ
-	 * 
-	 * @param dsTKDoanhThuDichVu
-	 * @return dữ liệu biểu đồ thống kê doanh thu theo dịch vụ gồm 10 dịch vụ có
-	 *         doanh thu cao nhất
-	 * @throws NumberFormatException
-	 * @throws ParseException
-	 */
-	private CategoryDataset createDatasetDoanhThuDichVu(ArrayList<ArrayList<String>> dsTKDoanhThuDichVu)
+	private CategoryDataset createDatasetDoanhThuTheoLoaiSanPham(ArrayList<ArrayList<String>> dsTKDoanhThuDichVu)
 			throws NumberFormatException, ParseException {
 		final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 		ArrayList<ArrayList<String>> dsMuoiDoanhThuCaoNhat = getMuoiDoanhThuCaoNhat(dsTKDoanhThuDichVu, 3);
 		for (int i = 0; i < dsMuoiDoanhThuCaoNhat.size(); i++) {
-			double doanhThuDV = Double.parseDouble(df.parse(dsMuoiDoanhThuCaoNhat.get(i).get(4)).toString());
-			dataset.addValue(doanhThuDV, "Doanh thu dịch vụ", dsMuoiDoanhThuCaoNhat.get(i).get(0));
+			double doanhThuDV = Double.parseDouble(df.parse(dsMuoiDoanhThuCaoNhat.get(i).get(3)).toString());
+			dataset.addValue(doanhThuDV, "Doanh thu loại sản phẩm", dsMuoiDoanhThuCaoNhat.get(i).get(0));
 		}
 		return dataset;
 	}
@@ -732,7 +743,7 @@ public class GuiThongKeDoanhThu extends JFrame implements ActionListener {
 	private void setDataChartDoanhThuHoaDon() throws NumberFormatException, ParseException {
 		if (cmbLuaChon.getSelectedItem().equals("Theo ngày")) {
 			chartPanel
-					.setChart(createChart(createDatasetDoanhThuHoaDonTheoNgay(getTKDoanhThuHoaDon(dsHoaDonDaThanhToan)),
+					.setChart(createChart(createDatasetDoanhThuHoaDonTheoGio(getTKDoanhThuHoaDonTheoGio(dsHoaDonDaThanhToan)),
 							"BIỂU ĐỒ DOANH THU HÓA ĐƠN TRONG NGÀY", "Giờ", "Doanh thu hóa đơn"));
 		} else {
 			if (cmbLuaChon.getSelectedItem().equals("Theo tháng")) {
@@ -765,14 +776,14 @@ public class GuiThongKeDoanhThu extends JFrame implements ActionListener {
 
 	private void setDataChartDoanhThuTheoLoaiSanPham() throws NumberFormatException, ParseException {
 		if (cmbLuaChon.getSelectedItem().equals("Theo ngày")) {
-			chartPanel.setChart(createChart(createDatasetDoanhThuDichVu(getTKSoLuongBanCuaLoaiSanPham(dsHoaDonDaThanhToan)),
+			chartPanel.setChart(createChart(createDatasetDoanhThuTheoLoaiSanPham(getTKSoLuongBanCuaLoaiSanPham(dsHoaDonDaThanhToan)),
 					"BIỂU ĐỒ TOP 10 LOẠI SẢN PHẨM CÓ LƯỢT BÁN CAO NHẤT THEO NGÀY", "Sản phẩm", "Số lượng bán"));
 		} else {
 			if (cmbLuaChon.getSelectedItem().equals("Theo tháng")) {
-				chartPanel.setChart(createChart(createDatasetDoanhThuDichVu(getTKSoLuongBanCuaLoaiSanPham(dsHoaDonDaThanhToan)),
+				chartPanel.setChart(createChart(createDatasetDoanhThuTheoLoaiSanPham(getTKSoLuongBanCuaLoaiSanPham(dsHoaDonDaThanhToan)),
 						"BIỂU ĐỒ TOP 10 LOẠI SẢN PHẨM CÓ LƯỢT BÁN CAO NHẤT THEO THÁNG", "Sản phẩm", "Số lượng bán"));
 			} else {
-				chartPanel.setChart(createChart(createDatasetDoanhThuDichVu(getTKSoLuongBanCuaLoaiSanPham(dsHoaDonDaThanhToan)),
+				chartPanel.setChart(createChart(createDatasetDoanhThuTheoLoaiSanPham(getTKSoLuongBanCuaLoaiSanPham(dsHoaDonDaThanhToan)),
 						"BIỂU ĐỒ TOP 10 LOẠI SẢN PHẨM CÓ LƯỢT BÁN CAO NHẤT THEO NĂM", "Sản phẩm", "Số lượng bán"));
 			}
 		}

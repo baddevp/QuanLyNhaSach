@@ -20,6 +20,7 @@ import java.beans.PropertyChangeListener;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -87,6 +88,7 @@ public class GuiBaoCaoHangNgay extends JFrame implements ActionListener, MouseLi
 	DAO_ChiTietHoanTra dao_HoanTra = new DAO_ChiTietHoanTra();
 	DAO_QuanLySach dao_QLSach = new DAO_QuanLySach();
 	DAO_QuanLyVPP dao_QLVPP = new DAO_QuanLyVPP();
+	private DecimalFormat df = new DecimalFormat("#,##0đ");
 	private DefaultTableModel modelHD;
 	private JTable tblHD;
 	private JTextField txtTongSP;
@@ -331,6 +333,7 @@ public class GuiBaoCaoHangNgay extends JFrame implements ActionListener, MouseLi
 		// TODO Auto-generated method stub
 		Object o = e.getSource();
 		if(o.equals(btnXem)) {
+		modelHD.setRowCount(0);
 		Date date =	dtmBaoCao.getDate();
 		LocalDateTime ngayBC = convertToLocalDateTime(date);
 		docBaoCaoThuChiTheoNgay(ngayBC);
@@ -342,7 +345,7 @@ public class GuiBaoCaoHangNgay extends JFrame implements ActionListener, MouseLi
 		lblTenNhanVien.setText(nv.getTenNV());
 		lblNgay.setText(chuyenDateSoSanh(thGian));
 		int i = 0;
-		for (HoaDon hd : dao_HoaDon.getAllHDTheoNgay(thGian, nv)) {
+		for (HoaDon hd : dao_HoaDon.getHDNhanVienBanDuocTheoNgay(thGian, nv)) {
 			i++;
 			String maTH = dao_HoaDonHT.getMaTHTheoMaHD(hd.getMaHoaDon());
 			// Hóa đơn chưa trả
@@ -377,9 +380,9 @@ public class GuiBaoCaoHangNgay extends JFrame implements ActionListener, MouseLi
 			tongTatCa += (double) tblHD.getValueAt(i, 7);
 		}
 		lblSoLuongDon.setText(String.valueOf(tongHD));
-		lblTongThu.setText(String.valueOf(tongTienThu));
-		lblTongChi.setText(String.valueOf(tongTienChi));
-		lblTongTien.setText(String.valueOf(tongTatCa));
+		lblTongThu.setText(df.format(tongTienThu));
+		lblTongChi.setText(df.format(tongTienChi)); 
+		lblTongTien.setText(df.format(tongTatCa));
 	}
 	//Hàm chuyển date --> localdatetime
 	 public static LocalDateTime convertToLocalDateTime(Date date) {

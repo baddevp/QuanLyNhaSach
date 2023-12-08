@@ -73,9 +73,39 @@ public class DAO_HoaDon {
 			// TODO: handle exception
 		}
 		return dsHD; 
+		
 	}
-	//Lấy tất cả hóa đơn trong ngày
-	public ArrayList<HoaDon> getAllHDTheoNgay(LocalDateTime thGian, NhanVien nv){
+	//Lấy tất cả hóa đơn trong ngày tất cả nhân viên
+	public ArrayList<HoaDon> getAllHDBanDuocTrongNgay(LocalDateTime thGian){
+		ArrayList<HoaDon> dsHD = new ArrayList<HoaDon>();
+		try {
+			ConnectDB.getInstance();
+			Connection con = ConnectDB.getConnection();
+			String ngayBaoCao = chuyenDateSoSanh(thGian);
+			String sql = "SELECT * FROM HOADON WHERE NGAYLAPHOADON BETWEEN '"+ ngayBaoCao +" 00:00:00' AND '"+ ngayBaoCao +" 23:59:59'";
+			Statement stm = con.createStatement();
+			ResultSet rs = stm.executeQuery(sql);
+			while (rs.next()) {
+				String maHD = rs.getString(1);
+				LocalDateTime ngayLapHD = chuyenDateTimeSangLocal(rs.getString("NGAYLAPHOADON"));
+				double tienNhan = rs.getDouble(3);
+				double tongTien = rs.getDouble(4);
+				NhanVien nhanvien = new NhanVien(rs.getString(5));
+				KhachHang khachhang = new KhachHang(rs.getString(6));
+				boolean trangThai = rs.getBoolean(7);
+				
+				HoaDon hd = new HoaDon(maHD, ngayLapHD, tienNhan, tongTien, nhanvien, khachhang, trangThai);
+				dsHD.add(hd);
+		
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+		return dsHD; 
+	}
+	//Lấy tất cả hóa đơn trong ngày theo nhân viên
+	public ArrayList<HoaDon> getHDNhanVienBanDuocTheoNgay(LocalDateTime thGian, NhanVien nv){
 		ArrayList<HoaDon> dsHD = new ArrayList<HoaDon>();
 		try {
 			ConnectDB.getInstance();

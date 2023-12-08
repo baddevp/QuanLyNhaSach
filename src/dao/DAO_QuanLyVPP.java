@@ -56,7 +56,7 @@ public class DAO_QuanLyVPP {
 				HinhAnh ha = dao_HA.getHinhAnhTheoMa(rs.getString("MAANH"));
 				LoaiVanPhongPham lvpp = dao_LoaiVPP.getLoaiTheoMa(rs.getString("MALOAIVPP"));
 				MauSac ms = dao_ms.getMauSacTheoMa(rs.getString("MAMAU"));
-				vpp = new VanPhongPham(rs.getString("MASACH"), rs.getString("TENSACH"),rs.getDouble("GIAGOC"), ha, rs.getString("MOTA"), rs.getDate("NGAYNHAP"), rs.getBoolean("TRANGTHAI"),rs.getInt("SOLUONG"),
+				vpp = new VanPhongPham(rs.getString("MAVPP"), rs.getString("TENVPP"),rs.getDouble("GIAGOC"), ha, rs.getString("MOTA"), rs.getDate("NGAYNHAP"), rs.getBoolean("TRANGTHAI"),rs.getInt("SOLUONG"),
 						rs.getDouble("THUE"), rs.getDouble("GIABAN"), nsx ,rs.getString("MAKHUYENMAI"),rs.getString("THUONGHIEU"),rs.getString("XUATXU"),ms,lvpp);
 				
 			}

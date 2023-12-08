@@ -247,13 +247,13 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 				String selectedCategory = cbxPhanLoai.getSelectedItem().toString();
 				if (selectedCategory.equalsIgnoreCase("Chưa trả")) {
 					modelHD.setRowCount(0);
-					DocDuLieuDatataabase(selectedCategory);
+					DocDuLieuDatataabase(selectedCategory, nv);
 				} else if (selectedCategory.equalsIgnoreCase("Đã trả")) {
 					modelHD.setRowCount(0);
-					DocDuLieuDatataabase(selectedCategory);
+					DocDuLieuDatataabase(selectedCategory, nv);
 				} else {
 					modelHD.setRowCount(0);
-					DocDuLieuDatataabase("Tất cả");
+					DocDuLieuDatataabase("Tất cả", nv);
 				}
 
 			}
@@ -691,7 +691,7 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 			e.printStackTrace();
 			// TODO: handle exception
 		}
-		DocDuLieuDatataabase("Chưa trả");
+		DocDuLieuDatataabase("Chưa trả", nv);
 
 		// Bắt sự kiện
 		btnChon.addActionListener(this);
@@ -704,10 +704,10 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 
 	}
 
-	public void DocDuLieuDatataabase(String tt) {
+	public void DocDuLieuDatataabase(String tt, NhanVien nv) {
 		dao_HoaDon = new DAO_HoaDon();
 		String trangThai = "";
-		for (HoaDon hd : dao_HoaDon.getAllHD()) {
+		for (HoaDon hd : dao_HoaDon.getHDNhanVienBanDuocTheoNgay( LocalDateTime.now() ,nv)) {
 			KhachHang kh = dao_KhachHang.getKhachHangTheoMa(hd.getKhachHang().getMaKH());
 			trangThai = dao_HoaDonHT.kiemTraTraHang(hd);
 			// Lấy tất cả hóa đơn
@@ -853,7 +853,7 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 						JOptionPane.showMessageDialog(this, "Đơn hàng đã được trả thành công");
 						xoaRong();
 						modelHD.setRowCount(0);
-						DocDuLieuDatataabase("Chưa trả");
+						DocDuLieuDatataabase("Chưa trả", nv);
 
 					}
 					pnlChonHDTH.show();
@@ -873,7 +873,7 @@ public class GuiTraHang extends JFrame implements ActionListener, MouseListener 
 					}
 					setFormTinhTien(false);
 					modelHD.setRowCount(0);
-					DocDuLieuDatataabase("Chưa trả");
+					DocDuLieuDatataabase("Chưa trả", nv);
 					pnlChonHDTH.show();
 					pnlLapHoaDonTH.hide();
 				}

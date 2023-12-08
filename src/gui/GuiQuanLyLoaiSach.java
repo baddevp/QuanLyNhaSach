@@ -302,7 +302,7 @@ public class GuiQuanLyLoaiSach extends JFrame implements ActionListener, MouseLi
 		        timKiem(tuKhoa);
 		    }
 		}); 
-
+	
 	}
 
 	@Override

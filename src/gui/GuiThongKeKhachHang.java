@@ -177,7 +177,7 @@ public class GuiThongKeKhachHang extends JFrame implements ActionListener {
 		pnlChonMucThongKe.setBounds(0, 60, 350, 255);
 		pnlChonMucThongKe.setBackground(Color.WHITE);
 		pnlChonMucThongKe.setLayout(null);
-		btnSoGioDenQuan = new JButton("Số lượng sản phẩm mua");
+		btnSoGioDenQuan = new JButton("Số lượng sản phẩm");
 		btnSoGioDenQuan.setBounds(50, 60, 250, 50);
 		btnSoGioDenQuan.setFont(font3);
 		btnSoGioDenQuan.setBackground(color3);
@@ -240,19 +240,19 @@ public class GuiThongKeKhachHang extends JFrame implements ActionListener {
 		txtTongSo = new JTextField(14);
 		txtTongSo.setFont(font2);
 		txtTongSo.setFont(font2);
-		txtTongSo.setBackground(Color.cyan);
+		txtTongSo.setBackground(new Color(255, 255, 255));
 		txtTongSo.setEditable(false);
 
 		txtCaoNhat = new JTextField(14);
 		txtCaoNhat.setFont(font2);
 		txtCaoNhat.setFont(font2);
-		txtCaoNhat.setBackground(Color.cyan);
+		txtCaoNhat.setBackground(new Color(255, 255, 255));
 		txtCaoNhat.setEditable(false);
 
 		txtThapNhat = new JTextField(14);
 		txtThapNhat.setFont(font2);
 		txtThapNhat.setFont(font2);
-		txtThapNhat.setBackground(Color.cyan);
+		txtThapNhat.setBackground(new Color(255, 255, 255));
 		txtThapNhat.setEditable(false);
 
 		btnBaoCao = new JButton("Báo cáo");
@@ -343,25 +343,26 @@ public class GuiThongKeKhachHang extends JFrame implements ActionListener {
 	 * @throws ParseException
 	 * @throws NumberFormatException
 	 */
-	private ArrayList<ArrayList<String>> gopDuLieuTrungDSTheoTongTienHoaDon(ArrayList<ArrayList<String>> ds)
+	private ArrayList<ArrayList<String>> gopDuLieuTrungSoLuongVaDoanhThu(ArrayList<ArrayList<String>> dsTK, int viTriDoanhThu, int viTriSoLuong)
 			throws NumberFormatException, ParseException {
-		for (int i = 0; i < ds.size() - 1; i++) {
-			double soLuongHD = Double.parseDouble(df.parse(ds.get(i).get(3)).toString());
-			double tongTienHD = Double.parseDouble(df.parse(ds.get(i).get(4)).toString());
-			for (int j = i + 1; j < ds.size(); j++) {
+		for (int i = 0; i < dsTK.size() - 1; i++) {
+			double doanhThu = Double.parseDouble(df.parse(dsTK.get(i).get(viTriDoanhThu).toString()).toString());
+			int soLuong = Integer.parseInt(dsTK.get(i).get(viTriSoLuong).toString());
+			for (int j = i + 1; j < dsTK.size(); j++) {
 
-				// Kiểm tra nếu bị trùng thì cộng dồn tổng tiền hóa đơn và xóa phần tử trùng
-				if (ds.get(i).get(0).equals(ds.get(j).get(0))) {
-					soLuongHD += Double.parseDouble(df.parse(ds.get(j).get(3)).toString());
-					tongTienHD += Double.parseDouble(df.parse(ds.get(j).get(4)).toString());
-					ds.remove(j);
+				// Kiểm tra nếu bị trùng thì cộng dồn doanh thu và xóa phần tử trùng
+				// 0 là vị trí mã phòng/dịch vụ trong dsTK
+				if (dsTK.get(i).get(0).equals(dsTK.get(j).get(0))) {
+					doanhThu += Double.parseDouble(df.parse(dsTK.get(j).get(viTriDoanhThu).toString()).toString());
+					soLuong += Integer.parseInt(dsTK.get(j).get(viTriSoLuong).toString());
+					dsTK.remove(j);
 					j--;
 				}
 			}
-			ds.get(i).set(3, df.format(soLuongHD));
-			ds.get(i).set(4, df.format(tongTienHD));
+			dsTK.get(i).set(viTriDoanhThu, df.format(doanhThu));
+			dsTK.get(i).set(viTriSoLuong, soLuong + "");
 		}
-		return ds;
+		return dsTK;
 	}
 
 	/**
@@ -408,8 +409,11 @@ public class GuiThongKeKhachHang extends JFrame implements ActionListener {
 				thongKeKhachHang.add(dsHoaDonDaThanhToan.get(i).getKhachHang().getMaKH());
 				thongKeKhachHang.add(dsHoaDonDaThanhToan.get(i).getKhachHang().getTenKH());
 				thongKeKhachHang.add(dsHoaDonDaThanhToan.get(i).getKhachHang().getSdt());
-				
-				thongKeKhachHang.add(df.format(dsCTHD.get(i).getSoLuong()));
+				int soLuong = 0;
+				for (ChiTietHoaDon ct : dsCTHD) {
+					soLuong += ct.getSoLuong();
+				}
+				thongKeKhachHang.add(soLuong + "");
 				ketQua.add(thongKeKhachHang);
 			}
 		}
@@ -429,8 +433,6 @@ public class GuiThongKeKhachHang extends JFrame implements ActionListener {
 			throws NumberFormatException, ParseException {
 		ArrayList<ArrayList<String>> ketQua = new ArrayList<ArrayList<String>>();
 		for (int i = 0; i < dsHoaDonDaThanhToan.size(); i++) {
-//			ArrayList<ChiTietHoaDon> dsPhong = dao_CTHD
-//					.getDSTheoMaHD(dsHoaDonDaThanhToan.get(i).getMaHoaDon());
 			LocalDate ngayLap = dsHoaDonDaThanhToan.get(i).getNgayLapHoaDon().toLocalDate();
 			if (ngayLap.compareTo(ngayBatDau) >= 0 && ngayLap.compareTo(ngayKetThuc) <= 0) {
 				ArrayList<String> thongKeKhachHang = new ArrayList<String>();
@@ -442,7 +444,7 @@ public class GuiThongKeKhachHang extends JFrame implements ActionListener {
 				ketQua.add(thongKeKhachHang);
 			}
 		}
-		return sapXepTKKhachHangTangTheoMa(gopDuLieuTrungDSTheoTongTienHoaDon(ketQua));
+		return sapXepTKKhachHangTangTheoMa(gopDuLieuTrungSoLuongVaDoanhThu(ketQua, 4 ,3 ));
 	}
 
 	/**
@@ -506,10 +508,10 @@ public class GuiThongKeKhachHang extends JFrame implements ActionListener {
 		int soPhanTu = ds.size();
 		if (soPhanTu > 0)
 			while (soLuong < 10 && soLuong < soPhanTu) {
-				double soGioDenLonNhat = Double.parseDouble(ds.get(0).get(4));
+				double soGioDenLonNhat = Double.parseDouble(ds.get(0).get(3));
 				int rowCaoNhat = 0;
 				for (int i = 0; i < ds.size(); i++) {
-					double soGioDen = Double.parseDouble(ds.get(i).get(4));
+					double soGioDen = Double.parseDouble(ds.get(i).get(3));
 					if (soGioDenLonNhat < soGioDen) {
 						soGioDenLonNhat = soGioDen;
 						rowCaoNhat = i;
@@ -549,7 +551,7 @@ public class GuiThongKeKhachHang extends JFrame implements ActionListener {
 		final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 		ArrayList<ArrayList<String>> dsMuoiPhanTuCaoNhat = getMuoiKhachHangSoGioDenQuanCaoNhat(ds);
 		for (int i = 0; i < dsMuoiPhanTuCaoNhat.size(); i++) {
-			double soGio = Double.parseDouble(dsMuoiPhanTuCaoNhat.get(i).get(4));
+			double soGio = Double.parseDouble(dsMuoiPhanTuCaoNhat.get(i).get(3));
 			dataset.addValue(soGio, "Số giờ đến quán", dsMuoiPhanTuCaoNhat.get(i).get(0));
 		}
 		return dataset;
@@ -582,12 +584,12 @@ public class GuiThongKeKhachHang extends JFrame implements ActionListener {
 		if (model.getRowCount() == 0) {
 			bThongKeTongQuat.hide();
 		} else {
-			double giaTriCaoNhat = Double.parseDouble(model.getValueAt(0, 5).toString());
+			double giaTriCaoNhat = Double.parseDouble(model.getValueAt(0, 4).toString());
 			double giaTriThapNhat = giaTriCaoNhat;
 			int rowCaoNhat = 0;
 			int rowThapNhat = 0;
 			for (int i = 0; i < model.getRowCount(); i++) {
-				double giaTri = Double.parseDouble(model.getValueAt(i, 5).toString());
+				double giaTri = Double.parseDouble(model.getValueAt(i, 4).toString());
 				if (giaTriCaoNhat < giaTri) {
 					giaTriCaoNhat = giaTri;
 					rowCaoNhat = i;
@@ -598,8 +600,8 @@ public class GuiThongKeKhachHang extends JFrame implements ActionListener {
 				}
 			}
 			lblTongSo.setText("Tổng số khách hàng:");
-			lblCaoNhat.setText("Giờ đến quán cao nhất:");
-			lblThapNhat.setText("Giờ đến quán thấp nhất:");
+			lblCaoNhat.setText("Khách hàng mua nhiều nhất:");
+			lblThapNhat.setText("Khách hàng mua ít nhất:");
 
 			txtTongSo.setText(model.getRowCount() + "");
 			txtCaoNhat.setText(model.getValueAt(rowCaoNhat, 1).toString());
@@ -651,7 +653,7 @@ public class GuiThongKeKhachHang extends JFrame implements ActionListener {
 			setDataChartSoGioDenQuan();
 		} else {
 			if (btnTongTienHoaDon.getBackground().equals(color3)) {
-				String colums[] = { "STT", "Mã khách hàng", "Tên khách hàng", "Số điện thoại",
+				String colums[] = { "STT", "Mã khách hàng", "Tên khách hàng", "Số điện thoại", "Số lượng hóa đơn",
 						"Tổng tiền hóa đơn" };
 				try {
 					DefaultTableModel model = loadDataModel(colums,
