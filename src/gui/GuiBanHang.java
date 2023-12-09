@@ -80,6 +80,25 @@ import javax.swing.table.TableRowSorter;
 
 import org.w3c.dom.UserDataHandler;
 
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+import org.w3c.dom.UserDataHandler;
+
 public class GuiBanHang extends JFrame implements ActionListener, MouseListener {
 	DAO_QuanLySach dao_quanLySach = new DAO_QuanLySach();
 	DAO_QuanLyVPP dao_quanLyVPP = new DAO_QuanLyVPP();
@@ -134,6 +153,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 	private JButton btnSuDungDiemTL;
 	private boolean isMode = true;
 	private int diemBanDau;
+	private PdfPTable tableTien;
 
 	/**
 	 * Launch the application.
@@ -858,6 +878,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 			if (hoadon_dao.createHD(hd)) {
 				capNhatSoLuongTon(hd);
 				themCTHD(hd);
+				xuLyThanhToan();
 				xoaRong();
 
 			}
@@ -879,6 +900,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 				if (hoadon_dao.createHD(hd)) {
 					capNhatSoLuongTon(hd);
 					themCTHD(hd);
+					xuLyThanhToan();
 					xoaRong();
 				}
 			}
@@ -1260,10 +1282,141 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 			updateButtonText();
 		}
 	}
-
+	//
 	public void updateButtonText() {
 		btnSuDungDiemTL.setText(isMode ? "Sử dụng điểm" : "Trở lại");
 	}
+	//
+	public void xuLyThanhToan() {
+        // Lấy thông tin từ tblSPHD, tên nhân viên và ngày thanh toán
+        String tenNhanVien = txtTenNV.getText();
+        Date ngayThanhToan = dtmNgayLap.getDate();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss - dd/MM/yyyy");
+        String ngayThanhToanFormatted = sdf.format(ngayThanhToan);
+
+     
+
+        // Tạo đối tượng Document
+        Document document = new Document();
+        
+        try {
+        	String fontPath = "src/font/DejaVuSans.ttf";
+        	
+        	if (!Files.exists(Paths.get(fontPath))) {
+                System.err.println("Font file not found. Check the fontPath: " + fontPath);
+                return;
+            }
+
+        	BaseFont baseFont = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+
+        	com.itextpdf.text.Font fontTieuDe = new com.itextpdf.text.Font(baseFont, 15, Font.BOLD);
+        	com.itextpdf.text.Font fontHead = new com.itextpdf.text.Font(baseFont, 12, Font.BOLD);
+        	com.itextpdf.text.Font font = new com.itextpdf.text.Font(baseFont, 12, Font.PLAIN);
+        	
+            // Đặt tên file PDF và tạo đối tượng PdfWriter
+        	String maHD = txtMaHD.getText();
+            String fileName = "HoaDon_" + new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + ".pdf";
+            PdfWriter.getInstance(document, new FileOutputStream(fileName));
+
+            // Mở document để bắt đầu viết
+            document.open();
+
+            // Thêm thông tin hóa đơn vào document
+            Paragraph paragraph2 = new Paragraph("CÔNG TY CP SÁCH GIÁO DỤC TẠI TP. HCM", font);
+            Paragraph paragraph3 = new Paragraph("HIỆU SÁCH TƯ NHÂN FUTUREZE", fontHead);
+            Paragraph paragraph4 = new Paragraph("Nhóm 14", font);
+            Paragraph paragraph5 = new Paragraph("HÓA ĐƠN THANH TOÁN", fontTieuDe);
+
+            // Đặt căn giữa cho đối tượng Paragraph
+            paragraph3.setAlignment(Element.ALIGN_CENTER);
+            paragraph2.setAlignment(Element.ALIGN_CENTER);
+            paragraph4.setAlignment(Element.ALIGN_CENTER);
+            paragraph5.setAlignment(Element.ALIGN_CENTER);
+
+            // Thêm đối tượng Paragraph vào tài liệu
+            document.add(paragraph2);
+            document.add(paragraph3);
+            document.add(paragraph4);
+            document.add(paragraph5);
+            document.add(new Paragraph("\n"));
+            
+            document.add(new Paragraph("Mã hóa đơn: " + maHD, font));
+            document.add(new Paragraph("Ngày Thanh Toán: " + ngayThanhToanFormatted, font));
+            document.add(new Paragraph("Thu Ngân: " + tenNhanVien, font));
+            document.add(new Paragraph("\n"));
+            // Tạo bảng cho sản phẩm trong hóa đơn
+            PdfPTable table = new PdfPTable(3);
+            table.setWidthPercentage(100);
+
+            // Thêm font cho header của bảng
+            PdfPCell cellTenSP = new PdfPCell(new Paragraph("Tên Sản Phẩm", fontHead));
+            PdfPCell cellGia = new PdfPCell(new Paragraph("Giá", fontHead));
+            PdfPCell cellSoLuong = new PdfPCell(new Paragraph("Số Lượng", fontHead));
+
+            // Thêm header vào bảng
+            table.addCell(cellTenSP);
+            table.addCell(cellGia);
+            table.addCell(cellSoLuong);
+
+            // Lấy thông tin sản phẩm từ tblSPHD và thêm vào bảng
+            for (int i = 0; i < tblSPHD.getRowCount(); i++) {
+                table.addCell(new PdfPCell(new Paragraph(tblSPHD.getValueAt(i, 1).toString(), font)));
+                table.addCell(new PdfPCell(new Paragraph(tblSPHD.getValueAt(i, 1).toString(), font)));
+                table.addCell(new PdfPCell(new Paragraph(tblSPHD.getValueAt(i, 3).toString(), font)));
+            }
+            
+            //
+            double tongGiaGoc = 0;
+    	    int tongSoSanPham = 0;
+
+    	    for (int i = 0; i < modelSPHD.getRowCount(); i++) {
+    	        int soLuong = (int) modelSPHD.getValueAt(i, 3);
+    	        double giaGoc = (double) modelSPHD.getValueAt(i, 2);
+
+    	        tongGiaGoc += soLuong * giaGoc;
+    	        tongSoSanPham += soLuong;
+    	    }
+    	    
+//    	    txtTongSP.setText(String.valueOf(tongSoSanPham));
+//    	    txtTienKhachTra.setText(String.valueOf(tongGiaGoc));
+    	    
+    	    tableTien = new PdfPTable(3);
+            tableTien.setWidthPercentage(100);
+            
+            PdfPCell tongTien = new PdfPCell(new Paragraph("Tổng tiền", fontHead));
+            PdfPCell kt = new PdfPCell(new Paragraph("", fontHead));
+            PdfPCell tongTienValue = new PdfPCell(new Paragraph(String.valueOf(tongGiaGoc), fontHead));
+            
+            tongTien.setBorder(PdfPCell.NO_BORDER);
+            kt.setBorder(PdfPCell.NO_BORDER);
+            tongTienValue.setBorder(PdfPCell.NO_BORDER);
+
+            tableTien.addCell(tongTien);
+            tableTien.addCell(kt);
+            tableTien.addCell(tongTienValue);
+            
+    	    
+    	    
+
+            // Thêm bảng vào document
+            document.add(table);
+            document.add(Chunk.NEWLINE);
+            document.add(tableTien);
+            // Đóng document
+            document.close();
+
+            // Hiển thị thông báo thành công
+            JOptionPane.showMessageDialog(this, "Hóa đơn đã được xuất thành công.");
+
+        } catch (DocumentException | IOException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi xuất hóa đơn.");
+        }
+    }
+	
+
+	
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
