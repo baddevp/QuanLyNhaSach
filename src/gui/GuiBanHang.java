@@ -583,7 +583,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		if (o.equals(btnThanhToan)) {
 			boolean trangThai = true;
 			themHD(trangThai);
-			xuLyThanhToan();
+			
 		}
 		if (o.equals(btnTaoDonMoi)) {
 			boolean trangThai = false;
@@ -889,6 +889,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 				if(hoadon_dao.createHD(hd)) {
 					capNhatSoLuongTon(hd);
 					themCTHD(hd);
+					xuLyThanhToan();
 					xoaRong();
 				}
 		    }	
@@ -911,6 +912,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 				if (hoadon_dao.createHD(hd)) {
 					capNhatSoLuongTon(hd);
 					themCTHD(hd);
+					xuLyThanhToan();
 					xoaRong();
 				}
 			}
@@ -1429,6 +1431,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
             PdfPCell tongTienValue = new PdfPCell(new Paragraph(strTongTien, font));
             
             double dbtongTien = Double.parseDouble(txtTienKhachTra.getText());
+            System.out.println("Tiền: " + dbtongTien);
             double dbtongTienCK = tongGiaGoc - dbtongTien;
             String strTongTienTT = currencyFormat.format(dbtongTien);
             String strTongTienCK = currencyFormat.format(dbtongTienCK);

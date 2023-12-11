@@ -146,5 +146,29 @@ public class DAO_ChucVu {
 		}
 		return list;
 	}
+	
+	public ArrayList<ChucVu> getChuVuTheoTen(String ten){
+		ArrayList<ChucVu> list = new ArrayList<ChucVu>();
+		try {
+			ConnectDB.getInstance();
+			Connection con = ConnectDB.getConnection();
+			String sql = "select * from CHUCVU where TENCHUCVU = ?";
+			PreparedStatement preparedStatement = con.prepareStatement(sql);
+			preparedStatement.setString(1, ten);
+			ResultSet rs = preparedStatement.executeQuery();
+			while(rs.next()) {
+				String maCV = rs.getString(1);
+				String tenCV = rs.getString(2);
+				
+				
+				ChucVu cv = new ChucVu(maCV, tenCV);
+				list.add(cv);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+	
 
 }

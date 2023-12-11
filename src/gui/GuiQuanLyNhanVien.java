@@ -83,6 +83,7 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener, MouseLi
 	private DAO_ChucVu chucvu_dao;
 	private Date date1;
 	private String selectedImagePath;
+	private JTextField txtEmail;
 
 	/**
 	 * Launch the application.
@@ -143,7 +144,7 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener, MouseLi
 		pnlThongTinKH.setBackground(new Color(255, 255, 255));
 		
 		pnlThongTinKH.setBorder(BorderFactory.createTitledBorder("Thông tin nhân viên"));
-		pnlThongTinKH.setBounds(10, 80, 1894, 280);
+		pnlThongTinKH.setBounds(10, 80, 1894, 322);
 		contentPane.add(pnlThongTinKH);
 		pnlThongTinKH.setLayout(null);
 		
@@ -236,7 +237,7 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener, MouseLi
 		
 		JLabel lblDiaChi = new JLabel("Địa chỉ:");
 		lblDiaChi.setFont(new Font("Times New Roman", Font.PLAIN, 24));
-		lblDiaChi.setBounds(50, 239, 123, 30);
+		lblDiaChi.setBounds(450, 224, 102, 30);
 		pnlThongTinKH.add(lblDiaChi);
 		
 		cboGioiTinh = new JComboBox();
@@ -245,7 +246,7 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener, MouseLi
 		
 		txtDiaChi = new JTextField();
 		txtDiaChi.setColumns(10);
-		txtDiaChi.setBounds(142, 234, 1223, 35);
+		txtDiaChi.setBounds(449, 264, 701, 35);
 		pnlThongTinKH.add(txtDiaChi);
 		
 		cboChucVu = new JComboBox();
@@ -260,7 +261,7 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener, MouseLi
 		
 		JPanel pnlTacVu = new JPanel();
 		pnlTacVu.setBackground(Color.white);
-		pnlTacVu.setBounds(10, 370, 1894, 80);
+		pnlTacVu.setBounds(10, 413, 1894, 80);
 		pnlTacVu.setBorder(BorderFactory.createTitledBorder("Chọn tác vụ:"));
 		contentPane.add(pnlTacVu);
 		pnlTacVu.setLayout(null);
@@ -334,7 +335,7 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener, MouseLi
 		ButtonGroup group = new ButtonGroup();
 		
 		JPanel pnlBangKH = new JPanel();
-		pnlBangKH.setBounds(10, 460, 1894, 480);
+		pnlBangKH.setBounds(10, 504, 1894, 436);
 		contentPane.add(pnlBangKH);
 		pnlBangKH.setBorder(BorderFactory.createTitledBorder("Bảng thông tin nhân viên"));
 		pnlBangKH.setLayout(null);
@@ -350,10 +351,12 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener, MouseLi
 		modelKH.addColumn("Số điện thoại");
 		modelKH.addColumn("Địa chỉ");
 		modelKH.addColumn("Ngày vào làm");
+		modelKH.addColumn("Email");
+		modelKH.addColumn("Chức vụ:");
 		tblKH = new JTable(modelKH);
 		tblKH.setBackground(new Color(153, 204, 255));
 		JScrollPane jScrollPane = new JScrollPane(tblKH);
-		jScrollPane.setBounds(15, 15, 1869, 450);
+		jScrollPane.setBounds(15, 23, 1869, 402);
 		JTableHeader tbHeaderKH = tblKH.getTableHeader();
 		tbHeaderKH.setFont(font2);
 		tbHeaderKH.setBackground(new Color(51, 204, 204));
@@ -388,6 +391,16 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener, MouseLi
 		// Set the model to the JComboBox
 		cboGioiTinh.setModel(gioiTinhModel);
 		
+		JLabel lblEmail = new JLabel("Email:");
+		lblEmail.setFont(new Font("Times New Roman", Font.PLAIN, 24));
+		lblEmail.setBounds(50, 224, 163, 29);
+		pnlThongTinKH.add(lblEmail);
+		
+		txtEmail = new JTextField();
+		txtEmail.setColumns(10);
+		txtEmail.setBounds(50, 264, 300, 35);
+		pnlThongTinKH.add(txtEmail);
+		
 		// 
 		
 		try {
@@ -403,7 +416,7 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener, MouseLi
 		
 		ArrayList<ChucVu> listTK = chucvu_dao.getAllCV();
 		for(ChucVu cv : listTK) {
-			cboChucVu.addItem(cv.getMaChucVu());
+			cboChucVu.addItem(cv.getTenChucVu());
 		}
 		
         DocDuLieuDatabase();
@@ -459,7 +472,7 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener, MouseLi
 		for (NhanVien nv : nhanvien_dao.getAllNV()) {
 				
 			modelKH.addRow(new Object[] {nv.getMaNV(), nv.getTenNV(), nv.getCccd(), nv.getNgaySinh(),
-                    nv.getSdt(),nv.getDiaChi(),nv.getNgayVaoLam()});
+                    nv.getSdt(),nv.getDiaChi(),nv.getNgayVaoLam(), nv.getEmail(), nv.getChucVu().getTenChucVu()});
 		}
 	}
 	
@@ -505,33 +518,52 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener, MouseLi
 		txtTenNV.setText("");
 		txtDiaChi.setText("");
 		txtCCCD.setText("");
+		txtEmail.setText("");
 		txtTimKiem.setText("");
 		txtSDT.setText("");
 		txtTenNV.requestFocus();
 	}
 	
 	// Chọn ảnh
+//	public void chonAnh() {
+//		//JFileChooser fileChooser = new JFileChooser();  mở thisPC
+//		
+//		// Đặt thư mục ban đầu thành D:\\HK5\\PTUD...
+//		File initialDirectory = new File("/image/");
+//	    JFileChooser fileChooser = new JFileChooser("");
+//		
+//		//Hiển thị hộp thoại chọn tập tin
+//        int result = fileChooser.showOpenDialog(this);
+//
+//        if (result == JFileChooser.APPROVE_OPTION) {
+//            File selectedFile = fileChooser.getSelectedFile();
+//            selectedImagePath = selectedFile.getAbsolutePath();
+//
+//            ImageIcon icon = new ImageIcon(selectedImagePath);
+//            Image img = icon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+//            lblShowAnh.setIcon(new ImageIcon(img));
+//            lblShowAnh.setIcon(new ImageIcon(img));
+//			btnChonAnh.setVisible(false); 			
+//		}		
+//	}	
+	
 	public void chonAnh() {
-		//JFileChooser fileChooser = new JFileChooser();  mở thisPC
+	    // Đặt thư mục ban đầu thành "/img"
 		
-		// Đặt thư mục ban đầu thành D:\\HK5\\PTUD...
-		File initialDirectory = new File("D:\\HK5\\PTUD\\CodeQLCH_FutureZE\\QuanLyNhaSach\\src\\image");
+	    File initialDirectory = new File("C:\\Users\\nguye\\OneDrive\\Documents\\PTUD\\BTL\\QuanLyNhaSach\\src\\image");
 	    JFileChooser fileChooser = new JFileChooser(initialDirectory);
-		
-		//Hiển thị hộp thoại chọn tập tin
-        int result = fileChooser.showOpenDialog(this);
+	    int result = fileChooser.showOpenDialog(this);
 
-        if (result == JFileChooser.APPROVE_OPTION) {
-            File selectedFile = fileChooser.getSelectedFile();
-            selectedImagePath = selectedFile.getAbsolutePath();
+	    if (result == JFileChooser.APPROVE_OPTION) {
+	        File selectedFile = fileChooser.getSelectedFile();
+	        selectedImagePath = selectedFile.getAbsolutePath();
 
-            ImageIcon icon = new ImageIcon(selectedImagePath);
-            Image img = icon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
-            lblShowAnh.setIcon(new ImageIcon(img));
-            lblShowAnh.setIcon(new ImageIcon(img));
-			btnChonAnh.setVisible(false); 			
-		}		
-	}	
+	        ImageIcon icon = new ImageIcon(selectedImagePath);
+	        Image img = icon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+	        lblShowAnh.setIcon(new ImageIcon(img));
+	        btnChonAnh.setVisible(false);
+	    }
+	}
 	private void saveImageToDatabase() {
 
 	      String maAnh = hinhanh_dao.generateNewMaHinhAnh();
@@ -540,7 +572,7 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener, MouseLi
 
 	      // Validate that required fields are not empty
 	      if (maAnh.isEmpty() || tenAnh.isEmpty() || imagePath.isEmpty()) {
-	          JOptionPane.showMessageDialog(this, "Please fill in all fields and choose an image.", 
+	          JOptionPane.showMessageDialog(this, "Hãy thêm ảnh của nhân viên vào.", 
 	          		                              "Error", JOptionPane.ERROR_MESSAGE);
 	          return;
 	      }
@@ -555,7 +587,7 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener, MouseLi
 	      hinhanh_dao.themHinhAnh(hinhAnh);
 
 	      // Display a success message
-	      JOptionPane.showMessageDialog(this, "Image saved to the database successfully!");
+	      JOptionPane.showMessageDialog(this, "Thêm thành công!");
 	         
 	   }
 		
@@ -582,8 +614,9 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener, MouseLi
 			        boolean gioiTinh = cboGioiTinh.getSelectedItem().equals("Nam"); // Assuming "Nam" is for male
 			        String chucVu = cboChucVu.getSelectedItem().toString();
 			        String maANh = hinhanh_dao.generateNewMaHinhAnh();
-			        ChucVu maCV = new ChucVu(chucVu);
+			        
 			        HinhAnh maIMG = new HinhAnh(maANh);
+			        String email = txtEmail.getText();
 			        
 			        
 			        // Validate required fields
@@ -595,23 +628,28 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener, MouseLi
 			        
 			        // lưu ảnh vào csdl HINHANH
 			        saveImageToDatabase();
-
+			         
 			        // Create a new NhanVien object
-			        NhanVien nhanVien = new NhanVien(maNV, tenNV, ngaySinh, diaChi, ngayVaoLam, sdt, cccd, gioiTinh, maCV, maIMG);
+			       
+			        ArrayList<ChucVu> list = chucvu_dao.getChuVuTheoTen(chucVu);
+			        
+			        for(ChucVu cv : list) {
+			        	String maChucVu = cv.getMaChucVu();
+			        	ChucVu maCV = new ChucVu(maChucVu);
+			        	 NhanVien nhanVien = new NhanVien(maNV, tenNV, ngaySinh, diaChi, ngayVaoLam, sdt, cccd, gioiTinh, maCV, maIMG, email);
+			        	if (nhanvien_dao.createNV(nhanVien)) {
+				            // Refresh the table with the updated data
+				            modelKH.setRowCount(0); // Clear the current rows
+				            DocDuLieuDatabase(); // Reload data from the database
 
-			        // Add the NhanVien to the database
-			        if (nhanvien_dao.createNV(nhanVien)) {
-			            // Refresh the table with the updated data
-			            modelKH.setRowCount(0); // Clear the current rows
-			            DocDuLieuDatabase(); // Reload data from the database
+				            // Display a success message
+				            JOptionPane.showMessageDialog(this, "Employee added successfully.");
 
-			            // Display a success message
-			            JOptionPane.showMessageDialog(this, "Employee added successfully.");
-
-			            // Clear input fields
-			            xoaRong();
-			        } else {
-			            JOptionPane.showMessageDialog(this, "Failed to add employee.", "Error", JOptionPane.ERROR_MESSAGE);
+				            // Clear input fields
+				            xoaRong();
+				        } else {
+				            JOptionPane.showMessageDialog(this, "Failed to add employee.", "Error", JOptionPane.ERROR_MESSAGE);
+				        }
 			        }
 			    } catch (Exception e) {
 			        e.printStackTrace();
@@ -677,6 +715,7 @@ public class GuiQuanLyNhanVien extends JFrame implements ActionListener, MouseLi
 	        
 	        String ngaySinh = modelKH.getValueAt(row, 3).toString();
 	        String ngayVaoLam = modelKH.getValueAt(row, 6).toString();
+	        txtEmail.setText(modelKH.getValueAt(row, 8).toString());
 	        
 	        java.util.Date date;
             try {

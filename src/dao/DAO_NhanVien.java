@@ -36,19 +36,39 @@ public class DAO_NhanVien {
 				String cccd = rs.getString(7);
 				boolean gioitinh = rs.getBoolean(8);
 				
+				
 				if (gioitinh == true) {
 					gt = "Nữ";
 				}else {
 					gt = "Nam";
 				}
-				ChucVu maCV = new ChucVu(rs.getString(9));
-				HinhAnh maHinhAnh = new HinhAnh(rs.getString(10));
 				
-				NhanVien nv = new NhanVien(maNV, tenNV, ngaySinh, diaChi, NgayvaoLam, sdt, cccd, gioitinh, maCV, maHinhAnh);
-				dsNV.add(nv);
+				String maCV = rs.getString(9);
+				
+				HinhAnh maHinhAnh = new HinhAnh(rs.getString(10));
+				String email = rs.getString(11);
+				
+				//String maChucVu = rs.getString(9);
+
+	            // Thực hiện truy vấn để lấy tên chức vụ từ bảng CHUCVU
+	            String sqlChucVu = "SELECT TenChucVu FROM CHUCVU WHERE MaChucVu = ?";
+	            PreparedStatement psChucVu = con.prepareStatement(sqlChucVu);
+	            psChucVu.setString(1, maCV);
+	            ResultSet rsChucVu = psChucVu.executeQuery();
+
+	            if (rsChucVu.next()) {
+	                String tenChucVu = rsChucVu.getString("TenChucVu");
+
+	                // Tạo đối tượng ChucVu
+	                ChucVu chucVu = new ChucVu(maCV, tenChucVu);
+
+	                NhanVien nv = new NhanVien(maNV, tenNV, ngaySinh, diaChi, NgayvaoLam, sdt, cccd, gioitinh, chucVu, maHinhAnh, email);
+	                dsNV.add(nv);
 		
+	            }
 			}
-		} catch (Exception e) {
+			
+		}catch (Exception e) {
 			e.printStackTrace();
 			// TODO: handle exception
 		}
@@ -74,6 +94,7 @@ public class DAO_NhanVien {
 				String cccd = rs.getString(7);
 				boolean gioitinh = rs.getBoolean(8);
 				
+				
 				if (gioitinh == true) {
 					gt = "Nữ";
 				}else {
@@ -81,8 +102,9 @@ public class DAO_NhanVien {
 				}
 				ChucVu maCV = new ChucVu(rs.getString(9));
 				HinhAnh maHinhAnh = new HinhAnh(rs.getString(10));
+				String email = rs.getString(11);
 				
-				nhanVien = new NhanVien(maNV, tenNV, ngaySinh, diaChi, NgayvaoLam, sdt, cccd, gioitinh, maCV, maHinhAnh);
+				nhanVien = new NhanVien(maNV, tenNV, ngaySinh, diaChi, NgayvaoLam, sdt, cccd, gioitinh, maCV, maHinhAnh, email);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -115,6 +137,7 @@ public class DAO_NhanVien {
 				String cccd = rs.getString(7);
 				boolean gioitinh = rs.getBoolean(8);
 				
+				
 				if (gioitinh == true) {
 					gt = "Nữ";
 				}else {
@@ -122,8 +145,9 @@ public class DAO_NhanVien {
 				}
 				ChucVu maCV = new ChucVu(rs.getString(9));
 				HinhAnh maHinhAnh = new HinhAnh(rs.getString(10));
+				String email = rs.getString(11);
 				
-				NhanVien nv = new NhanVien(maNV, tenNV, ngaySinh, diaChi, NgayvaoLam, sdt, cccd, gioitinh, maCV, maHinhAnh);
+				NhanVien nv = new NhanVien(maNV, tenNV, ngaySinh, diaChi, NgayvaoLam, sdt, cccd, gioitinh, maCV, maHinhAnh, email);
 				dsNV.add(nv);
 			}	
 		}
@@ -170,7 +194,7 @@ public class DAO_NhanVien {
 		PreparedStatement st = null;
 		int n=0;
 		try {
-			st = con.prepareStatement("insert into " + "NHANVIEN values(?,?,?,?,?,?,?,?,?,?)");
+			st = con.prepareStatement("insert into " + "NHANVIEN values(?,?,?,?,?,?,?,?,?,?,?)");
 			
 			st.setString(1, nv.getMaNV());
 			st.setString(2, nv.getTenNV());
@@ -182,6 +206,7 @@ public class DAO_NhanVien {
 			st.setBoolean(8, nv.getGioiTinh());
 			st.setString(9, nv.getChucVu().getMaChucVu());
 			st.setString(10, nv.getHinhAnh().getMaAnh());
+			st.setString(11, nv.getEmail());
 			
 			n = st.executeUpdate();
 		    } catch (SQLException e) {
