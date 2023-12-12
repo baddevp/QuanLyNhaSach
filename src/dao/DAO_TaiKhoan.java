@@ -98,5 +98,41 @@ public class DAO_TaiKhoan {
 	    }
 	    return k > 0;
 	}
+	
+	public boolean capNhatMatKhau(String maTaiKhoan, String matKhauMoi) {
+	    boolean capNhatThanhCong = false;
+	    //Connection connection = null;
+	    PreparedStatement preparedStatement = null;
+
+	    try {
+	    	 ConnectDB.getInstance();
+		     Connection con = ConnectDB.getConnection();
+
+	        // Cập nhật mật khẩu trong bảng TaiKhoan dựa trên mã tài khoản (mã nhân viên)
+	        String sqlUpdateMatKhau = "UPDATE TAIKHOAN SET MATKHAU = ? WHERE MATAIKHOAN = ?";
+	        preparedStatement = con.prepareStatement(sqlUpdateMatKhau);
+	        preparedStatement.setString(1, matKhauMoi);
+	        preparedStatement.setString(2, maTaiKhoan);
+
+	        int rowsAffected = preparedStatement.executeUpdate();
+	        capNhatThanhCong = rowsAffected > 0;
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        // Đóng tài nguyên (PreparedStatement, Connection)
+	        try {
+	            if (preparedStatement != null) {
+	                preparedStatement.close();
+	            }
+//	            if (connection != null) {
+//	                connection.close();
+//	            }
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	    }
+
+	    return capNhatThanhCong;
+	}
 
 }

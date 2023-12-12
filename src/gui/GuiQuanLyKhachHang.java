@@ -414,31 +414,99 @@ public class GuiQuanLyKhachHang extends JFrame implements ActionListener, MouseL
 	}
 	
 	// hàm phát sinh mã tự động
-	private String generateMaKH() {
-	    try {
-	        // Format selected date to get the part of the ID
-	        java.util.Date currentDate = new java.util.Date();
-	        SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy");
-	        String formattedDate = dateFormat.format(currentDate);
+//	private String generateMaKH() {
+//	    try {
+//	        // Format selected date to get the part of the ID
+//	        java.util.Date currentDate = new java.util.Date();
+//	        SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy");
+//	        String formattedDate = dateFormat.format(currentDate);
+//
+//	        // Get the current sequence number from the database
+//	        int sequenceNumber = khachhang_dao.getCurrentSequenceNumber();
+//
+//	        // Increase the sequence number
+//	        sequenceNumber++;
+//
+//	        // Format the sequence number with leading zeros
+//	        String sequencePart = String.format("%03d", sequenceNumber);
+//
+//	        // Combine date part and sequence part to form the ID
+//	        return "KH" + formattedDate + sequencePart;
+//	    } catch (Exception e) {
+//	        e.printStackTrace();
+//	    }
+//
+//	    return "";
+//	}
+	
+	public String generateMaKH() {
+		try {
+			java.util.Date currentDate = new java.util.Date();
+			SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy");
+			String formattedDate = dateFormat.format(currentDate);
 
-	        // Get the current sequence number from the database
-	        int sequenceNumber = khachhang_dao.getCurrentSequenceNumber();
+			// Hóa đơn đầu tiên trong ngày
+			boolean f = soSanhNgay();
 
-	        // Increase the sequence number
-	        sequenceNumber++;
+			if (f == true) {
+				int sequenceNumber = 1;
+				String sequencePart = String.format("%03d", sequenceNumber).trim();
+				return "KH" + formattedDate + sequencePart;
+			}
+			// Hóa đơn trong ngày
+			else {
+				
+				int sequenceNumber = khachhang_dao.getCurrentSequenceNumber1();
+				sequenceNumber++;
+				String sequencePart = String.format("%03d", sequenceNumber).trim();
+				return "KH" + formattedDate + sequencePart;
+			}
 
-	        // Format the sequence number with leading zeros
-	        String sequencePart = String.format("%03d", sequenceNumber);
-
-	        // Combine date part and sequence part to form the ID
-	        return "KH" + formattedDate + sequencePart;
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    }
-
-	    return "";
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "";
 	}
 	
+	
+	private boolean soSanhNgay() {
+		java.util.Date ngayHienTai = new java.util.Date();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy");
+		String ngayHT = dateFormat.format(ngayHienTai);
+		String KHCu = khachhang_dao.layNgayHoaDonTruoc();
+		//Hóa đơn đầu tiên
+		if (KHCu == null) {
+			return true;
+		}
+		// 01 01 2023
+				// So sánh năm
+				String cu1 = KHCu.substring(4, 7);
+				String moi1 = ngayHT.substring(4, 7);
+				int namCu = Integer.parseInt(cu1);
+				int namMoi = Integer.parseInt(moi1);
+				if (namCu < namMoi)
+					return true;
+				// So sánh tháng
+				String cu2 = KHCu.substring(2, 4);
+
+				String moi2 = ngayHT.substring(2, 4);
+
+				int thangCu = Integer.parseInt(cu2);
+
+				int thangMoi = Integer.parseInt(moi2);
+
+				if (thangCu < thangMoi)
+					return true;
+				// So sánh ngày
+				String cu3 = KHCu.substring(0, 2);
+				String moi3 = ngayHT.substring(0, 2);
+				int ngayCu = Integer.parseInt(cu3);
+				int ngayMoi = Integer.parseInt(moi3);
+				if (ngayCu < ngayMoi)
+					return true;
+
+				return false;
+	}
 	//hàm hiện thị mã lên txtMaKH
 	private void hienThiMaKH() {
 	    String maKH = generateMaKH(); // Generate the ID based on the date
@@ -616,3 +684,4 @@ public class GuiQuanLyKhachHang extends JFrame implements ActionListener, MouseL
 		
 	}
 }
+

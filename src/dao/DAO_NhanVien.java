@@ -373,5 +373,46 @@ public class DAO_NhanVien {
 //   
 //        return nv;
 //    }
+    public boolean kiemTraEmailTonTai(String email) {
+        boolean tonTai = false;
+        //Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+        	ConnectDB.getInstance();
+ 	        Connection con = ConnectDB.getConnection();
+            String sql = "SELECT COUNT(*) FROM NHANVIEN WHERE EMAIL = ?";
+            preparedStatement = con.prepareStatement(sql);
+            preparedStatement.setString(1, email);
+            resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                int count = resultSet.getInt(1);
+                tonTai = count > 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // Đóng tài nguyên (ResultSet, PreparedStatement, Connection)
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+//                if (connection != null) {
+//                    connection.close();
+//                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return tonTai;
+    }
+    
+    
 	
 }

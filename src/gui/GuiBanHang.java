@@ -582,12 +582,14 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 			xoaDong();
 		if (o.equals(btnThanhToan)) {
 			boolean trangThai = true;
-			themHD(trangThai);
+			boolean trangThaiIn = true;
+			themHD(trangThai, trangThaiIn);
 			
 		}
 		if (o.equals(btnTaoDonMoi)) {
 			boolean trangThai = false;
-			themHD(trangThai);
+			boolean trangThaiIn = false;
+			themHD(trangThai, trangThaiIn);
 			JOptionPane.showMessageDialog(this, "Hóa đơn vẫn chưa được thanh toán xong!");
 
 		}
@@ -597,7 +599,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 			hienThiDanhSachHangCho();
 		if (o.equals(btnThanhToanLai)) {
 			updateHD();
-			xuLyThanhToan();
+			JOptionPane.showMessageDialog(this, "Bạn đã thanh toán lại thành công");
 		}
 		if (o.equals(btnSuDungDiemTL)) {
 			suDungDiemTL();
@@ -859,7 +861,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 	}
 
 	//
-	public void themHD(boolean trangThai) {
+	public void themHD(boolean trangThai, boolean trangThaiIn) {
 		// Chưa nhập tiền khách đưa thì set mặc định bằng tổng phải trả
 		if (txtTienKhachDua.getText().trim().isEmpty()) {
 			setTienKhachDua();
@@ -868,6 +870,9 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		LocalDateTime ngayLap = LocalDateTime.now();
 		LocalDateTime ngayLapKL = LocalDateTime.now();
 		double tienNhan = Double.parseDouble(txtTienKhachDua.getText().trim());
+		if(trangThaiIn == false) {
+			tienNhan = 0;
+		}
 		double tongTien = Double.parseDouble(txtTienKhachTra.getText());
 		NhanVien nv = nhanvien_dao.getNhanVienTheoMa2(nhanVien.getMaNV().trim());
 		String sdtkh = txtSDTKH.getText();
@@ -889,8 +894,11 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 				if(hoadon_dao.createHD(hd)) {
 					capNhatSoLuongTon(hd);
 					themCTHD(hd);
-					xuLyThanhToan();
 					xoaRong();
+					if(trangThaiIn == true) {
+						xuLyThanhToan();
+					}
+					
 				}
 		    }	
 		} else {
@@ -912,8 +920,11 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 				if (hoadon_dao.createHD(hd)) {
 					capNhatSoLuongTon(hd);
 					themCTHD(hd);
-					xuLyThanhToan();
 					xoaRong();
+					if(trangThaiIn == true) {
+						xuLyThanhToan();
+					}
+					
 				}
 			}
 		}
@@ -1230,9 +1241,10 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 
 	public void updateHD() {
 		String maHD = txtMaHD.getText();
-
-		hoadon_dao.xoaHDCho(maHD);
+		
 		chitiethoadon_dao.xoaSPTrongCTHD(maHD);
+		hoadon_dao.xoaHDCho(maHD);
+		
 		themHDCho(maHD);
 		xoaRong();
 	}
@@ -1361,38 +1373,43 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
             document.add(paragraph5);
             document.add(new Paragraph("\n"));
             
-            document.add(new Paragraph("Mã hóa đơn: " + maHD, font));
+            document.add(new Paragraph("Mã Hóa Đơn: " + maHD, font));
             document.add(new Paragraph("Ngày Thanh Toán: " + ngayThanhToanFormatted, font));
             document.add(new Paragraph("Thu Ngân: " + tenNhanVien, font));
             document.add(new Paragraph("\n"));
             // Tạo bảng cho sản phẩm trong hóa đơn
-            PdfPTable table = new PdfPTable(3);
+            PdfPTable table = new PdfPTable(4);
             table.setWidthPercentage(100);
 
             // Thêm font cho header của bảng
             PdfPCell cellHeadTenSP = new PdfPCell(new Paragraph("Tên Sản Phẩm", fontHead));
-            PdfPCell cellHeadGia = new PdfPCell(new Paragraph("Giá", fontHead));
+            PdfPCell cellHeadGia = new PdfPCell(new Paragraph("Đơn Giá", fontHead));
             PdfPCell cellHeadSoLuong = new PdfPCell(new Paragraph("Số Lượng", fontHead));
+            PdfPCell cellHeadThanhTien = new PdfPCell(new Paragraph("Thành Tiền", fontHead));
 
             // Thêm header vào bảng
             table.addCell(cellHeadTenSP);
             table.addCell(cellHeadGia);
             table.addCell(cellHeadSoLuong);
+            table.addCell(cellHeadThanhTien);
 
             // Lấy thông tin sản phẩm từ tblSPHD và thêm vào bảng
             for (int i = 0; i < tblSPHD.getRowCount(); i++) {
                 PdfPCell cellSP = new PdfPCell(new Paragraph(tblSPHD.getValueAt(i, 1).toString(), font));
                 PdfPCell cellSL = new PdfPCell(new Paragraph(tblSPHD.getValueAt(i, 2).toString(), font));
                 PdfPCell cellGia = new PdfPCell(new Paragraph(tblSPHD.getValueAt(i, 3).toString(), font));
+                PdfPCell cellThanhTien = new PdfPCell(new Paragraph(tblSPHD.getValueAt(i, 4).toString(), font));
 
                 // Loại bỏ đường viền cho từng ô trong dòng (trừ hàng header)
                 cellSP.setBorder(PdfPCell.NO_BORDER);
                 cellSL.setBorder(PdfPCell.NO_BORDER);
                 cellGia.setBorder(PdfPCell.NO_BORDER);
+                cellThanhTien.setBorder(PdfPCell.NO_BORDER);
 
                 table.addCell(cellSP);
                 table.addCell(cellSL);
                 table.addCell(cellGia);
+                table.addCell(cellThanhTien);
             }
 
             
@@ -1412,12 +1429,13 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 //    	    txtTienKhachTra.setText(String.valueOf(tongGiaGoc));
     	    
             
-    	    tableTien = new PdfPTable(3);
+    	    tableTien = new PdfPTable(4);
             tableTien.setWidthPercentage(100);
             
             PdfPCell kt = new PdfPCell(new Paragraph("", fontHead));;
     	    kt.setBorder(Rectangle.BOTTOM);
             
+            tableTien.addCell(kt);
             tableTien.addCell(kt);
             tableTien.addCell(kt);
             tableTien.addCell(kt);
@@ -1429,9 +1447,9 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
             PdfPCell tongTien = new PdfPCell(new Paragraph("Tổng tiền", fontHead));
             kt = new PdfPCell(new Paragraph("", fontHead));
             PdfPCell tongTienValue = new PdfPCell(new Paragraph(strTongTien, font));
+            PdfPCell tongSL = new PdfPCell(new Paragraph(String.valueOf(tongSoSanPham), font));
             
             double dbtongTien = Double.parseDouble(txtTienKhachTra.getText());
-            System.out.println("Tiền: " + dbtongTien);
             double dbtongTienCK = tongGiaGoc - dbtongTien;
             String strTongTienTT = currencyFormat.format(dbtongTien);
             String strTongTienCK = currencyFormat.format(dbtongTienCK);
@@ -1446,6 +1464,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
             tongTien.setBorder(PdfPCell.NO_BORDER);
             kt.setBorder(PdfPCell.NO_BORDER);
             tongTienValue.setBorder(PdfPCell.NO_BORDER);
+            tongSL.setBorder(PdfPCell.NO_BORDER);
             
             tongTienCK.setBorder(PdfPCell.NO_BORDER);
             kt.setBorder(PdfPCell.NO_BORDER);
@@ -1457,17 +1476,20 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 
             tableTien.addCell(tongTien);
             tableTien.addCell(kt);
+            tableTien.addCell(tongSL);
             tableTien.addCell(tongTienValue);
             
             tableTien.addCell(tongTienCK);
+            tableTien.addCell(kt);
             tableTien.addCell(kt);
             tableTien.addCell(tongTienCKValue);
             
             tableTien.addCell(tongTienKT);
             tableTien.addCell(kt);
+            tableTien.addCell(kt);
             tableTien.addCell(tongTienKTValue);
             
-            tableTienKhach = new PdfPTable(3);
+            tableTienKhach = new PdfPTable(4);
             tableTienKhach.setWidthPercentage(100);
             
             double dbtienKD = Double.parseDouble(txtTienKhachDua.getText());
@@ -1493,14 +1515,17 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
             
             tableTienKhach.addCell(tienKD);
             tableTienKhach.addCell(kt);
+            tableTienKhach.addCell(kt);
             tableTienKhach.addCell(tienKDValue);
             
             tableTienKhach.addCell(tienThua);
+            tableTienKhach.addCell(kt);
             tableTienKhach.addCell(kt);
             tableTienKhach.addCell(tienThuaValue);
             
             kt.setBorder(Rectangle.BOTTOM);
             
+            tableTienKhach.addCell(kt);
             tableTienKhach.addCell(kt);
             tableTienKhach.addCell(kt);
             tableTienKhach.addCell(kt);
@@ -1513,7 +1538,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
             document.add(tableTienKhach);
             document.add(new Paragraph("\n"));
             //
-            Paragraph prTH = new Paragraph("Khách hàng đã mua chỉ đổi trả lại trong vòng 3 ngày", font);
+            Paragraph prTH = new Paragraph("Khách hàng đã mua chỉ đổi trả lại trong vòng ngày hôm nay", font);
             Paragraph prTHtt = new Paragraph("(có kèm theo hóa đơn)", font);
             Paragraph prCamOn = new Paragraph("XIN CẢM ƠN QUÝ KHÁCH & HẸN GẶP LẠI", font);
 

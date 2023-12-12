@@ -12,4 +12,5 @@ module nhom14_PTUD_QLNS {
 	requires jfreechart;
 	requires jasperreports;
 	requires itextpdf;
+	requires java.mail;
 }

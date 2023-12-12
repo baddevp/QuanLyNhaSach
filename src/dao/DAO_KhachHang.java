@@ -118,6 +118,63 @@ public class DAO_KhachHang {
 		return kh;
 	}
 	
+	public String layNgayHoaDonTruoc() {
+		String ngayCu = null;
+		try {
+			ConnectDB.getInstance();
+	        Connection con = ConnectDB.getConnection();
+	        String sql = "SELECT TOP 1 MAKH FROM KHACHHANG ORDER BY NGAYLAP DESC";
+	        Statement stm = con.createStatement();
+	        ResultSet rs = stm.executeQuery(sql);
+	        
+	        if (rs.next()) {
+	            String lastMaKH = rs.getString(1);
+
+	            // Check if lastMaKH is not null and has the expected format
+	          //HD20112023002013
+	            if (lastMaKH != null && lastMaKH.startsWith("KH") && lastMaKH.length() >= 11) {
+	                // Extract the sequence number part from MAKH
+	            	//HD05122023002004
+	            	//KH05122023001
+	               ngayCu = lastMaKH.substring(2,10);
+
+	            }
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return ngayCu;
+	}
+	
+	public int getCurrentSequenceNumber1() {
+		int newMaHD = 0;
+		try {
+			ConnectDB.getInstance();
+	        Connection con = ConnectDB.getConnection();
+	        String sql = "SELECT TOP 1 MAKH FROM KHACHHANG ORDER BY NGAYLAP DESC";
+	        PreparedStatement pstm = con.prepareStatement(sql);
+	        //pstm.setString(1, nv.getMaNV());
+	        ResultSet rs = pstm.executeQuery();
+	        
+	        if (rs.next()) {
+	            String lastMaHD = rs.getString(1);
+
+	            // Check if lastMaKH is not null and has the expected format
+	          //HD20112023002013
+	            if (lastMaHD != null && lastMaHD.startsWith("KH") && lastMaHD.length() >= 11) {
+	                // Extract the sequence number part from MAKH
+	                String sequenceNumberPart = lastMaHD.substring(10);
+
+	                // Convert the extracted part to an integer
+	                newMaHD = Integer.parseInt(sequenceNumberPart);
+	            }
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+		return newMaHD;
+	}
+	
 	public KhachHang getKhachHangTheoMa(String maKH){
 		KhachHang kh = new KhachHang();
 		try {

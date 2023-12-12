@@ -8,7 +8,16 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
+import java.util.Random;
 
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -19,6 +28,7 @@ import javax.swing.border.EmptyBorder;
 import connectDB.ConnectDB;
 import dao.DAO_DangNhap;
 import dao.DAO_NhanVien;
+import dao.DAO_TaiKhoan;
 import entity.NhanVien;
 
 import java.awt.Color;
@@ -61,6 +71,7 @@ public class GuiDangNhap extends JFrame implements ActionListener{
 	private GuiTrangChu guiTrangChu;
 	private DAO_NhanVien nhanvien_dao;
 	private GuiBanHang guiBanHang;
+	private DAO_TaiKhoan taikhoan_dao;
 
 
 	/**
@@ -230,6 +241,7 @@ public class GuiDangNhap extends JFrame implements ActionListener{
 		});
 		
 		txtThongBao = new JTextField();
+		txtThongBao.setHorizontalAlignment(SwingConstants.CENTER);
 		txtThongBao.setBackground(new Color(255, 255, 255));
 		txtThongBao.setEditable(false);
 		txtThongBao.setForeground(new Color(255, 0, 0));
@@ -311,8 +323,12 @@ public class GuiDangNhap extends JFrame implements ActionListener{
 		txtThongBao2.setBorder(javax.swing.BorderFactory.createEmptyBorder());
 		thietLapGiaoDien(true);
 		
+		nhanvien_dao = new DAO_NhanVien();
+		taikhoan_dao = new DAO_TaiKhoan();
+		
 		btnDangNhap.addActionListener(this);
 		btnThoat.addActionListener(this);
+		btnXacNhan.addActionListener(this);
 		
 	}
 
@@ -377,24 +393,29 @@ public class GuiDangNhap extends JFrame implements ActionListener{
 		Object o = e.getSource();
 		if(o == btnThoat) {
 			System.exit(0);
-		}else if(o == btnDangNhap) {
+		} 
+		if(o == btnDangNhap) {
 			login();
+		}
+		if(o == btnXacNhan) {
+			quenMK();
 		}
 	}
 	public void login() {
 		String user = txtTenDN.getText().trim();
 		String pass = txtMK.getText().trim();
-		boolean checkLogin = new DAO_DangNhap().checkLogin(user, pass);
-		if(!checkLogin) {
-			txtThongBao.setText("Tên đăng nhập hoặc mật khẩu không chính xác!");
-			return;
-		} else if(pass.isEmpty()) {
+		if(pass.isEmpty()) {
 			txtThongBao.setText("Vui lòng nhập mật khẩu");
 			return;
 		} else if(user.isEmpty()) {
 			txtThongBao.setText("Vui lòng nhập mã tài khoản");
 			return;
 		} 
+		boolean checkLogin = new DAO_DangNhap().checkLogin(user, pass);
+		if(!checkLogin) {
+			txtThongBao.setText("Tên đăng nhập hoặc mật khẩu không chính xác!");
+			return;
+		}
 		setVisible(false);
 		guiTrangChu = new GuiTrangChu(txtTenDN, txtMK);
 		guiTrangChu.setVisible(true);
@@ -407,4 +428,143 @@ public class GuiDangNhap extends JFrame implements ActionListener{
 		
 		
 	}
+	// Hàm kiểm tra và xử lý quên mật khẩu
+    public boolean quenMatKhau(String email) {
+        // Kiểm tra xem email có tồn tại trong cơ sở dữ liệu hay không
+        if (nhanvien_dao.kiemTraEmailTonTai(email)) {
+            // Tạo mật khẩu mới ngẫu nhiên
+            String matKhauMoi = taoMatKhauNgauNhien();
+
+            // Cập nhật mật khẩu mới vào cơ sở dữ liệu
+            String maTK = txtTenDN.getText();
+            taikhoan_dao.capNhatMatKhau(matKhauMoi, maTK);
+
+            // Gửi email chứa mật khẩu mới
+            guiEmail(email, matKhauMoi);
+
+            return true;
+        } else {
+            // Nếu email không tồn tại trong cơ sở dữ liệu
+            return false;
+        }
+    }
+
+    // Hàm tạo mật khẩu ngẫu nhiên
+    private String taoMatKhauNgauNhien() {
+        // Định nghĩa các ký tự có thể xuất hiện trong mật khẩu mới
+        String kyTu = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
+
+        // Sử dụng lớp Random để chọn ngẫu nhiên từ ký tự trên
+        StringBuilder matKhauMoi = new StringBuilder();
+        Random random = new Random();
+
+        for (int i = 0; i < 10; i++) {
+            int index = random.nextInt(kyTu.length());
+            matKhauMoi.append(kyTu.charAt(index));
+        }
+
+        return matKhauMoi.toString();
+    }
+
+    // Hàm gửi email chứa mật khẩu mới
+    private void guiEmail(String email, String matKhauMoi) {
+        final String username = "qlhsfutureze@gmail.com"; // Địa chỉ email của bạn
+        final String password = "qlhs12345";  // Mật khẩu email của bạn
+
+        // Cấu hình thông tin email
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
+
+        // Tạo phiên làm việc với máy chủ email
+        Session session = Session.getInstance(props,
+                new javax.mail.Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(username, password);
+                    }
+                });
+
+        try {
+            // Tạo đối tượng Message
+            Message message = new MimeMessage(session);
+
+            // Thiết lập địa chỉ email người gửi
+            message.setFrom(new InternetAddress(username));
+
+            // Thiết lập địa chỉ email người nhận
+            message.setRecipients(Message.RecipientType.TO,
+                    InternetAddress.parse(email));
+
+            // Thiết lập tiêu đề email
+            message.setSubject("Reset Password");
+
+            // Thiết lập nội dung email
+            message.setText("Your new password is: " + matKhauMoi);
+
+            // Gửi email
+            Transport.send(message);
+
+            System.out.println("Email sent successfully!");
+
+        } catch (MessagingException e) {
+        	e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+    
+//    private void guiEmail(String email, String matKhauMoi) {
+//        // Cấu hình thông tin xác thực OAuth 2.0
+//        String clientId = "YOUR_CLIENT_ID";
+//        String clientSecret = "YOUR_CLIENT_SECRET";
+//        String refreshToken = "YOUR_REFRESH_TOKEN";
+//
+//        Properties props = new Properties();
+//        props.put("mail.smtp.auth", "true");
+//        props.put("mail.smtp.starttls.enable", "true");
+//        props.put("mail.smtp.host", "smtp.gmail.com");
+//        props.put("mail.smtp.port", "587");
+//        props.put("mail.smtp.auth.mechanisms", "XOAUTH2");
+//
+//        Session session = Session.getInstance(props);
+//
+//        try {
+//            // Tạo đối tượng Message
+//            Message message = new MimeMessage(session);
+//
+//            // Thiết lập địa chỉ email người gửi
+//            message.setFrom(new InternetAddress("your-email@gmail.com"));
+//
+//            // Thiết lập địa chỉ email người nhận
+//            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
+//
+//            // Thiết lập tiêu đề email
+//            message.setSubject("Reset Password");
+//
+//            // Thiết lập nội dung email
+//            message.setText("Your new password is: " + matKhauMoi);
+//
+//            // Gửi email
+//            Transport transport = session.getTransport("smtp");
+//            transport.connect("smtp.gmail.com", 587, "your-email@gmail.com", "oauth2_token");
+//            transport.sendMessage(message, message.getAllRecipients());
+//            transport.close();
+//
+//            System.out.println("Email sent successfully!");
+//
+//        } catch (MessagingException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+
+    
+    public void quenMK() {
+    	String email = txtEmailDK.getText();
+    	String matKhauMoi = taoMatKhauNgauNhien();
+    	if(quenMatKhau("nguyencaotri26092003@gmail.com")) {
+    		guiEmail("nguyencaotri26092003@gmail.com", matKhauMoi);
+    	}
+    	
+    }
 }
