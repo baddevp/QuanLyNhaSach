@@ -490,8 +490,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 		modelSP.addColumn("Mã SP");
 		modelSP.addColumn("Tên SP");
 		modelSP.addColumn("Loại SP");
-		modelSP.addColumn("Loại bìa");
-//		modelSP.addColumn("Màu sắc");
+		modelSP.addColumn("Loại bìa/Màu");
 		modelSP.addColumn("Số lượng tồn");
 		modelSP.addColumn("Thuế");
 		modelSP.addColumn("Giá bán");
@@ -673,43 +672,42 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 	public void chonSP() {
 		int row = tblSP.getSelectedRow();
 
-		// Kiểm tra xem hàng được chọn có tồn tại hay không
 		if (row < 0) {
 			return;
 		}
-
-		// Lấy các giá trị của hàng được chọn
 		String maSP = (String) tblSP.getValueAt(row, 0);
 		String tenSP = (String) tblSP.getValueAt(row, 1);
 		double giaGoc = (double) tblSP.getValueAt(row, 6);
 		int slSP = (int) tblSP.getValueAt(row, 4);
 
-		// Tìm kiếm hàng có mã sản phẩm và tên sản phẩm giống hàng được chọn trong bảng
-		// tblSPHD
+		
 		int index = timSPTrongHD(maSP, tenSP);
-
-		if (index != -1) {
-			// Nếu hàng đã tồn tại thì tăng số lượng
-			int soLuong = (int) modelSPHD.getValueAt(index, 3);
-			soLuong++;
-			slSP--;
-			modelSPHD.setValueAt(soLuong, index, 3);
-			modelSPHD.setValueAt(giaGoc * soLuong, index, 4);
-
-			// Giảm số lượng trong bảng tblSP
-			if (slSP > 0) {
-				modelSP.setValueAt(slSP, row, 4);
-			}
+		if(slSP == 0) {
+			JOptionPane.showMessageDialog(this, "Sản phẩm này đã hết hàng");
 		} else {
-			// Nếu hàng chưa tồn tại, thêm hàng mới
-			modelSPHD.addRow(new Object[] { maSP, tenSP, giaGoc, 1, giaGoc });
+			if (index != -1) {
+				// Nếu hàng đã tồn tại thì tăng số lượng
+				int soLuong = (int) modelSPHD.getValueAt(index, 3);
+				soLuong++;
+				slSP--;
+				modelSPHD.setValueAt(soLuong, index, 3);
+				modelSPHD.setValueAt(giaGoc * soLuong, index, 4);
 
-			// Giảm số lượng trong bảng tblSP
-			if (slSP > 0) {
-				modelSP.setValueAt(slSP - 1, row, 4);
+				// Giảm số lượng trong bảng tblSP
+				if (slSP > 0) {
+					modelSP.setValueAt(slSP, row, 4);
+				}
+			} else {
+				// Nếu hàng chưa tồn tại, thêm hàng mới
+				modelSPHD.addRow(new Object[] { maSP, tenSP, giaGoc, 1, giaGoc });
+
+				// Giảm số lượng trong bảng tblSP
+				if (slSP > 0) {
+					modelSP.setValueAt(slSP - 1, row, 4);
+				}
 			}
-		}
 
+		}
 		tinhTongTienThanhToan();
 	}
 
@@ -739,11 +737,11 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 			String tenSPHD = (String) modelSPHD.getValueAt(i, 1);
 
 			if (maSP.equals(maSPHD) && tenSP.equals(tenSPHD)) {
-				return i; // Trả về chỉ số nếu sản phẩm đã tồn tại
+				return i; 
 			}
 		}
 
-		return -1; // Trả về -1 nếu sản phẩm không tồn tại
+		return -1; 
 	}
 
 	// chính
@@ -853,11 +851,15 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 
 	public void xoaDong() {
 		int row = tblSPHD.getSelectedRow();
+		String maSP = (String) tblSPHD.getValueAt(row, 0);
 		if (row == -1) {
 			JOptionPane.showMessageDialog(this, "Vui lòng chọn một dòng để xóa.", "Thông báo",
 					JOptionPane.WARNING_MESSAGE);
 			return;
 		}
+		int soLuongHienTai = (int) tblSPHD.getValueAt(row, 3);
+		
+		capNhatSoLuongTonTrongBangSanPham(maSP, - soLuongHienTai);
 		timDongTrongBang(tblSPHD, row);
 		tinhTongTienThanhToan();
 	}
@@ -976,6 +978,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 			return;
 		}
 		String maSP = (String) tblSPHD.getValueAt(selectedRow, 0);
+		int slBD = (int) tblSP.getValueAt(selectedRow, 4);
 		String tenSP = (String) tblSPHD.getValueAt(selectedRow, 1);
 		int soLuongHienTai = (int) tblSPHD.getValueAt(selectedRow, 3);
 		double giaGoc = (double) tblSPHD.getValueAt(selectedRow, 2);
@@ -989,13 +992,18 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 					tblSPHD.setValueAt(newQuantity * giaGoc, selectedRow, 4);
 					JOptionPane.showMessageDialog(this, "Đã cập nhật số lượng thành công.", "Thông báo",
 							JOptionPane.INFORMATION_MESSAGE);
+					capNhatSoLuongTonTrongBangSanPham(maSP, newQuantity - soLuongHienTai);
 					tinhTongTienThanhToan();
+					
 				} else if (newQuantity == 0) {
 					xoaDong();
-				} else {
+				} else if(slBD < newQuantity) { 
+					JOptionPane.showMessageDialog(this, "Sản phẩm này đã hết hàng");
+				}
+				else{
 					JOptionPane.showMessageDialog(this, "Số lượng phải là một số không âm.", "Lỗi",
 							JOptionPane.ERROR_MESSAGE);
-				}
+				} 
 			}
 		} catch (NumberFormatException ex) {
 			JOptionPane.showMessageDialog(this, "Vui lòng nhập một số nguyên hợp lệ.", "Lỗi",
@@ -1053,13 +1061,11 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 	public void capNhatSoLuongTonTrongBangSanPham(String maSP, int soLuong) {
 		DefaultTableModel modelSP = (DefaultTableModel) tblSP.getModel();
 
-		// Tìm dòng chứa sản phẩm có mã maSP trong bảng sản phẩm
 		for (int i = 0; i < modelSP.getRowCount(); i++) {
 			if (maSP.equals((String) modelSP.getValueAt(i, 0))) {
 				int soLuongTonHienTai = (int) modelSP.getValueAt(i, 4);
 				int soLuongTonMoi = soLuongTonHienTai - soLuong;
 
-				// Cập nhật số lượng tồn trong bảng sản phẩm hiển thị
 				modelSP.setValueAt(soLuongTonMoi, i, 4);
 				break;
 			}
