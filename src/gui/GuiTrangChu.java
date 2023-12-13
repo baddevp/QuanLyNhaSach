@@ -14,6 +14,8 @@ import javax.swing.JMenuItem;
 
 import javax.swing.JSeparator;
 import java.awt.Font;
+import java.awt.Image;
+
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.ImageIcon;
@@ -24,6 +26,7 @@ import javax.swing.border.MatteBorder;
 import dao.DAO_ChucVu;
 import dao.DAO_NhanVien;
 import entity.ChucVu;
+import entity.HinhAnh;
 import entity.NhanVien;
 
 import java.awt.BorderLayout;
@@ -89,6 +92,8 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 	private JMenuItem mniDoiMatKhau;
 	private JMenuItem mniDangXuat;
 	private DAO_ChucVu chucvu_dao;
+	private JTextField txtMaTK;
+	private JTextField txtChucVu;
 	
 	static JTextField txtusername;
 	static JPasswordField txtpassword;
@@ -578,7 +583,71 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 	}
 	
 	public void showTTTaiKhoan() {
-		JFrame frameThongTin = new JFrame("Thông Tin Tài Khoản");
+		JFrame frameTT = new JFrame("Thông tin tài khoản");
+		frameTT.setBounds(100, 100, 538, 445);
+		frameTT.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		contentPane = new JPanel();
+		frameTT.setVisible(true);
+		frameTT.setLocationRelativeTo(null);
+		
+		JPanel contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		frameTT.setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JLabel lblMaTK = new JLabel("Mã Tài Khoản:");
+		lblMaTK.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblMaTK.setBounds(45, 230, 141, 31);
+		contentPane.add(lblMaTK);
+		
+		JLabel lblTenTK = new JLabel("Tên Tài Khoản:");
+		lblTenTK.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblTenTK.setBounds(45, 272, 141, 31);
+		contentPane.add(lblTenTK);
+		
+		JLabel lblChucVu = new JLabel("Chức Vụ:");
+		lblChucVu.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblChucVu.setBounds(45, 314, 141, 31);
+		contentPane.add(lblChucVu);
+		
+		txtMaTK = new JTextField();
+		txtMaTK.setBounds(215, 233, 244, 31);
+		txtMaTK.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		contentPane.add(txtMaTK);
+		txtMaTK.setColumns(10);
+		txtMaTK.setEditable(false);
+		
+		txtTenTK = new JTextField();
+		txtTenTK.setColumns(10);
+		txtTenTK.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		txtTenTK.setBounds(215, 275, 244, 31);
+		contentPane.add(txtTenTK);
+		txtTenTK.setEditable(false);
+		
+		txtChucVu = new JTextField();
+		txtChucVu.setColumns(10);
+		txtChucVu.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		txtChucVu.setBounds(215, 317, 244, 31);
+		contentPane.add(txtChucVu);
+		txtChucVu.setEditable(false);
+		
+		JLabel lblThngTinTi = new JLabel("THÔNG TIN TÀI KHOẢN");
+		lblThngTinTi.setHorizontalAlignment(SwingConstants.CENTER);
+		lblThngTinTi.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblThngTinTi.setBounds(160, 11, 226, 31);
+		contentPane.add(lblThngTinTi);
+		
+		JPanel pnlAnhNhanVien = new JPanel();
+		pnlAnhNhanVien.setLayout(null);
+		pnlAnhNhanVien.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		pnlAnhNhanVien.setBackground(Color.WHITE);
+		pnlAnhNhanVien.setBounds(194, 58, 151, 133);
+		contentPane.add(pnlAnhNhanVien);
+		
+		JLabel lblShowAnh = new JLabel("");
+		lblShowAnh.setIcon(new ImageIcon(GuiTrangChu.class.getResource("/image/thumnail.png")));
+		lblShowAnh.setBounds(10, 11, 131, 111);
+		pnlAnhNhanVien.add(lblShowAnh);
 		
 		String maTK = txtusername.getText().trim();
 		
@@ -590,33 +659,27 @@ public class GuiTrangChu extends JFrame implements ActionListener {
 			chucvu_dao = new DAO_ChucVu();
 			ArrayList<ChucVu> listCV = chucvu_dao.getChuVuTheoMa(maCV);
 			for(ChucVu c : listCV) {
-				String tenCV = c.getTenChucVu();
-				JLabel lblMaTaiKhoan = new JLabel("Mã Tài Khoản: " + maTK);
-		        JLabel lblTenTaiKhoan = new JLabel("Tên Tài Khoản: " + tenTK);
-		        JLabel lblChucVu = new JLabel("Chức Vụ: " + tenCV);
-				
-		        JButton btnDong = new JButton("Đóng");
-		        btnDong.addActionListener(new ActionListener() {
-		            @Override
-		            public void actionPerformed(ActionEvent e) {
-		                frameThongTin.dispose();
-		            }
-		        });
-
-		        frameThongTin.getContentPane().setLayout(new FlowLayout());
-		        frameThongTin.getContentPane().add(lblMaTaiKhoan);
-		        frameThongTin.getContentPane().add(lblTenTaiKhoan);
-		        frameThongTin.getContentPane().add(lblChucVu);
-		        frameThongTin.getContentPane().add(btnDong);
-
-		        frameThongTin.setSize(400, 300);
-		        frameThongTin.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		        frameThongTin.setLocationRelativeTo(this);
-		        frameThongTin.setVisible(true);
+				txtMaTK.setText(maTK);
+				txtTenTK.setText(tenTK);
+				txtChucVu.setText(c.getTenChucVu());
+		        
 			}
-			
 		}
 		
-	}
+        String maAnh = nhanvien_dao.getMaAnhByMaNV(maTK); // Hàm này cần được thêm vào DAO_NhanVien
 
+        HinhAnh hinhAnh = nhanvien_dao.getHinhAnhByMaAnh(maAnh); 
+
+        // Hiển thị ảnh lên lblShowAnh
+        if (hinhAnh != null) {
+        	
+            ImageIcon icon = new ImageIcon(hinhAnh.getUrl());
+            Image img = icon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+            lblShowAnh.setIcon(new ImageIcon(img));
+        } else {
+            lblShowAnh.setIcon(null); // Nếu không tìm thấy ảnh, xóa ảnh trên lblShowAnh
+        }
+        
+	}	
 }
+	
