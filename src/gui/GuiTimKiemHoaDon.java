@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -11,6 +12,10 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
@@ -22,6 +27,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.RowFilter;
 import javax.swing.SwingConstants;
@@ -48,6 +54,7 @@ public class GuiTimKiemHoaDon extends JFrame implements ActionListener {
 	private JTable tblHD;
 	private DAO_HoaDon hoadon_dao;
 	private JComboBox cmbLoc;
+	private JButton btnXemHD;
 
 	/**
 	 * Launch the application.
@@ -69,7 +76,7 @@ public class GuiTimKiemHoaDon extends JFrame implements ActionListener {
 	 * Create the frame.
 	 */
 	public GuiTimKiemHoaDon() {
-		this.setTitle("Quản lý khách hàng");
+		this.setTitle("Tìm kiếm hóa đơn");
 		this.setSize(1930, 1030);
 		this.setExtendedState(JFrame.MAXIMIZED_BOTH); // Toàn màn hình
 		this.setLocationRelativeTo(null);
@@ -108,7 +115,7 @@ public class GuiTimKiemHoaDon extends JFrame implements ActionListener {
 		pnlChucNang.setLayout(null);
 		
 		txtNhap = new JTextField("Nhập thông tin cần tìm");
-		txtNhap.setBounds(348, 22, 1026, 48);
+		txtNhap.setBounds(348, 22, 819, 48);
 		txtNhap.setFont(font2);
 		pnlChucNang.add(txtNhap);
 		txtNhap.setColumns(10);
@@ -201,14 +208,25 @@ public class GuiTimKiemHoaDon extends JFrame implements ActionListener {
 	        }
 	    });
 		 cmbLoc.setSelectedItem("Tất cả");
-
+		 
+		 btnXemHD = new JButton("Xem lại hóa đơn");
+		 btnXemHD.setForeground(Color.WHITE);
+		 btnXemHD.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+		 btnXemHD.setBackground(new Color(51, 204, 204));
+		 btnXemHD.setBounds(1203, 22, 205, 48);
+		 pnlChucNang.add(btnXemHD);
+		 
+		 btnXemHD.addActionListener(this);
 		
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		
+		Object o = e.getSource();
+		if (o.equals(btnXemHD)) {
+			xemTep();;
+		}
 	}
 	//
 	public String strTrangThai(Boolean tt) {
@@ -261,4 +279,56 @@ public class GuiTimKiemHoaDon extends JFrame implements ActionListener {
 	        sorter.setRowFilter(filter);
 	    }
 	}
+	
+	public void moTepIn(String maHD) {
+		try {
+            // Đường dẫn đến tệp PDF hóa đơn
+			
+			
+        	String relativePath = "fileLuuHoaDonIn/";
+        	File directory = new File(relativePath);
+
+          // Tạo thư mục nếu nó không tồn tại
+        	if (!directory.exists()) {
+        		directory.mkdir();
+        	}
+
+        	String fileName = directory.getAbsolutePath() + "/HoaDon_" + maHD + ".pdf";
+
+        	
+            String pdfFilePath = fileName;
+
+            // Tạo đối tượng File từ đường dẫn tệp PDF
+            File pdfFile = new File(pdfFilePath);
+
+            // Kiểm tra xem máy tính có hỗ trợ Desktop hay không
+            if (Desktop.isDesktopSupported()) {
+                // Lấy đối tượng Desktop
+                Desktop desktop = Desktop.getDesktop();
+
+                // Kiểm tra xem tệp PDF có tồn tại không
+                if (pdfFile.exists()) {
+                    // Mở tệp PDF bằng ứng dụng mặc định
+                    desktop.open(pdfFile);
+                } else {
+                    System.out.println("Tệp PDF không tồn tại.");
+                }
+            } else {
+                System.out.println("Hệ thống không hỗ trợ mở tệp tự động.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+	
+	public void xemTep() {
+		int row = tblHD.getSelectedRow();
+		if(row == -1) {
+			JOptionPane.showMessageDialog(this, "Hãy chọn hóa đơn cần xem lại");
+		} else {
+			String maHD = (String) modelHD.getValueAt(row, 0);
+			moTepIn(maHD);
+		}
+	}
+	
 }

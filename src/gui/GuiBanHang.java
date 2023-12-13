@@ -3,6 +3,7 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Desktop;
 import java.awt.Dialog;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -92,6 +93,7 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -894,10 +896,10 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 				if(hoadon_dao.createHD(hd)) {
 					capNhatSoLuongTon(hd);
 					themCTHD(hd);
-					xoaRong();
 					if(trangThaiIn == true) {
 						xuLyThanhToan();
 					}
+					xoaRong();
 					
 				}
 		    }	
@@ -920,11 +922,10 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 				if (hoadon_dao.createHD(hd)) {
 					capNhatSoLuongTon(hd);
 					themCTHD(hd);
-					xoaRong();
 					if(trangThaiIn == true) {
 						xuLyThanhToan();
 					}
-					
+					xoaRong();
 				}
 			}
 		}
@@ -1215,6 +1216,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 					capNhatSoLuongTon(hd);
 					themCTHD(hd);
 					xoaRong();
+					xuLyThanhToan();
 				}
 			}
 		}
@@ -1235,6 +1237,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
 				capNhatSoLuongTon(hd);
 				themCTHD(hd);
 				xoaRong();
+				xuLyThanhToan();
 			}
 		}
 	}
@@ -1348,8 +1351,18 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
         	
             // Đặt tên file PDF và tạo đối tượng PdfWriter
         	String maHD = txtMaHD.getText();
-            String fileName = "HoaDon_" + new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + ".pdf";
-            PdfWriter.getInstance(document, new FileOutputStream(fileName));
+        	String relativePath = "fileLuuHoaDonIn/";
+        	File directory = new File(relativePath);
+
+          // Tạo thư mục nếu nó không tồn tại
+        	if (!directory.exists()) {
+        		directory.mkdir();
+        	}
+
+        	//String fileName = directory.getAbsolutePath() + maHD + ".pdf";
+        	String fileName = directory.getAbsolutePath() + "/HoaDon_" + maHD + ".pdf";
+
+        	PdfWriter.getInstance(document, new FileOutputStream(fileName));
 
             // Mở document để bắt đầu viết
             document.open();
@@ -1564,7 +1577,7 @@ public class GuiBanHang extends JFrame implements ActionListener, MouseListener 
         }
     }
 	
-
+	//
 	
 
 	@Override

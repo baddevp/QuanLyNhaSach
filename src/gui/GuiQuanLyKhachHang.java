@@ -552,10 +552,10 @@ public class GuiQuanLyKhachHang extends JFrame implements ActionListener, MouseL
 	public void xoa() {
 		int row = tblKH.getSelectedRow();
 		if(row == -1) {
-			JOptionPane.showMessageDialog(this, "Hãy chọn màu sắc cần xoá");
+			JOptionPane.showMessageDialog(this, "Hãy chọn khách hàng cần xoá");
 		} else {
 			int tl;
-			tl = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa màu sắc này không ?", "Cảnh báo",
+			tl = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa khách hàng này không ?", "Cảnh báo",
 					JOptionPane.YES_OPTION);
 			if (tl == JOptionPane.YES_OPTION) {
 				int index = tblKH.getSelectedRow();
