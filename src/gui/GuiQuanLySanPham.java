@@ -84,7 +84,6 @@ public class GuiQuanLySanPham extends JFrame implements ActionListener, MouseLis
 	private DefaultTableModel modelSach;
 	private JTextField txtGiaGocVPP;
 	private JTextField txtSoLuongVPP;
-	private JTextField txtKhuyenMaiVPP;
 	private JTextField txtMoTaVPP;
 	private JLabel lblGiaBanVPP;
 	private JTextField txtGiaBanVPP;
@@ -96,7 +95,6 @@ public class GuiQuanLySanPham extends JFrame implements ActionListener, MouseLis
 	private JButton btnChonAnh;
 	private JTextField txtGiaGoc;
 	private JTextField txtSoLuong;
-	private JTextField txtKhuyenMai;
 	private JTextField txtMoTa;
 	private JLabel lblGiaBan;
 	private JTextField txtGiaBan;
@@ -294,10 +292,6 @@ public class GuiQuanLySanPham extends JFrame implements ActionListener, MouseLis
 		lblSoLuong.setFont(new Font("Times New Roman", Font.PLAIN, 24));
 		pnlThongTinSach.add(lblSoLuong);
 		
-		JLabel lblKhuyenMai = new JLabel("Khuyến mãi :");
-		lblKhuyenMai.setBounds(750, 200, 147, 29);
-		lblKhuyenMai.setFont(new Font("Times New Roman", Font.PLAIN, 24));
-		pnlThongTinSach.add(lblKhuyenMai);
 		
 		JLabel lblGiaGoc = new JLabel("Giá gốc :");
 		lblGiaGoc.setFont(new Font("Times New Roman", Font.PLAIN, 24));
@@ -319,19 +313,15 @@ public class GuiQuanLySanPham extends JFrame implements ActionListener, MouseLis
 		lblTinhTrang.setBounds(425, 290, 136, 29);
 		pnlThongTinSach.add(lblTinhTrang);
 		
-		txtKhuyenMai = new JTextField();
-		txtKhuyenMai.setColumns(10);
-		txtKhuyenMai.setBounds(750, 235, 250, 35);
-		pnlThongTinSach.add(txtKhuyenMai);
 		
 		JLabel lblMoTa = new JLabel("Mô tả :");
 		lblMoTa.setFont(new Font("Times New Roman", Font.PLAIN, 24));
-		lblMoTa.setBounds(750, 290, 136, 29);
+		lblMoTa.setBounds(750, 201, 136, 29);
 		pnlThongTinSach.add(lblMoTa);
 		
 		txtMoTa = new JTextField();
 		txtMoTa.setColumns(10);
-		txtMoTa.setBounds(750, 325, 250, 35);
+		txtMoTa.setBounds(750, 235, 250, 35);
 		pnlThongTinSach.add(txtMoTa);
 		
 		String loaiBia[] = {"Bìa mềm", "Bìa cứng"};
@@ -498,7 +488,6 @@ public class GuiQuanLySanPham extends JFrame implements ActionListener, MouseLis
 		modelSach.addColumn("Loại bìa");
 		modelSach.addColumn("Số trang");
 		modelSach.addColumn("Nhà sản xuất");
-		modelSach.addColumn("Khuyến mãi");
 		modelSach.addColumn("Mô tả");
 		modelSach.addColumn("Tình trạng");
 		tblSach = new JTable(modelSach);
@@ -661,11 +650,6 @@ public class GuiQuanLySanPham extends JFrame implements ActionListener, MouseLis
 		lblSoLuongVPP.setFont(new Font("Times New Roman", Font.PLAIN, 24));
 		pnlThongTinVPP.add(lblSoLuongVPP);
 		
-		JLabel lblKhuyenMaiVPP = new JLabel("Khuyến mãi :");
-		lblKhuyenMaiVPP.setBounds(750, 201, 147, 29);
-		lblKhuyenMaiVPP.setFont(new Font("Times New Roman", Font.PLAIN, 24));
-		pnlThongTinVPP.add(lblKhuyenMaiVPP);
-		
 		JLabel lblGiaGocVPP = new JLabel("Giá gốc :");
 		lblGiaGocVPP.setFont(new Font("Times New Roman", Font.PLAIN, 24));
 		lblGiaGocVPP.setBounds(425, 110, 163, 30);
@@ -686,19 +670,15 @@ public class GuiQuanLySanPham extends JFrame implements ActionListener, MouseLis
 		lblTinhTrangVPP.setBounds(425, 290, 136, 29);
 		pnlThongTinVPP.add(lblTinhTrangVPP);
 		
-		txtKhuyenMaiVPP = new JTextField();
-		txtKhuyenMaiVPP.setColumns(10);
-		txtKhuyenMaiVPP.setBounds(750, 235, 250, 35);
-		pnlThongTinVPP.add(txtKhuyenMaiVPP);
 		
 		JLabel lblMoTaVPP = new JLabel("Mô tả :");
 		lblMoTaVPP.setFont(new Font("Times New Roman", Font.PLAIN, 24));
-		lblMoTaVPP.setBounds(750, 290, 136, 29);
+		lblMoTaVPP.setBounds(750, 201, 136, 29);
 		pnlThongTinVPP.add(lblMoTaVPP);
 		
 		txtMoTaVPP = new JTextField();
 		txtMoTaVPP.setColumns(10);
-		txtMoTaVPP.setBounds(750, 325, 250, 35);
+		txtMoTaVPP.setBounds(750, 235, 250, 35);
 		pnlThongTinVPP.add(txtMoTaVPP);
 		
 		cboTinhTrangVPP = new JComboBox(tt);
@@ -869,7 +849,6 @@ public class GuiQuanLySanPham extends JFrame implements ActionListener, MouseLis
 		modelVPP.addColumn("Xuất Xứ");
 		modelVPP.addColumn("Thương hiệu");
 		modelVPP.addColumn("Nhà sản xuất");
-		modelVPP.addColumn("Khuyến mãi");
 		modelVPP.addColumn("Mô tả");
 		modelVPP.addColumn("Tình trạng");
 		tblVPP = new JTable(modelVPP);
@@ -1214,7 +1193,12 @@ public class GuiQuanLySanPham extends JFrame implements ActionListener, MouseLis
 		
 	}
 	
-	
+	public String strTrangThai(Boolean tt) {
+		if (tt) {
+			return "Còn hàng";
+		}
+		return "Hết hàng";
+	}
 	
 	public void DocDuLieuDatabaseSACH() {
 		sach_dao = new DAO_QuanLySach();
@@ -1222,7 +1206,7 @@ public class GuiQuanLySanPham extends JFrame implements ActionListener, MouseLis
 		for(Sach s : sach_dao.getALLSach()) {
 			modelSach.addRow(new Object[] {s.getMaSanPham(), s.getTenSanPham(), s.getTacGia(), s.getNgayNhap(), s.getLoaiSach().getMaLoaiSach(),
 					s.getGiaGoc(), s.getSoLuong(), s.getThue(), s.getGiaBan(), s.getLoaiBia(), s.getSotrang(),
-					s.getNhaSanXuat().getMaNSX(), s.getKhuyenMai(), s.getMoTa(), s.isTrangThai()});
+					s.getNhaSanXuat().getMaNSX(), s.getMoTa(), strTrangThai(s.isTrangThai())});
 		}
 	}
 	
@@ -1232,7 +1216,7 @@ public class GuiQuanLySanPham extends JFrame implements ActionListener, MouseLis
 		for(VanPhongPham vpp : vpp_dao.getALLVPP()) {
 			modelVPP.addRow(new Object[] {vpp.getMaSanPham(), vpp.getTenSanPham(), vpp.getMaMau().getMaMau(), vpp.getNgayNhap(), 
 					vpp.getLoaiVanPhongPham(), vpp.getGiaGoc(), vpp.getSoLuong(), vpp.getThue(), vpp.getGiaBan(), vpp.getXuatXu(),
-					vpp.getThuongHieu(),vpp.getNhaSanXuat().getMaNSX(), vpp.getKhuyenMai(), vpp.getMoTa(), vpp.isTrangThai()});
+					vpp.getThuongHieu(),vpp.getNhaSanXuat().getMaNSX(), vpp.getMoTa(), strTrangThai(vpp.isTrangThai())});
 		}
 	}
 	
@@ -1247,7 +1231,6 @@ public class GuiQuanLySanPham extends JFrame implements ActionListener, MouseLis
 		txtSoLuong.setText("");
 		txtGiaBan.setText("");
 		txtGiaGoc.setText("");
-		txtKhuyenMai.setText("");
 		txtMaSach.setText("");
 		txtTacGia.setText("");
 		txtMoTa.setText("");
@@ -1267,7 +1250,6 @@ public class GuiQuanLySanPham extends JFrame implements ActionListener, MouseLis
 		txtSoLuongVPP.setText("");
 		txtGiaBanVPP.setText("");
 		txtGiaGocVPP.setText("");
-		txtKhuyenMaiVPP.setText("");
 		txtMaVPP.setText("");
 		txtThuongHieu.setText("");
 		txtMoTaVPP.setText("");
@@ -1438,7 +1420,6 @@ public class GuiQuanLySanPham extends JFrame implements ActionListener, MouseLis
 	            tinhTrang = false;
 	        }
 
-	        String maKM = txtKhuyenMai.getText();
 	        String moTa = txtMoTa.getText();
 	        String loaiSach = cboLoaiSach.getSelectedItem().toString();
 	        String maNSX = cboNSX.getSelectedItem().toString();
@@ -1462,7 +1443,7 @@ public class GuiQuanLySanPham extends JFrame implements ActionListener, MouseLis
 	        
 	        LoaiSach ls = new LoaiSach(loaiSach);
 
-	        Sach s = new Sach(maS, tenS, giaGoc, maIMG, moTa, ngayNhap, tinhTrang, soLuong, thue, giaBan, nsx, maKM, soTrang, loaiBia, tacGia, ls);
+	        Sach s = new Sach(maS, tenS, giaGoc, maIMG, moTa, ngayNhap, tinhTrang, soLuong, thue, giaBan, nsx, soTrang, loaiBia, tacGia, ls);
 
 	        if (sach_dao.addSach(s)) {
 	            // Refresh the table with the updated data
@@ -1588,7 +1569,6 @@ public class GuiQuanLySanPham extends JFrame implements ActionListener, MouseLis
 	            tinhTrangVPP = false;
 	        }
 
-	        String maKMvpp = txtKhuyenMaiVPP.getText();
 	        String moTaVPP = txtMoTaVPP.getText();
 	        String loaiVPP = cboLoai_VPP.getSelectedItem().toString();
 	        String maNSXVPP = cboNSX_VPP.getSelectedItem().toString();
@@ -1613,7 +1593,7 @@ public class GuiQuanLySanPham extends JFrame implements ActionListener, MouseLis
 	        LoaiVanPhongPham lVPP = new LoaiVanPhongPham(loaiVPP);
 	        MauSac ms = new MauSac(mauSac);
 	        
-	        VanPhongPham vpp = new VanPhongPham(maVPP, tenVPP, giaGocVPP, maIMGVPP, moTaVPP, ngayNhapVPP, tinhTrangVPP, soLuongVPP, thueVPP, giaBanVPP, nsxVPP , maKMvpp, thuongHieu, maANhVPP, ms, lVPP);
+	        VanPhongPham vpp = new VanPhongPham(maVPP, tenVPP, giaGocVPP, maIMGVPP, moTaVPP, ngayNhapVPP, tinhTrangVPP, soLuongVPP, thueVPP, giaBanVPP, nsxVPP , thuongHieu, maANhVPP, ms, lVPP);
 	        
 	        if (vpp_dao.addVPP(vpp)) {
 	            // Refresh the table with the updated data
@@ -1689,8 +1669,7 @@ public class GuiQuanLySanPham extends JFrame implements ActionListener, MouseLis
 	        txtTacGia.setText(modelSach.getValueAt(row, 2).toString());
 	        txtGiaBan.setText(modelSach.getValueAt(row, 8).toString());
 	        txtGiaGoc.setText(modelSach.getValueAt(row, 5).toString());
-	        txtKhuyenMai.setText(modelSach.getValueAt(row, 12).toString());
-	        txtMoTa.setText(modelSach.getValueAt(row, 13).toString());
+	        txtMoTa.setText(modelSach.getValueAt(row, 12).toString());
 	        txtSoLuong.setText(modelSach.getValueAt(row, 6).toString());
 	        txtSoTrang.setText(modelSach.getValueAt(row, 10).toString());
 	        txtThue.setText(modelSach.getValueAt(row, 7).toString());
@@ -1753,8 +1732,7 @@ public class GuiQuanLySanPham extends JFrame implements ActionListener, MouseLis
 		        txtThuongHieu.setText(modelVPP.getValueAt(row1, 10).toString());
 		        txtGiaBanVPP.setText(modelVPP.getValueAt(row1, 8).toString());
 		        txtGiaGocVPP.setText(modelVPP.getValueAt(row1, 5).toString());
-		        txtKhuyenMaiVPP.setText(modelVPP.getValueAt(row1, 12).toString());
-		        txtMoTaVPP.setText(modelVPP.getValueAt(row1, 13).toString());
+		        txtMoTaVPP.setText(modelVPP.getValueAt(row1, 12).toString());
 		        txtSoLuongVPP.setText(modelVPP.getValueAt(row1, 6).toString());
 		        txtXuatXu.setText(modelVPP.getValueAt(row1, 9).toString());
 		        txtThueVPP.setText(modelVPP.getValueAt(row1, 7).toString());

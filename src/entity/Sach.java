@@ -17,13 +17,12 @@ public class Sach extends SanPham {
 
 	public Sach(String maSanPham, String tenSanPham, double giaGoc, HinhAnh hinhAnh, String moTa, Date ngayNhap,
 			boolean trangThai, int soLuong, double thue, double giaBan, NhaSanXuat nhaSanXuat, String maKhuyenMai) {
-		super(maSanPham, tenSanPham, giaGoc, hinhAnh, moTa, ngayNhap, trangThai, soLuong, thue, giaBan, nhaSanXuat,
-				maKhuyenMai);
+		super(maSanPham, tenSanPham, giaGoc, hinhAnh, moTa, ngayNhap, trangThai, soLuong, thue, giaBan, nhaSanXuat);
 		// TODO Auto-generated constructor stub
 	}
 
 	public Sach(String maSanPham, String tenSanPham, double giaGoc, HinhAnh hinhAnh, String moTa, Date ngayNhap,
-			boolean trangThai, int soLuong, double thue, double giaBan, NhaSanXuat nhaSanXuat, String maKhuyenMai,
+			boolean trangThai, int soLuong, double thue, double giaBan, NhaSanXuat nhaSanXuat,
 			int sotrang, String loaiBia, String tacGia, LoaiSach loaiSach) {
 		super();
 		this.maSanPham = maSanPham;
@@ -37,7 +36,6 @@ public class Sach extends SanPham {
 		this.thue = thue;
 		this.giaBan = giaBan;
 		this.nhaSanXuat = nhaSanXuat;
-		this.maKhuyenMai = maKhuyenMai;
 		this.sotrang = sotrang;
 		this.loaiBia = loaiBia;
 		this.tacGia = tacGia;

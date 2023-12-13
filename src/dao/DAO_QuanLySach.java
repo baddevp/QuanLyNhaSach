@@ -32,7 +32,7 @@ public class DAO_QuanLySach {
 				LoaiSach ls = dao_LoaiSach.getLoaiTheoMa(rs.getString("MALOAISACH"));
 				
 				ds.add(new Sach(rs.getString("MASACH"), rs.getString("TENSACH"),rs.getDouble("GIAGOC"), ha, rs.getString("MOTA"), rs.getDate("NGAYNHAP"), rs.getBoolean("TRANGTHAI"),rs.getInt("SOLUONG"),
-						rs.getDouble("THUE"), rs.getDouble("GIABAN"), nsx ,rs.getString("MAKHUYENMAI"),rs.getInt("SOTRANG"),rs.getString("LOAIBIA"),rs.getString("TACGIA"),ls));
+						rs.getDouble("THUE"), rs.getDouble("GIABAN"), nsx ,rs.getInt("SOTRANG"),rs.getString("LOAIBIA"),rs.getString("TACGIA"),ls));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -54,7 +54,7 @@ public class DAO_QuanLySach {
 				HinhAnh ha = dao_HA.getHinhAnhTheoMa(rs.getString("MAANH"));
 				LoaiSach ls = dao_LoaiSach.getLoaiTheoMa(rs.getString("MALOAISACH"));
 				sach = new Sach(rs.getString("MASACH"), rs.getString("TENSACH"),rs.getDouble("GIAGOC"), ha, rs.getString("MOTA"), rs.getDate("NGAYNHAP"), rs.getBoolean("TRANGTHAI"),rs.getInt("SOLUONG"),
-						rs.getDouble("THUE"), rs.getDouble("GIABAN"), nsx ,rs.getString("MAKHUYENMAI"),rs.getInt("SOTRANG"),rs.getString("LOAIBIA"),rs.getString("TACGIA"),ls);
+						rs.getDouble("THUE"), rs.getDouble("GIABAN"), nsx, rs.getInt("SOTRANG"),rs.getString("LOAIBIA"),rs.getString("TACGIA"),ls);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -76,7 +76,7 @@ public class DAO_QuanLySach {
 				HinhAnh ha = dao_HA.getHinhAnhTheoMa(rs.getString("MAANH"));
 				LoaiSach ls = dao_LoaiSach.getLoaiTheoMa(rs.getString("MALOAISACH"));
 				Sach sach = new Sach(rs.getString("MASACH"), rs.getString("TENSACH"),rs.getDouble("GIAGOC"), ha, rs.getString("MOTA"), rs.getDate("NGAYNHAP"), rs.getBoolean("TRANGTHAI"),rs.getInt("SOLUONG"),
-						rs.getDouble("THUE"), rs.getDouble("GIABAN"), nsx ,rs.getString("MAKHUYENMAI"),rs.getInt("SOTRANG"),rs.getString("LOAIBIA"),rs.getString("TACGIA"),ls);
+						rs.getDouble("THUE"), rs.getDouble("GIABAN"), nsx ,rs.getInt("SOTRANG"),rs.getString("LOAIBIA"),rs.getString("TACGIA"),ls);
 				list.add(sach);
 			}
 		} catch (Exception e) {
@@ -99,7 +99,7 @@ public class DAO_QuanLySach {
 				HinhAnh ha = dao_HA.getHinhAnhTheoMa(rs.getString("MAANH"));
 				LoaiSach ls = dao_LoaiSach.getLoaiTheoMa(rs.getString("MALOAISACH"));
 				sach = new Sach(rs.getString("MASACH"), rs.getString("TENSACH"),rs.getDouble("GIAGOC"), ha, rs.getString("MOTA"), rs.getDate("NGAYNHAP"), rs.getBoolean("TRANGTHAI"),rs.getInt("SOLUONG"),
-						rs.getDouble("THUE"), rs.getDouble("GIABAN"), nsx ,rs.getString("MAKHUYENMAI"),rs.getInt("SOTRANG"),rs.getString("LOAIBIA"),rs.getString("TACGIA"),ls);
+						rs.getDouble("THUE"), rs.getDouble("GIABAN"), nsx ,rs.getInt("SOTRANG"),rs.getString("LOAIBIA"),rs.getString("TACGIA"),ls);
 				
 			}
 		} catch (Exception e) {
@@ -114,7 +114,7 @@ public class DAO_QuanLySach {
 		PreparedStatement pstm = null;
 		int n = 0;
 		try {
-			pstm = con.prepareStatement("insert into SACH values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+			pstm = con.prepareStatement("insert into SACH values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 			pstm.setString(1, sach.getMaSanPham());
 			pstm.setString(2, sach.getTenSanPham());
 			pstm.setDouble(3, sach.getGiaGoc());
@@ -126,11 +126,10 @@ public class DAO_QuanLySach {
 			pstm.setDouble(9, sach.getThue());
 			pstm.setDouble(10, sach.getGiaBan());
 			pstm.setString(11, sach.getNhaSanXuat().getMaNSX());
-			pstm.setString(12, sach.getKhuyenMai());
-			pstm.setInt(13, sach.getSotrang());
-			pstm.setString(14, sach.getLoaiBia());
-			pstm.setString(15, sach.getTacGia());
-			pstm.setString(16, sach.getLoaiSach().getMaLoaiSach());
+			pstm.setInt(12, sach.getSotrang());
+			pstm.setString(13, sach.getLoaiBia());
+			pstm.setString(14, sach.getTacGia());
+			pstm.setString(15, sach.getLoaiSach().getMaLoaiSach());
 			
 			n = pstm.executeUpdate();
 		} catch (SQLException e) {
@@ -152,8 +151,8 @@ public class DAO_QuanLySach {
 		int n = 0;
 		try {
 			pstm = con.prepareStatement("update SACH set TENSACH = ?, GIAGOC = ?, MAANH = ?, MOTA = ?, NGAYNHAP = ?, TRANGTHAI = ?, "
-					+ "SOLUONG = ?, THUE = ?, GIABAN = ?, MANSX = ?, MAKHUYENMAI = ?, SOTRANG = ?, LOAIBIA = ?, TACGIA = ?, MALOAISACH = ? where MASACH = ?");
-			pstm.setString(16, sach.getMaSanPham());
+					+ "SOLUONG = ?, THUE = ?, GIABAN = ?, MANSX = ? SOTRANG = ?, LOAIBIA = ?, TACGIA = ?, MALOAISACH = ? where MASACH = ?");
+			pstm.setString(15, sach.getMaSanPham());
 			pstm.setString(1, sach.getTenSanPham());
 			pstm.setDouble(2, sach.getGiaGoc());
 			pstm.setString(3, sach.getNhaSanXuat().getMaNSX());
@@ -164,11 +163,10 @@ public class DAO_QuanLySach {
 			pstm.setDouble(8, sach.getThue());
 			pstm.setDouble(9, sach.getGiaBan());
 			pstm.setString(10, sach.getNhaSanXuat().getMaNSX());
-			pstm.setString(11, sach.getKhuyenMai());
 			pstm.setInt(12, sach.getSotrang());
 			pstm.setString(13, sach.getLoaiBia());
 			pstm.setString(14, sach.getTacGia());
-			pstm.setString(15, sach.getLoaiSach().getMaLoaiSach());
+			pstm.setString(14, sach.getLoaiSach().getMaLoaiSach());
 			n = pstm.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -305,8 +303,7 @@ public class DAO_QuanLySach {
 
                 ds.add(new Sach(rs.getString("MASACH"), rs.getString("TENSACH"), rs.getDouble("GIAGOC"), ha,
                         rs.getString("MOTA"), rs.getDate("NGAYNHAP"), rs.getBoolean("TRANGTHAI"),
-                        rs.getInt("SOLUONG"), rs.getDouble("THUE"), rs.getDouble("GIABAN"), nsx,
-                        rs.getString("MAKHUYENMAI"), rs.getInt("SOTRANG"), rs.getString("LOAIBIA"),
+                        rs.getInt("SOLUONG"), rs.getDouble("THUE"), rs.getDouble("GIABAN"), nsx, rs.getInt("SOTRANG"), rs.getString("LOAIBIA"),
                         rs.getString("TACGIA"), ls));
             }
         } catch (SQLException e) {
@@ -370,7 +367,7 @@ public class DAO_QuanLySach {
 				NhaSanXuat nsx = dao_NSX.getNSXTheoMa(rs.getString("MANSX"));
 				HinhAnh ha = dao_HA.getHinhAnhTheoMa(rs.getString("MAANH"));
 				sp = new SanPham(rs.getString("MASACH"), rs.getString("TENSACH"),rs.getDouble("GIAGOC"), ha, rs.getString("MOTA"), rs.getDate("NGAYNHAP"), rs.getBoolean("TRANGTHAI"),rs.getInt("SOLUONG"),
-						rs.getDouble("THUE"), rs.getDouble("GIABAN"), nsx ,rs.getString("MAKHUYENMAI"));
+						rs.getDouble("THUE"), rs.getDouble("GIABAN"), nsx);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

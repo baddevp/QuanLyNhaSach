@@ -35,7 +35,7 @@ public class DAO_QuanLyVPP {
 				MauSac ms = dao_ms.getMauSacTheoMa(rs.getString("MAMAU"));
 				
 				ds.add(new VanPhongPham(rs.getString("MAVPP"), rs.getString("TENVPP"),rs.getDouble("GIAGOC"), ha, rs.getString("MOTA"), rs.getDate("NGAYNHAP"), rs.getBoolean("TRANGTHAI"),rs.getInt("SOLUONG"),
-						rs.getDouble("THUE"), rs.getDouble("GIABAN"), nsx ,rs.getString("MAKHUYENMAI"),rs.getString("THUONGHIEU"),rs.getString("XUATXU"),ms,lvpp));
+						rs.getDouble("THUE"), rs.getDouble("GIABAN"), nsx, rs.getString("THUONGHIEU"),rs.getString("XUATXU"),ms,lvpp));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -57,7 +57,7 @@ public class DAO_QuanLyVPP {
 				LoaiVanPhongPham lvpp = dao_LoaiVPP.getLoaiTheoMa(rs.getString("MALOAIVPP"));
 				MauSac ms = dao_ms.getMauSacTheoMa(rs.getString("MAMAU"));
 				vpp = new VanPhongPham(rs.getString("MAVPP"), rs.getString("TENVPP"),rs.getDouble("GIAGOC"), ha, rs.getString("MOTA"), rs.getDate("NGAYNHAP"), rs.getBoolean("TRANGTHAI"),rs.getInt("SOLUONG"),
-						rs.getDouble("THUE"), rs.getDouble("GIABAN"), nsx ,rs.getString("MAKHUYENMAI"),rs.getString("THUONGHIEU"),rs.getString("XUATXU"),ms,lvpp);
+						rs.getDouble("THUE"), rs.getDouble("GIABAN"), nsx ,rs.getString("THUONGHIEU"),rs.getString("XUATXU"),ms,lvpp);
 				
 			}
 		} catch (Exception e) {
@@ -80,7 +80,7 @@ public class DAO_QuanLyVPP {
 				LoaiVanPhongPham lvpp = dao_LoaiVPP.getLoaiTheoMa(rs.getString("MALOAIVPP"));
 				MauSac ms = dao_ms.getMauSacTheoMa(rs.getString("MAMAU"));
 				VanPhongPham vpp = new VanPhongPham(rs.getString("MAVPP"), rs.getString("TENVPP"),rs.getDouble("GIAGOC"), ha, rs.getString("MOTA"), rs.getDate("NGAYNHAP"), rs.getBoolean("TRANGTHAI"),rs.getInt("SOLUONG"),
-						rs.getDouble("THUE"), rs.getDouble("GIABAN"), nsx ,rs.getString("MAKHUYENMAI"),rs.getString("THUONGHIEU"),rs.getString("XUATXU"),ms,lvpp);
+						rs.getDouble("THUE"), rs.getDouble("GIABAN"), nsx , rs.getString("THUONGHIEU"),rs.getString("XUATXU"),ms,lvpp);
 				list.add(vpp);
 			}
 		} catch (Exception e) {
@@ -104,7 +104,7 @@ public class DAO_QuanLyVPP {
 				LoaiVanPhongPham lvpp = dao_LoaiVPP.getLoaiTheoMa(rs.getString("MALOAIVPP"));
 				MauSac ms = dao_ms.getMauSacTheoMa(rs.getString("MAMAU"));
 				vpp = new VanPhongPham(rs.getString("MASACH"), rs.getString("TENSACH"),rs.getDouble("GIAGOC"), ha, rs.getString("MOTA"), rs.getDate("NGAYNHAP"), rs.getBoolean("TRANGTHAI"),rs.getInt("SOLUONG"),
-						rs.getDouble("THUE"), rs.getDouble("GIABAN"), nsx ,rs.getString("MAKHUYENMAI"),rs.getString("THUONGHIEU"),rs.getString("XUATXU"),ms,lvpp);
+						rs.getDouble("THUE"), rs.getDouble("GIABAN"), nsx ,rs.getString("THUONGHIEU"),rs.getString("XUATXU"),ms,lvpp);
 				
 			}
 		} catch (Exception e) {
@@ -119,7 +119,7 @@ public class DAO_QuanLyVPP {
 		PreparedStatement pstm = null;
 		int n = 0;
 		try {
-			pstm = con.prepareStatement("insert into VANPHONGPHAM values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+			pstm = con.prepareStatement("insert into VANPHONGPHAM values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 			pstm.setString(1, vpp.getMaSanPham());
 			pstm.setString(2, vpp.getTenSanPham());
 			pstm.setDouble(3, vpp.getGiaGoc());
@@ -131,11 +131,10 @@ public class DAO_QuanLyVPP {
 			pstm.setDouble(9, vpp.getThue());
 			pstm.setDouble(10, vpp.getGiaBan());
 			pstm.setString(11, vpp.getNhaSanXuat().getMaNSX());
-			pstm.setString(12, vpp.getKhuyenMai());
-			pstm.setString(13, vpp.getThuongHieu());
-			pstm.setString(14, vpp.getXuatXu());
-			pstm.setString(15, vpp.getMaMau().getMaMau());
-			pstm.setString(16, vpp.getLoaiVanPhongPham().getMaLoaiVPP());
+			pstm.setString(12, vpp.getThuongHieu());
+			pstm.setString(13, vpp.getXuatXu());
+			pstm.setString(14, vpp.getMaMau().getMaMau());
+			pstm.setString(15, vpp.getLoaiVanPhongPham().getMaLoaiVPP());
 			n = pstm.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -156,8 +155,8 @@ public class DAO_QuanLyVPP {
 		int n = 0;
 		try {
 			pstm = con.prepareStatement("update VANPHONGPHAM set TENSACH = ?, GIAGOC = ?, MAANH = ?, MOTA = ?, NGAYNHAP = ?, TRANGTHAI = ?, "
-					+ "SOLUONG = ?, THUE = ?, GIABAN = ?, MANSX = ?, MAKHUYENMAI = ?, THUONGHIEU = ?, XUATXU = ?, MAMAU = ?, MALOAIVPP = ? where MAVPP = ?");
-			pstm.setString(16, VPP.getMaSanPham());
+					+ "SOLUONG = ?, THUE = ?, GIABAN = ?, MANSX = ?, THUONGHIEU = ?, XUATXU = ?, MAMAU = ?, MALOAIVPP = ? where MAVPP = ?");
+			pstm.setString(15, VPP.getMaSanPham());
 			pstm.setString(1, VPP.getTenSanPham());
 			pstm.setDouble(2, VPP.getGiaGoc());
 			pstm.setString(3, VPP.getNhaSanXuat().getMaNSX());
@@ -168,11 +167,10 @@ public class DAO_QuanLyVPP {
 			pstm.setDouble(8, VPP.getThue());
 			pstm.setDouble(9, VPP.getGiaBan());
 			pstm.setString(10, VPP.getNhaSanXuat().getMaNSX());
-			pstm.setString(11, VPP.getKhuyenMai());
-			pstm.setString(12, VPP.getThuongHieu());
-			pstm.setString(13, VPP.getXuatXu());
-			pstm.setString(14, VPP.getMaMau().getMaMau());
-			pstm.setString(15, VPP.getLoaiVanPhongPham().getMaLoaiVPP());
+			pstm.setString(11, VPP.getThuongHieu());
+			pstm.setString(12, VPP.getXuatXu());
+			pstm.setString(13, VPP.getMaMau().getMaMau());
+			pstm.setString(14, VPP.getLoaiVanPhongPham().getMaLoaiVPP());
 			n = pstm.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -370,7 +368,7 @@ public class DAO_QuanLyVPP {
 				NhaSanXuat nsx = dao_NSX.getNSXTheoMa(rs.getString("MANSX"));
 				HinhAnh ha = dao_HA.getHinhAnhTheoMa(rs.getString("MAANH"));
 				sp = new SanPham(rs.getString("MAVPP"), rs.getString("TENVPP"),rs.getDouble("GIAGOC"), ha, rs.getString("MOTA"), rs.getDate("NGAYNHAP"), rs.getBoolean("TRANGTHAI"),rs.getInt("SOLUONG"),
-						rs.getDouble("THUE"), rs.getDouble("GIABAN"), nsx ,rs.getString("MAKHUYENMAI"));
+						rs.getDouble("THUE"), rs.getDouble("GIABAN"), nsx);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
